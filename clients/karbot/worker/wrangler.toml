@@ -1,0 +1,19 @@
+name = "karbot-landing-api"
+main = "src/index.js"
+compatibility_date = "2026-07-26"
+
+# Vars públicas (no secretos) · booking rules editables sin re-deploy secrets
+[vars]
+ISABEL_CALENDAR_ID = "primary"
+ALLOWED_ORIGIN = "https://mktgrupoplasenciaautomotriz.github.io"
+BUSINESS_HOURS_START = "10"
+BUSINESS_HOURS_END = "18"
+SLOT_MINUTES = "30"
+BUFFER_MINUTES = "15"
+TIMEZONE = "America/Mexico_City"
+DAYS_OF_WEEK = "1,2,3,4,5"
+
+# Secrets (NO poner aquí · se configuran con `wrangler secret put NAME`):
+#   GOOGLE_CLIENT_ID
+#   GOOGLE_CLIENT_SECRET
+#   GOOGLE_REFRESH_TOKEN

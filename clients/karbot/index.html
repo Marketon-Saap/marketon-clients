@@ -605,12 +605,68 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   color: white;
   border-radius: var(--radius);
   font-weight: 700; font-size: 16px;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .2s, box-shadow .2s, opacity .2s;
   box-shadow: var(--shadow-md);
   margin-top: 8px;
 }
-.form-submit:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.form-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.form-submit:disabled { opacity: .5; cursor: not-allowed; }
 .form-note { font-size: 12px; color: var(--slate-500); margin-top: 12px; text-align: center; }
+
+/* Slot picker */
+.slots-status {
+  font-size: 11px; color: var(--slate-500); font-weight: 500; font-style: italic;
+  margin-left: 8px; letter-spacing: 0;
+}
+.slots-status.error { color: var(--coral); }
+.slots-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 4px;
+  border: 1.5px solid var(--slate-200);
+  border-radius: 8px;
+  background: var(--white);
+}
+.slots-list:empty::after {
+  content: "Cargando horarios disponibles…";
+  padding: 20px;
+  color: var(--slate-500);
+  font-size: 13px;
+  text-align: center;
+  grid-column: 1 / -1;
+}
+.slot-btn {
+  padding: 10px 8px;
+  background: white;
+  border: 1.5px solid var(--slate-200);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--slate-950);
+  cursor: pointer;
+  transition: all .15s;
+  text-align: center;
+  line-height: 1.3;
+}
+.slot-btn:hover { border-color: var(--v-300); background: var(--violet-bg-2); }
+.slot-btn.selected {
+  border-color: var(--p-500);
+  background: var(--grad-cta);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(68,76,231,.25);
+}
+.slots-empty {
+  padding: 20px;
+  color: var(--slate-500);
+  font-size: 13px;
+  text-align: center;
+  grid-column: 1 / -1;
+}
 
 @media (max-width: 900px) {
   .cta-final-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -931,8 +987,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </ul>
       </div>
       <form class="form-card" id="demoForm" onsubmit="return submitForm(event)">
-        <div class="form-title">Cuéntanos sobre tu grupo</div>
-        <div class="form-sub">Te contactamos hoy mismo por WhatsApp.</div>
+        <div class="form-title">Agenda tu demo · 30 minutos</div>
+        <div class="form-sub">Videollamada con nuestro equipo. Sin PowerPoint largo · sin pitch corporativo.</div>
+
         <div class="form-field">
           <label for="nombre">Tu nombre</label>
           <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="Juan Pérez">
@@ -940,6 +997,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="form-field">
           <label for="empresa">Nombre del grupo o agencia</label>
           <input type="text" id="empresa" name="empresa" required autocomplete="organization" placeholder="Grupo Automotriz Ejemplo">
+        </div>
+        <div class="form-field">
+          <label for="email">Email de trabajo</label>
+          <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com">
         </div>
         <div class="form-field">
           <label for="agencias">Cuántas agencias tienes</label>
@@ -963,8 +1024,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <option value="otro">Otro</option>
           </select>
         </div>
-        <button type="submit" class="form-submit">Agendar demo por WhatsApp →</button>
-        <p class="form-note">Al enviar aceptas que te contactemos. No compartimos tus datos.</p>
+
+        <div class="form-field">
+          <label>Elige día y hora <span id="slotsStatus" class="slots-status">cargando disponibilidad…</span></label>
+          <div id="slotsList" class="slots-list" aria-live="polite"></div>
+          <input type="hidden" id="slotStart" name="slotStart">
+          <input type="hidden" id="slotEnd" name="slotEnd">
+        </div>
+
+        <button type="submit" class="form-submit" id="submitBtn" disabled>Elige un horario para continuar</button>
+        <p class="form-note">Al enviar recibirás invite con link de Google Meet en tu correo. No compartimos tus datos.</p>
       </form>
     </div>
   </div>
@@ -1010,36 +1079,134 @@ function track(name, params) {
   (window.dataLayer = window.dataLayer || []).push({event: name, ...p});
 }
 
-// Form submit
-function submitForm(e) {
+// ============ Backend API config ============
+// TODO al deployar el Worker: reemplazar por la URL real (wrangler deploy la da)
+const WORKER_URL = 'https://karbot-landing-api.PLACEHOLDER.workers.dev';
+const WORKER_ENABLED = false; // cambiar a true cuando WORKER_URL esté configurada
+
+// ============ Cargar slots disponibles ============
+async function loadSlots() {
+  const list = document.getElementById('slotsList');
+  const status = document.getElementById('slotsStatus');
+  if (!WORKER_ENABLED) {
+    list.innerHTML = '<div class="slots-empty">La reservación en línea se activa cuando el equipo termine de conectar el calendario. Mientras, agenda directo <a href="https://calendar.app.google/QRJZWBNQA5uRrHgs6" target="_blank" rel="noopener" style="color:var(--p-500); text-decoration:underline; font-weight:600;">aquí</a> o escríbenos por WhatsApp.</div>';
+    status.textContent = 'próximamente';
+    // Enable submit for fallback: redirige a Calendar directo
+    document.getElementById('submitBtn').disabled = false;
+    document.getElementById('submitBtn').textContent = 'Continuar a Google Calendar →';
+    return;
+  }
+  try {
+    const res = await fetch(`${WORKER_URL}/availability?days=14`);
+    if (!res.ok) throw new Error('load_failed');
+    const data = await res.json();
+    if (!data.slots || data.slots.length === 0) {
+      list.innerHTML = '<div class="slots-empty">No hay horarios disponibles en los próximos 14 días · escríbenos por WhatsApp.</div>';
+      status.textContent = 'sin disponibilidad';
+      status.classList.add('error');
+      return;
+    }
+    list.innerHTML = data.slots.map((s, i) => `
+      <button type="button" class="slot-btn" data-start="${s.start}" data-end="${s.end}" onclick="pickSlot(this)">${s.label}</button>
+    `).join('');
+    status.textContent = `${data.slots.length} horarios disponibles`;
+  } catch (e) {
+    list.innerHTML = '<div class="slots-empty">Error cargando horarios · escríbenos por WhatsApp.</div>';
+    status.textContent = 'error';
+    status.classList.add('error');
+    track('slots_load_error', {message: e.message});
+  }
+}
+
+function pickSlot(btn) {
+  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('slotStart').value = btn.dataset.start;
+  document.getElementById('slotEnd').value = btn.dataset.end;
+  const submit = document.getElementById('submitBtn');
+  submit.disabled = false;
+  submit.textContent = 'Confirmar demo →';
+  track('slot_selected', {start: btn.dataset.start});
+}
+
+// ============ Form submit ============
+async function submitForm(e) {
   e.preventDefault();
   const f = e.target;
   const data = {
     nombre: f.nombre.value.trim(),
     empresa: f.empresa.value.trim(),
+    email: f.email.value.trim(),
     agencias: f.agencias.value,
-    rol: f.rol.value
+    rol: f.rol.value,
+    start: f.slotStart.value,
+    end: f.slotEnd.value
   };
-  // Track conversión antes de redirigir
-  track('form_submit_demo', data);
-  if (typeof fbq === 'function') fbq('track', 'Lead', {content_name: 'demo_form', ...data});
-  if (typeof gtag === 'function') gtag('event', 'generate_lead', {...data, currency: 'MXN', value: 5000});
 
-  // Toast
+  // Track lead (siempre, antes del intento de booking)
+  track('form_submit_demo', {agencias: data.agencias, rol: data.rol});
+  if (typeof fbq === 'function') fbq('track', 'Lead', {content_name: 'demo_form', ...data});
+  if (typeof gtag === 'function') gtag('event', 'generate_lead', {agencias: data.agencias, rol: data.rol, currency: 'MXN', value: 5000});
+
   const toast = document.getElementById('toast');
-  toast.textContent = 'Abriendo WhatsApp con tu información…';
+  const submit = document.getElementById('submitBtn');
+
+  // Fallback: si Worker no está activo, redirige a Google Calendar directo (mismo link que el sitio actual)
+  if (!WORKER_ENABLED) {
+    toast.textContent = 'Abriendo Google Calendar…';
+    toast.classList.add('show');
+    setTimeout(() => {
+      window.open('https://calendar.app.google/QRJZWBNQA5uRrHgs6', '_blank', 'noopener');
+      toast.classList.remove('show');
+    }, 400);
+    return false;
+  }
+
+  // Con Worker activo · POST directo al API
+  if (!data.start || !data.end) {
+    alert('Elige un horario antes de continuar.');
+    return false;
+  }
+
+  submit.disabled = true;
+  submit.textContent = 'Confirmando…';
+  toast.textContent = 'Agendando tu demo…';
   toast.classList.add('show');
 
-  // Armar mensaje pre-formateado para WhatsApp
-  const msg = `Hola, soy ${data.nombre} de ${data.empresa}. Tenemos ${data.agencias} agencia(s) y mi rol es ${data.rol}. Vengo de la landing automotive y quiero agendar una demo de Karbot.`;
-  const url = `https://wa.me/5213321703455?text=${encodeURIComponent(msg)}`;
+  try {
+    const res = await fetch(`${WORKER_URL}/book`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('book_failed_' + res.status);
+    const booked = await res.json();
 
-  setTimeout(() => {
-    window.open(url, '_blank', 'noopener');
-    toast.classList.remove('show');
-  }, 500);
+    track('demo_booked', {eventId: booked.eventId, meetLink: booked.meetLink});
+    if (typeof fbq === 'function') fbq('track', 'Schedule', {content_name: 'demo_booked'});
+    if (typeof gtag === 'function') gtag('event', 'schedule', {method: 'google_calendar'});
+
+    toast.textContent = '¡Listo! Revisa tu correo, te llegó la invitación con el link de Google Meet.';
+    submit.textContent = '✓ Demo agendada';
+    // Auto-dismiss toast después de 6 segundos
+    setTimeout(() => toast.classList.remove('show'), 6000);
+  } catch (err) {
+    track('demo_book_error', {message: err.message});
+    toast.textContent = 'Error agendando · escríbenos por WhatsApp para completar.';
+    toast.style.borderLeftColor = 'var(--coral)';
+    submit.disabled = false;
+    submit.textContent = 'Reintentar';
+    setTimeout(() => toast.classList.remove('show'), 6000);
+  }
 
   return false;
+}
+
+// Cargar slots al montar
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadSlots);
+} else {
+  loadSlots();
 }
 
 // Track scroll depth
