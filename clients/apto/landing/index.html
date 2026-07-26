@@ -426,7 +426,7 @@
       font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.06em;
     }
     .form-field label .req { color: var(--error); }
-    .form-field input, .form-field textarea {
+    .form-field input, .form-field textarea, .form-field select {
       width: 100%; padding: 14px 16px;
       border: 1.5px solid var(--line);
       border-radius: var(--radius-input);
@@ -434,13 +434,21 @@
       background: var(--paper);
       transition: border-color 150ms ease, box-shadow 150ms ease;
       font-family: var(--font-body);
+      appearance: none; -webkit-appearance: none;
     }
-    .form-field input:focus, .form-field textarea:focus {
+    .form-field select {
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 44px;
+      cursor: pointer;
+    }
+    .form-field input:focus, .form-field textarea:focus, .form-field select:focus {
       outline: none;
       border-color: var(--blue-cta);
       box-shadow: 0 0 0 3px rgba(0,93,224,.15);
     }
-    .form-field.has-error input, .form-field.has-error textarea {
+    .form-field.has-error input, .form-field.has-error textarea, .form-field.has-error select {
       border-color: var(--error);
     }
     .form-field__error {
@@ -837,8 +845,36 @@
               <span class="form-field__error" id="err-jobtitle" aria-live="polite"></span>
             </div>
             <div class="form-field">
-              <label for="f-message">Mensaje (opcional)</label>
-              <textarea id="f-message" name="message" maxlength="500" placeholder="Cuéntanos qué te está trabando"></textarea>
+              <label for="f-company_size">Tamaño de la empresa <span class="req">*</span></label>
+              <select id="f-company_size" name="company_size" required>
+                <option value="">Selecciona…</option>
+                <option value="1-49">Menos de 50 colaboradores</option>
+                <option value="50-249">50–249 colaboradores</option>
+                <option value="250-999">250–999 colaboradores</option>
+                <option value="1000+">1,000 o más colaboradores</option>
+              </select>
+              <span class="form-field__error" id="err-company_size" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="f-industry">Industria <span class="req">*</span></label>
+              <select id="f-industry" name="industry" required>
+                <option value="">Selecciona…</option>
+                <option value="Retail">Retail / Comercio</option>
+                <option value="Manufacturing">Manufactura / Industrial</option>
+                <option value="Financial Services">Servicios financieros / Fintech</option>
+                <option value="Healthcare">Salud / Farma</option>
+                <option value="Technology">Tecnología / Software</option>
+                <option value="Education">Educación</option>
+                <option value="Professional Services">Servicios profesionales</option>
+                <option value="Real Estate">Inmobiliario / Construcción</option>
+                <option value="Logistics">Logística / Transporte</option>
+                <option value="Other">Otro</option>
+              </select>
+              <span class="form-field__error" id="err-industry" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="f-message">¿Qué te está trabando? (opcional)</label>
+              <textarea id="f-message" name="message" maxlength="500" placeholder="Cuéntanos en 1-2 líneas — nos ayuda a llegar mejor preparados al diagnóstico"></textarea>
               <span class="form-field__error" id="err-message" aria-live="polite"></span>
             </div>
             <button type="submit" class="btn btn--full" id="form-submit">
@@ -1028,8 +1064,9 @@
       }
       function hideMessage() { messageBox.hidden = true; }
 
-      form.querySelectorAll('input, textarea').forEach(input => {
+      form.querySelectorAll('input, textarea, select').forEach(input => {
         input.addEventListener('blur', () => validateField(input));
+        input.addEventListener('change', () => validateField(input));
         input.addEventListener('input', () => {
           if (input.closest('.form-field').classList.contains('has-error')) {
             validateField(input);
@@ -1046,7 +1083,7 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const inputs = form.querySelectorAll('input, textarea');
+        const inputs = form.querySelectorAll('input, textarea, select');
         let allValid = true;
         inputs.forEach(i => { if (!validateField(i)) allValid = false; });
         if (!allValid) {
