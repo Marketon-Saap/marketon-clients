@@ -46,6 +46,16 @@ export default {
       if (url.pathname === '/book' && request.method === 'POST') {
         return await handleBook(request, env, cors);
       }
+      // OAuth setup flow · one-time · Isabel autoriza con 1 click
+      if (url.pathname === '/oauth/start' && request.method === 'GET') {
+        return handleOAuthStart(url, env);
+      }
+      if (url.pathname === '/oauth/callback' && request.method === 'GET') {
+        return await handleOAuthCallback(url, env);
+      }
+      if (url.pathname === '/' || url.pathname === '/health') {
+        return json({ status: 'ok', name: 'karbot-landing-api', endpoints: ['/availability', '/book', '/oauth/start', '/oauth/callback'] }, 200, cors);
+      }
       return json({ error: 'not_found' }, 404, cors);
     } catch (err) {
       return json({ error: 'server_error', message: err.message }, 500, cors);
@@ -227,6 +237,103 @@ async function handleBook(request, env, cors) {
     200,
     cors
   );
+}
+
+// -------------------- OAuth setup flow · one-time --------------------
+// Isabel visita /oauth/start · autoriza · el callback muestra su refresh_token
+// para que Chucho lo guarde con `wrangler secret put GOOGLE_REFRESH_TOKEN`.
+// Después de guardar el secret, este flow se puede desactivar comentando las rutas.
+
+function handleOAuthStart(url, env) {
+  const params = new URLSearchParams({
+    client_id: env.GOOGLE_CLIENT_ID,
+    redirect_uri: `${url.origin}/oauth/callback`,
+    response_type: 'code',
+    access_type: 'offline',
+    prompt: 'consent', // fuerza refresh_token cada vez (necesario en re-autorizaciones)
+    scope: [
+      'https://www.googleapis.com/auth/calendar.events',
+      'https://www.googleapis.com/auth/calendar.readonly',
+    ].join(' '),
+    state: 'karbot-oauth-setup',
+  });
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+  return Response.redirect(authUrl, 302);
+}
+
+async function handleOAuthCallback(url, env) {
+  const code = url.searchParams.get('code');
+  const error = url.searchParams.get('error');
+
+  if (error) {
+    return htmlPage(
+      'Error de autorización',
+      `<h2 style="color:#DC2626">Error: ${error}</h2>
+       <p>Isabel canceló la autorización o Google rechazó la petición.</p>
+       <p>Vuelve a intentar visitando <a href="/oauth/start">/oauth/start</a>.</p>`
+    );
+  }
+  if (!code) {
+    return htmlPage(
+      'Sin código',
+      `<h2 style="color:#DC2626">No llegó el código de autorización</h2>
+       <p>Vuelve a arrancar el flow en <a href="/oauth/start">/oauth/start</a>.</p>`
+    );
+  }
+
+  // Intercambio de code por tokens
+  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      code,
+      client_id: env.GOOGLE_CLIENT_ID,
+      client_secret: env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: `${url.origin}/oauth/callback`,
+      grant_type: 'authorization_code',
+    }),
+  });
+  if (!tokenRes.ok) {
+    const errText = await tokenRes.text();
+    return htmlPage(
+      'Token exchange failed',
+      `<h2 style="color:#DC2626">Google rechazó el intercambio</h2>
+       <pre style="background:#f5f5f5;padding:16px;overflow:auto;border-radius:6px;font-size:12px;">${errText}</pre>
+       <p>Vuelve a arrancar el flow en <a href="/oauth/start">/oauth/start</a>.</p>`
+    );
+  }
+
+  const tokens = await tokenRes.json();
+  const refreshToken = tokens.refresh_token;
+
+  if (!refreshToken) {
+    return htmlPage(
+      'Sin refresh_token',
+      `<h2 style="color:#F59E0B">Google no devolvió refresh_token</h2>
+       <p>Esto pasa si Isabel ya había autorizado antes. Isabel debe primero <b>revocar el acceso</b> en <a href="https://myaccount.google.com/permissions" target="_blank">myaccount.google.com/permissions</a> (busca "Karbot Landing" → Remove access) y luego volver a visitar <a href="/oauth/start">/oauth/start</a>.</p>
+       <pre style="background:#f5f5f5;padding:16px;overflow:auto;border-radius:6px;font-size:12px;">${JSON.stringify(tokens, null, 2)}</pre>`
+    );
+  }
+
+  // Éxito · mostrar el refresh_token para copiar
+  return htmlPage(
+    'Autorización lista ✓',
+    `<h2 style="color:#10B981">✓ Isabel autorizó · refresh_token generado</h2>
+     <p>Copia el token de abajo y guárdalo como secret en Cloudflare con:</p>
+     <pre style="background:#0F172A;color:#93BBFC;padding:16px;overflow:auto;border-radius:8px;font-size:12px;font-family:monospace;">wrangler secret put GOOGLE_REFRESH_TOKEN
+# cuando pida el valor, pega:
+${refreshToken}</pre>
+     <p>Después de guardar el secret, este flow ya no se necesita — puedes borrar las rutas <code>/oauth/*</code> del Worker si quieres.</p>
+     <p style="margin-top:24px;color:#64748B;font-size:13px;">access_token válido hasta: ${new Date(Date.now() + (tokens.expires_in || 3600) * 1000).toISOString()}</p>`
+  );
+}
+
+function htmlPage(title, body) {
+  const html = `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
+  <style>body{font-family:system-ui,-apple-system,sans-serif;max-width:720px;margin:60px auto;padding:0 24px;line-height:1.6;color:#0F172A;}
+  h2{margin-bottom:16px;}pre{white-space:pre-wrap;word-break:break-all;}
+  a{color:#2563EB;}</style></head><body>${body}</body></html>`;
+  return new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
 }
 
 // -------------------- utils --------------------
