@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0A1A3B">
+  <title>APTO · Diseñamos y construimos los sistemas críticos que tu operación necesita para escalar</title>
+  <meta name="description" content="Consultora de innovación y diseño. Estrategia + implementación handson en el mismo equipo. Sin decks de 120 slides. Sin overhead Big-Four.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="APTO · Sistemas críticos para escalar tu operación">
+  <meta property="og:description" content="Estrategia + implementación handson. Consultora de innovación y diseño para empresas medianas y corporativos.">
+  <meta property="og:url" content="https://apto.mx/">
+  <meta property="og:image" content="./assets/og-image.svg">
+  <meta property="og:locale" content="es_MX">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
+  <link rel="apple-touch-icon" href="./assets/favicon.svg">
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "APTO",
+    "url": "https://apto.mx",
+    "logo": "https://apto.mx/logo.png",
+    "description": "Consultora de innovación y diseño. Diseñamos y construimos los sistemas críticos que tu operación necesita para escalar.",
+    "email": "hola@apto.mx",
+    "address": {"@type": "PostalAddress", "addressLocality": "Ciudad de México", "addressCountry": "MX"},
+    "sameAs": ["https://www.linkedin.com/company/apto-mx"]
+  }
+  </script>
+
+  <!-- Preload font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+
+  <!-- GTM (async, low priority) -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+  </script>
+
+  <style>
+    /* Design tokens */
+    :root {
+      --navy: #0A1A3B;
+      --navy-alt: #0F2350;
+      --blue-accent: #2E6BFF;
+      --blue-accent-hover: #1B54E6;
+      --ink: #0F172A;
+      --ink-muted: #475569;
+      --paper: #FFFFFF;
+      --paper-cream: #F8FAFC;
+      --line: #E2E8F0;
+      --success: #10B981;
+      --warn: #F59E0B;
+      --error: #EF4444;
+      --radius-card: 12px;
+      --radius-input: 8px;
+      --radius-pill: 999px;
+      --shadow-card: 0 1px 3px rgba(15,23,42,.08), 0 4px 12px rgba(15,23,42,.05);
+      --shadow-elev: 0 4px 6px rgba(15,23,42,.1), 0 12px 32px rgba(15,23,42,.08);
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --container: 1200px;
+      --gutter: 24px;
+      --gutter-mobile: 16px;
+    }
+
+    /* Reset + base */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--ink);
+      background: var(--paper);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img, svg { max-width: 100%; display: block; }
+    button, input, textarea { font-family: inherit; }
+    a { color: var(--blue-accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    :focus-visible { outline: 2px solid var(--blue-accent); outline-offset: 2px; border-radius: 4px; }
+    .container { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
+    @media (max-width: 767px) { .container { padding: 0 var(--gutter-mobile); } }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+    h1 { font-size: clamp(2rem, 5vw, 3rem); }
+    h2 { font-size: clamp(1.75rem, 3.5vw, 2.25rem); }
+    h3 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
+    p { margin: 0 0 1em; }
+    .eyebrow {
+      font-size: 14px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--blue-accent);
+      margin-bottom: 12px;
+    }
+    .lead { font-size: 1.125rem; color: var(--ink-muted); }
+
+    /* Nav */
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(10,26,59,0.94);
+      backdrop-filter: saturate(180%) blur(10px);
+      -webkit-backdrop-filter: saturate(180%) blur(10px);
+      color: var(--paper);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      height: 72px;
+      display: flex; align-items: center;
+    }
+    .nav .container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    .nav__logo { font-size: 22px; font-weight: 700; color: var(--paper); letter-spacing: -0.02em; }
+    .nav__logo:hover { text-decoration: none; opacity: .85; }
+    .nav__menu { display: flex; gap: 32px; list-style: none; margin: 0; padding: 0; }
+    .nav__menu a { color: rgba(255,255,255,.8); font-size: 15px; font-weight: 500; }
+    .nav__menu a:hover { color: var(--paper); text-decoration: none; }
+    .nav__cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--blue-accent); color: var(--paper); border-radius: var(--radius-input); font-weight: 600; font-size: 15px; transition: background 200ms ease; }
+    .nav__cta:hover { background: var(--blue-accent-hover); text-decoration: none; }
+    @media (max-width: 900px) { .nav__menu { display: none; } }
+
+    /* Hero */
+    .hero {
+      background: var(--navy);
+      color: var(--paper);
+      padding: 96px 0 120px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top right, rgba(46,107,255,.15), transparent 60%);
+      pointer-events: none;
+    }
+    .hero .container { position: relative; z-index: 1; }
+    .hero__grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: center; }
+    @media (max-width: 900px) { .hero__grid { grid-template-columns: 1fr; gap: 40px; } .hero { padding: 64px 0 96px; } }
+    .hero__eyebrow { color: rgba(255,255,255,.65); font-size: 14px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; margin-bottom: 16px; }
+    .hero__title { color: var(--paper); margin-bottom: 24px; }
+    .hero__sub { color: rgba(255,255,255,.78); font-size: clamp(1.0625rem, 2vw, 1.25rem); line-height: 1.5; max-width: 620px; margin-bottom: 40px; }
+    .hero__cta-group { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 18px 32px; min-height: 56px;
+      background: var(--blue-accent); color: var(--paper);
+      border-radius: var(--radius-input); border: 0; cursor: pointer;
+      font-weight: 600; font-size: 17px; line-height: 1;
+      transition: background 200ms ease, transform 100ms ease;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--blue-accent-hover); text-decoration: none; }
+    .btn:active { transform: translateY(1px); }
+    .btn--full { width: 100%; justify-content: center; }
+    .btn__arrow { display: inline-block; transition: transform 200ms ease; }
+    .btn:hover .btn__arrow { transform: translateX(4px); }
+    .link-secondary { color: rgba(255,255,255,.7); font-size: 15px; }
+    .link-secondary:hover { color: var(--paper); }
+    .hero__trust { color: rgba(255,255,255,.55); font-size: 13px; margin-top: 24px; }
+    .hero__visual {
+      aspect-ratio: 4/3; background: linear-gradient(135deg, var(--navy-alt), rgba(46,107,255,.2));
+      border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .hero__visual::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        45deg, transparent 0 20px, rgba(46,107,255,.08) 20px 21px
+      );
+      opacity: .4;
+    }
+    .hero__visual-label { color: rgba(255,255,255,.5); font-size: 13px; text-align: center; position: relative; z-index: 1; padding: 20px; }
+
+    /* Proof marquee */
+    .proof { background: var(--paper-cream); padding: 32px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .proof__label { text-align: center; font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); font-weight: 600; margin-bottom: 20px; }
+    .proof__logos { display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .proof__logo {
+      font-size: 22px; font-weight: 700; color: var(--ink-muted);
+      opacity: .6; transition: opacity 200ms ease;
+      letter-spacing: -0.02em;
+    }
+    .proof__logo:hover { opacity: 1; }
+
+    /* Section base */
+    .section { padding: 96px 0; }
+    @media (max-width: 767px) { .section { padding: 64px 0; } }
+    .section--cream { background: var(--paper-cream); }
+    .section--navy { background: var(--navy); color: var(--paper); }
+    .section__header { text-align: center; max-width: 720px; margin: 0 auto 56px; }
+    .section__header .eyebrow { display: inline-block; }
+    .section--navy .section__header { color: var(--paper); }
+    .section--navy .lead { color: rgba(255,255,255,.7); }
+    .section--navy .eyebrow { color: #60A5FA; }
+
+    /* Problema (3 cards) */
+    .cards-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 900px) { .cards-3 { grid-template-columns: 1fr; gap: 16px; } }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-card);
+      padding: 32px;
+      box-shadow: var(--shadow-card);
+      transition: transform 200ms ease, box-shadow 200ms ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-elev); }
+    .card__icon {
+      width: 48px; height: 48px;
+      background: rgba(46,107,255,.1);
+      color: var(--blue-accent);
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 10px; margin-bottom: 20px;
+    }
+    .card__title { font-size: 1.25rem; margin-bottom: 12px; }
+    .card__body { color: var(--ink-muted); font-size: 16px; margin: 0; }
+
+    /* Pilares (5) */
+    .pilares {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .pilares .card:nth-child(4), .pilares .card:nth-child(5) { }
+    @media (max-width: 900px) { .pilares { grid-template-columns: 1fr; } }
+    @media (min-width: 901px) {
+      .pilares { grid-template-columns: repeat(6, 1fr); }
+      .pilares .card:nth-child(1) { grid-column: 1 / span 2; }
+      .pilares .card:nth-child(2) { grid-column: 3 / span 2; }
+      .pilares .card:nth-child(3) { grid-column: 5 / span 2; }
+      .pilares .card:nth-child(4) { grid-column: 2 / span 2; }
+      .pilares .card:nth-child(5) { grid-column: 4 / span 2; }
+    }
+
+    /* Productos (grid navy) */
+    .productos {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 900px) { .productos { grid-template-columns: repeat(2, 1fr); } }
+    .producto {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius-card);
+      padding: 24px 20px;
+      color: var(--paper);
+      transition: border-color 200ms ease, background 200ms ease;
+      cursor: default;
+    }
+    .producto:hover {
+      border-color: var(--blue-accent);
+      background: rgba(46,107,255,.08);
+    }
+    .producto__icon {
+      width: 40px; height: 40px;
+      color: #60A5FA; margin-bottom: 16px;
+    }
+    .producto__label { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .producto__desc { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.4; margin: 0; }
+
+    /* Casos */
+    .caso-flagship {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 40px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 48px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-card);
+    }
+    @media (max-width: 900px) { .caso-flagship { grid-template-columns: 1fr; padding: 32px; gap: 24px; } }
+    .caso__tag {
+      display: inline-block; padding: 4px 12px;
+      background: rgba(46,107,255,.1); color: var(--blue-accent);
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; border-radius: var(--radius-pill);
+      margin-bottom: 16px;
+    }
+    .caso__cliente { font-size: 14px; color: var(--ink-muted); font-weight: 500; margin-bottom: 8px; }
+    .caso__title { font-size: 1.5rem; margin-bottom: 16px; }
+    .caso__body { color: var(--ink-muted); margin-bottom: 20px; }
+    .caso__callout {
+      padding: 16px; background: var(--paper-cream);
+      border-left: 3px solid var(--blue-accent);
+      border-radius: 6px; font-size: 15px;
+      color: var(--ink); font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .caso__link { font-weight: 600; color: var(--blue-accent); }
+    .caso__visual {
+      aspect-ratio: 1/1;
+      background: linear-gradient(135deg, var(--navy-alt), rgba(46,107,255,.2));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.4); font-size: 13px;
+    }
+    .casos-secundarios {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 900px) { .casos-secundarios { grid-template-columns: 1fr; } }
+
+    /* Método (3 pasos) */
+    .metodo {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      position: relative;
+    }
+    @media (max-width: 900px) { .metodo { grid-template-columns: 1fr; gap: 24px; } }
+    .paso {
+      position: relative;
+      background: var(--paper);
+      border-radius: var(--radius-card);
+      padding: 32px;
+      border: 1px solid var(--line);
+    }
+    .paso__num {
+      font-size: 3rem; font-weight: 700;
+      color: var(--blue-accent); opacity: .3;
+      margin-bottom: 16px; line-height: 1;
+    }
+    .paso__duration {
+      display: inline-block; margin-top: 12px;
+      padding: 4px 12px; background: rgba(46,107,255,.1);
+      color: var(--blue-accent); font-size: 12px; font-weight: 600;
+      border-radius: var(--radius-pill);
+    }
+
+    /* Form CTA */
+    .cta-form { background: var(--navy); padding: 96px 0; color: var(--paper); }
+    .cta-form__grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 64px;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .cta-form__grid { grid-template-columns: 1fr; gap: 40px; } .cta-form { padding: 64px 0; } }
+    .cta-form__title { color: var(--paper); margin-bottom: 20px; }
+    .cta-form__body { color: rgba(255,255,255,.75); margin-bottom: 24px; }
+    .trust-list { list-style: none; padding: 0; margin: 0; }
+    .trust-list li {
+      color: rgba(255,255,255,.85); font-size: 15px;
+      padding: 6px 0; padding-left: 28px; position: relative;
+    }
+    .trust-list li::before {
+      content: '✓'; position: absolute; left: 0; top: 6px;
+      width: 20px; height: 20px; background: rgba(16,185,129,.2);
+      color: var(--success); border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    .form-card {
+      background: var(--paper); color: var(--ink);
+      border-radius: 16px; padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    }
+    @media (max-width: 767px) { .form-card { padding: 28px; } }
+    .form-card__title { font-size: 1.5rem; margin-bottom: 24px; }
+    .form-field { margin-bottom: 20px; }
+    .form-field label {
+      display: block; font-size: 14px; font-weight: 500;
+      color: var(--ink); margin-bottom: 6px;
+    }
+    .form-field label .req { color: var(--error); }
+    .form-field input, .form-field textarea {
+      width: 100%; padding: 14px 16px;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-input);
+      font-size: 16px; color: var(--ink);
+      background: var(--paper);
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .form-field input:focus, .form-field textarea:focus {
+      outline: none;
+      border-color: var(--blue-accent);
+      box-shadow: 0 0 0 3px rgba(46,107,255,.15);
+    }
+    .form-field.has-error input, .form-field.has-error textarea {
+      border-color: var(--error);
+    }
+    .form-field__error {
+      display: block; font-size: 13px; color: var(--error);
+      margin-top: 6px; min-height: 18px;
+    }
+    .form-field textarea { min-height: 100px; resize: vertical; font-family: inherit; }
+    .form-privacy {
+      font-size: 13px; color: var(--ink-muted);
+      text-align: center; margin-top: 16px;
+    }
+    .form-privacy a { color: var(--blue-accent); }
+    .form-message {
+      padding: 12px 16px; border-radius: var(--radius-input);
+      font-size: 14px; margin-bottom: 20px;
+    }
+    .form-message--error { background: rgba(239,68,68,.1); color: var(--error); border: 1px solid rgba(239,68,68,.3); }
+    .form-message--warn { background: rgba(245,158,11,.1); color: #92400E; border: 1px solid rgba(245,158,11,.3); }
+    .form-success {
+      text-align: center; padding: 40px 20px;
+    }
+    .form-success__icon {
+      width: 64px; height: 64px; margin: 0 auto 20px;
+      background: rgba(16,185,129,.15); color: var(--success);
+      border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 32px;
+    }
+    .form-success__title { font-size: 1.25rem; margin-bottom: 12px; }
+    .form-success__body { color: var(--ink-muted); margin-bottom: 20px; }
+    .btn[disabled] { opacity: .6; cursor: wait; }
+    .spinner {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.3); border-top-color: var(--paper);
+      border-radius: 50%; animation: spin 700ms linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* FAQ */
+    .faq { max-width: 800px; margin: 0 auto; }
+    .faq-item {
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: var(--radius-card); margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .faq-item summary {
+      padding: 20px 24px; cursor: pointer;
+      font-weight: 600; font-size: 17px;
+      display: flex; justify-content: space-between; align-items: center;
+      list-style: none;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-item summary::after {
+      content: '+'; font-size: 24px; font-weight: 400;
+      color: var(--blue-accent); transition: transform 200ms ease;
+    }
+    .faq-item[open] summary::after { transform: rotate(45deg); }
+    .faq-item__body {
+      padding: 0 24px 20px; color: var(--ink-muted);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--navy); color: rgba(255,255,255,.7);
+      padding: 64px 0 24px;
+    }
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
+    @media (max-width: 767px) { .footer__grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+    .footer__logo { color: var(--paper); font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+    .footer__tagline { font-size: 14px; max-width: 300px; }
+    .footer__col h4 {
+      color: var(--paper); font-size: 14px; text-transform: uppercase;
+      letter-spacing: 0.1em; margin-bottom: 16px;
+    }
+    .footer__col ul { list-style: none; padding: 0; margin: 0; }
+    .footer__col li { margin-bottom: 8px; }
+    .footer__col a { color: rgba(255,255,255,.7); font-size: 14px; }
+    .footer__col a:hover { color: var(--paper); text-decoration: none; }
+    .footer__bottom {
+      margin-top: 48px; padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      font-size: 12px; color: rgba(255,255,255,.5);
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+
+    /* Sticky bottom CTA mobile */
+    .sticky-cta-mobile {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--paper); border-top: 1px solid var(--line);
+      padding: 12px 16px; z-index: 30;
+      box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+      display: none;
+    }
+    @media (max-width: 900px) { .sticky-cta-mobile { display: block; } body { padding-bottom: 80px; } }
+    .sticky-cta-mobile .btn { padding: 14px 24px; min-height: 48px; width: 100%; justify-content: center; }
+  </style>
+</head>
+<body>
+
+  <a href="#cta-form" class="sr-only">Saltar al formulario de contacto</a>
+
+  <!-- Nav -->
+  <nav class="nav" role="navigation" aria-label="Navegación principal">
+    <div class="container">
+      <a href="#" class="nav__logo">APTO</a>
+      <ul class="nav__menu">
+        <li><a href="#pilares">Servicios</a></li>
+        <li><a href="#casos">Casos</a></li>
+        <li><a href="#metodo">Método</a></li>
+        <li><a href="#cta-form">Contacto</a></li>
+      </ul>
+      <a href="#cta-form" class="nav__cta" data-track="nav_cta_click">Agenda diagnóstico</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero__grid">
+        <div>
+          <p class="hero__eyebrow">Consultora de innovación y diseño</p>
+          <h1 class="hero__title">Diseñamos y construimos los sistemas críticos que tu operación necesita para escalar.</h1>
+          <p class="hero__sub">Estrategia + implementación handson en el mismo equipo. Sin decks de 120 slides. Sin overhead Big-Four.</p>
+          <div class="hero__cta-group">
+            <a href="#cta-form" class="btn" data-track="hero_cta_click">
+              Agenda tu diagnóstico <span class="btn__arrow">→</span>
+            </a>
+            <a href="#casos" class="link-secondary" data-track="hero_secondary_click">Ver casos de trabajo ↓</a>
+            <p class="hero__trust">Respuesta en &lt;24h · Diagnóstico sin costo · 5+ casos enterprise entregados</p>
+          </div>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <span class="hero__visual-label">[ De lo abstracto a lo concreto ]<br>Visual pendiente</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof marquee -->
+  <section class="proof" aria-labelledby="proof-label">
+    <div class="container">
+      <p class="proof__label" id="proof-label">Empresas que ya confiaron en nosotros</p>
+      <div class="proof__logos">
+        <span class="proof__logo">Coppel</span>
+        <span class="proof__logo">APIMSA</span>
+        <span class="proof__logo">MTP</span>
+        <span class="proof__logo">Corona</span>
+        <span class="proof__logo">Iusa</span>
+        <span class="proof__logo">Grisi</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problema -->
+  <section class="section" id="problema">
+    <div class="container">
+      <header class="section__header">
+        <p class="eyebrow">El problema</p>
+        <h2>Lo que ya no funciona.</h2>
+        <p class="lead">Tres trampas que agotan presupuestos y no producen implementación real.</p>
+      </header>
+      <div class="cards-3">
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6m11-11h-6M7 12H1m17.5-7.5l-4.2 4.2M8.7 15.3l-4.2 4.2m0-15l4.2 4.2m6.6 6.6l4.2 4.2"/></svg>
+          </div>
+          <h3 class="card__title">Fábricas de código sin criterio de negocio</h3>
+          <p class="card__body">Construyen lo que les pides, no lo que resuelve el problema. Buenos técnicos, cero contexto de operación. El resultado es software que nadie usa.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="18" height="4" rx="1"/><rect x="3" y="16" width="18" height="4" rx="1"/></svg>
+          </div>
+          <h3 class="card__title">Consultoras con overhead que nunca aterriza</h3>
+          <p class="card__body">120 slides, 8 semanas de análisis, un roadmap tan abstracto que se queda en cajón. Cuando por fin se ejecuta, la oportunidad ya cerró.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12l20-9-4 18-6-8-4-3z"/></svg>
+          </div>
+          <h3 class="card__title">Estrategas que nunca bajan a las tripas del problema</h3>
+          <p class="card__body">Frameworks bonitos que no consideran la realidad operativa. La estrategia sin implementación no vale — es solo una opinión bien redactada.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pilares -->
+  <section class="section section--cream" id="pilares">
+    <div class="container">
+      <header class="section__header">
+        <p class="eyebrow">Nuestros pilares</p>
+        <h2>Cinco caminos que convergen en la misma decisión.</h2>
+        <p class="lead">Sea cual sea la puerta por la que entres, terminamos en el mismo lugar: diseñar y construir el sistema que te falta.</p>
+      </header>
+      <div class="pilares">
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 7.5l7 0M7.5 8.5l3 7M16.5 8.5l-3 7"/></svg>
+          </div>
+          <h3 class="card__title">Service Design</h3>
+          <p class="card__body">Diseñamos el ecosistema completo de servicio — desde el journey del usuario hasta el core operativo que lo hace posible. Puerta de entrada natural para corporativos sofisticados.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="4" r="2"/><circle cx="20" cy="4" r="2"/><circle cx="4" cy="20" r="2"/><circle cx="20" cy="20" r="2"/><path d="M5.5 5.5l4.5 4.5M18.5 5.5l-4.5 4.5M5.5 18.5l4.5-4.5M18.5 18.5l-4.5-4.5"/></svg>
+          </div>
+          <h3 class="card__title">Diseño sistémico</h3>
+          <p class="card__body">Pensamiento sistémico aplicado a operaciones enterprise. Para negocios donde los journeys individuales por producto generan retrabajo — el patrón que aplicamos en Coppel y ahora sistematizamos como whitepaper.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="8" y="8" width="8" height="8" rx="1" fill="currentColor" fill-opacity=".3"/></svg>
+          </div>
+          <h3 class="card__title">Business Design</h3>
+          <p class="card__body">Rediseño de líneas de negocio, canales o unidades específicas. Cuando la estrategia macro ya está, pero una línea concreta necesita reinventarse desde cero.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <h3 class="card__title">AI aplicada</h3>
+          <p class="card__body">Diseño e implementación de capacidades de AI donde tiene sentido — no como buzzword, sino como capa que agrega valor real sobre operaciones ya digitalizadas.</p>
+        </article>
+        <article class="card">
+          <div class="card__icon" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12c0-4.4 3.6-8 8-8s8 3.6 8 8"/><path d="M16 8l4-4M20 4v6M20 4h-6"/></svg>
+          </div>
+          <h3 class="card__title">Transformación</h3>
+          <p class="card__body">Actualización profunda de operaciones + cultura + tecnología. Para empresas medianas que aún no completaron la primera ola digital.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Productos -->
+  <section class="section section--navy" id="productos">
+    <div class="container">
+      <header class="section__header">
+        <p class="eyebrow">Qué entregamos</p>
+        <h2>El artefacto — no el deck.</h2>
+        <p class="lead">Desde el journey mapeado hasta el sistema en producción. Estrategia + diseño + construcción en el mismo equipo.</p>
+      </header>
+      <div class="productos">
+        <article class="producto">
+          <svg class="producto__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <div class="producto__label">Apps y productos digitales</div>
+          <p class="producto__desc">Producto end-to-end con documentación para dev.</p>
+        </article>
+        <article class="producto">
+          <svg class="producto__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="2" y1="9" x2="22" y2="9"/></svg>
+          <div class="producto__label">Sitios y experiencias web</div>
+          <p class="producto__desc">Web pensada como producto, no como brochure.</p>
+        </article>
+        <article class="producto">
+          <svg class="producto__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <div class="producto__label">Sistemas operativos internos</div>
+          <p class="producto__desc">ERPs, dashboards, herramientas que la operación necesita.</p>
+        </article>
+        <article class="producto">
+          <svg class="producto__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 8a4 4 0 100 8 4 4 0 000-8z"/><path d="M12 12h.01"/></svg>
+          <div class="producto__label">Capacidades AI</div>
+          <p class="producto__desc">Agentes, copilotos y automation sobre stack existente.</p>
+        </article>
+        <article class="producto">
+          <svg class="producto__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24"/></svg>
+          <div class="producto__label">AI Ops</div>
+          <p class="producto__desc">Operación asistida por AI para equipos que ya digitalizaron.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Casos -->
+  <section class="section" id="casos">
+    <div class="container">
+      <header class="section__header">
+        <p class="eyebrow">Casos</p>
+        <h2>Casos donde la estrategia se hizo tangible.</h2>
+        <p class="lead">No inventamos metodologías nuevas para cada cliente. Aplicamos frameworks probados, y cuando el problema lo pide, creamos los que hacen falta.</p>
+      </header>
+
+      <article class="caso-flagship">
+        <div>
+          <span class="caso__tag">Metodología propietaria</span>
+          <p class="caso__cliente">Coppel</p>
+          <h3 class="caso__title">Un journey no-lineal para un ecosistema de miles de puntos de contacto.</h3>
+          <p class="caso__body">Coppel no es una empresa de un solo producto. Diseñar journeys individuales por línea (celulares vs calcetines) genera retrabajo porque comparten puntos críticos como la caja. Aplicamos pensamiento sistémico a Service Design — imaginar el ecosistema como una ciudad, no lineal — y desarrollamos un mapa que sirve como base común para todos los productos.</p>
+          <div class="caso__callout">+25% eficiencia en definición de nuevos servicios · metodología convertida en whitepaper interno</div>
+          <a href="#" class="caso__link" data-track="whitepaper_intent">Descargar whitepaper (próximamente) →</a>
+        </div>
+        <div class="caso__visual" aria-hidden="true">[ Visual sistémico ]</div>
+      </article>
+
+      <div class="casos-secundarios">
+        <article class="card">
+          <p class="caso__cliente">APIMSA</p>
+          <h3 class="card__title">Backend de distribución para catálogo con 4 dimensiones por parte</h3>
+          <p class="card__body">Distribución regional × inventario × catálogo autopartes con variantes por modelo, año y códigos. Diseñamos y construimos la plataforma B2B que orquesta la operación en 15 sucursales.</p>
+        </article>
+        <article class="card">
+          <p class="caso__cliente">MTP</p>
+          <h3 class="card__title">Cadencia y documentación de producto que un dev puede tomar y construir</h3>
+          <p class="card__body">Modelo de trabajo con documentación end-to-end — historias de usuario, specs técnicos, criterios de aceptación — para que desarrollo no tenga que interpretar. Reducimos rework por ambigüedad a mínimos.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Método -->
+  <section class="section section--cream" id="metodo">
+    <div class="container">
+      <header class="section__header">
+        <p class="eyebrow">Cómo trabajamos</p>
+        <h2>De pregunta abierta a sistema construido, en 3 fases.</h2>
+        <p class="lead">Cada engagement empieza con un diagnóstico sin costo. Si tiene sentido para ambas partes, arrancamos.</p>
+      </header>
+      <div class="metodo">
+        <article class="paso">
+          <div class="paso__num">01</div>
+          <h3>Diagnóstico</h3>
+          <p class="card__body">Entendemos tu operación, no en general — en concreto. Identificamos qué sistema falta y qué construir primero para desbloquear el resto.</p>
+          <span class="paso__duration">1-2 semanas</span>
+        </article>
+        <article class="paso">
+          <div class="paso__num">02</div>
+          <h3>Diseño del artefacto</h3>
+          <p class="card__body">Definimos qué se construye, cómo funciona, quién lo opera y qué documentación necesita para que desarrollo no tenga que interpretar.</p>
+          <span class="paso__duration">2-6 semanas</span>
+        </article>
+        <article class="paso">
+          <div class="paso__num">03</div>
+          <h3>Construcción</h3>
+          <p class="card__body">Lo ejecutamos con el mismo equipo — no te lo pasamos a un dev shop externo. Estrategia e implementación viven bajo el mismo techo.</p>
+          <span class="paso__duration">Variable según scope</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA + Form -->
+  <section class="cta-form" id="cta-form">
+    <div class="container">
+      <div class="cta-form__grid">
+        <div>
+          <p class="eyebrow">Diagnóstico sin costo</p>
+          <h2 class="cta-form__title">Cuéntanos qué te está trabando la operación.</h2>
+          <p class="cta-form__body">En 30 minutos identificamos si somos el equipo indicado para ayudarte. Si no lo somos, te decimos quién sí. Nadie pierde tiempo.</p>
+          <ul class="trust-list">
+            <li>Respondemos en menos de 24 horas hábiles</li>
+            <li>Sin obligación de contratar</li>
+            <li>El diagnóstico te queda incluso si no seguimos</li>
+          </ul>
+        </div>
+        <div class="form-card" id="form-card">
+          <h3 class="form-card__title">Agenda tu diagnóstico</h3>
+          <div id="form-message" class="form-message" hidden></div>
+          <form id="diagnostico-form" novalidate>
+            <div class="form-field">
+              <label for="f-firstname">Nombre <span class="req">*</span></label>
+              <input type="text" id="f-firstname" name="firstname" required minlength="2" autocomplete="given-name" placeholder="Nombre completo">
+              <span class="form-field__error" id="err-firstname" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="f-email">Correo <span class="req">*</span></label>
+              <input type="email" id="f-email" name="email" required autocomplete="email" placeholder="tu@empresa.com">
+              <span class="form-field__error" id="err-email" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="f-company">Empresa <span class="req">*</span></label>
+              <input type="text" id="f-company" name="company" required minlength="2" autocomplete="organization" placeholder="Nombre de la empresa">
+              <span class="form-field__error" id="err-company" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="f-jobtitle">Cargo <span class="req">*</span></label>
+              <input type="text" id="f-jobtitle" name="jobtitle" required minlength="2" autocomplete="organization-title" placeholder="Tu rol o cargo">
+              <span class="form-field__error" id="err-jobtitle" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
+              <label for="f-message">Mensaje (opcional)</label>
+              <textarea id="f-message" name="message" maxlength="500" placeholder="Cuéntanos qué te está trabando"></textarea>
+              <span class="form-field__error" id="err-message" aria-live="polite"></span>
+            </div>
+            <button type="submit" class="btn btn--full" id="form-submit">
+              <span id="submit-label">Agenda mi diagnóstico</span>
+              <span class="btn__arrow">→</span>
+            </button>
+            <p class="form-privacy">Al enviar aceptas nuestro <a href="/privacidad">aviso de privacidad</a>.</p>
+          </form>
+          <div id="form-success" class="form-success" hidden>
+            <div class="form-success__icon" aria-hidden="true">✓</div>
+            <h3 class="form-success__title">Recibimos tu solicitud.</h3>
+            <p class="form-success__body">Chucho responde en menos de 24 horas hábiles.</p>
+            <a href="#casos" class="link-secondary">Mientras tanto, ver casos ↓</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <header class="section__header">
+        <p class="eyebrow">Preguntas</p>
+        <h2>Preguntas que nos hacen antes de trabajar juntos.</h2>
+      </header>
+      <div class="faq">
+        <details class="faq-item">
+          <summary>¿Qué diferencia hay entre APTO y una consultora tradicional?</summary>
+          <div class="faq-item__body">Diseñamos y construimos con el mismo equipo. No entregamos deck y desaparecemos; nos quedamos hasta que el sistema está en producción.</div>
+        </details>
+        <details class="faq-item">
+          <summary>¿Trabajan con empresas medianas o solo corporativos?</summary>
+          <div class="faq-item__body">Ambos. Para medianas, típicamente empezamos con un artefacto ancla (sitio, sistema interno, línea nueva de servicio). Para corporativos, empezamos con un service design de una línea específica o un rediseño de canal.</div>
+        </details>
+        <details class="faq-item">
+          <summary>¿Cuánto cuesta un proyecto típico?</summary>
+          <div class="faq-item__body">Depende del scope. Un diagnóstico + diseño de artefacto puede ir de $150K MXN a $600K MXN. Un engagement completo (diseño + construcción) arranca en $800K MXN. Cada engagement se cotiza por scope específico, no por hora.</div>
+        </details>
+        <details class="faq-item">
+          <summary>¿Cuánto tiempo toma un proyecto?</summary>
+          <div class="faq-item__body">Diagnóstico: 1-2 semanas. Diseño de artefacto: 2-6 semanas. Construcción: variable según scope, típicamente 8-16 semanas.</div>
+        </details>
+        <details class="faq-item">
+          <summary>¿Ustedes construyen el software o subcontratan?</summary>
+          <div class="faq-item__body">Construimos con equipo propio. La documentación de diseño la produce el mismo equipo que la implementa — por eso no hay pérdida de contexto entre diseño y desarrollo.</div>
+        </details>
+        <details class="faq-item">
+          <summary>¿Trabajan con startups?</summary>
+          <div class="faq-item__body">Sí, pero con criterio. Startups con fondeo confirmado (Series A+ o equivalente Y Combinator) donde el tema es escalar un producto ya validado, no construir MVP.</div>
+        </details>
+        <details class="faq-item">
+          <summary>¿Qué necesitan de mí para arrancar el diagnóstico?</summary>
+          <div class="faq-item__body">30 minutos. Nosotros preparamos las preguntas; tú traes el contexto de operación.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <div class="footer__logo">APTO</div>
+          <p class="footer__tagline">Diseñamos artefactos para la arquitectura empresarial.</p>
+        </div>
+        <div class="footer__col">
+          <h4>Servicios</h4>
+          <ul>
+            <li><a href="#pilares">Service Design</a></li>
+            <li><a href="#pilares">Diseño Sistémico</a></li>
+            <li><a href="#pilares">Business Design</a></li>
+            <li><a href="#pilares">AI aplicada</a></li>
+            <li><a href="#pilares">Transformación</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Empresa</h4>
+          <ul>
+            <li><a href="#casos">Casos</a></li>
+            <li><a href="#cta-form">Contacto</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Contacto</h4>
+          <ul>
+            <li><a href="mailto:hola@apto.mx">hola@apto.mx</a></li>
+            <li>Ciudad de México</li>
+            <li><a href="https://www.linkedin.com/company/apto-mx" target="_blank" rel="noopener">LinkedIn ↗</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <div>© 2026 APTO · Todos los derechos reservados</div>
+        <div><a href="/privacidad">Aviso de privacidad</a> · <a href="/terminos">Términos</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Sticky mobile CTA -->
+  <div class="sticky-cta-mobile" aria-hidden="false">
+    <a href="#cta-form" class="btn" data-track="sticky_cta_click">Agenda tu diagnóstico →</a>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    (function() {
+      'use strict';
+
+      // Endpoint - por ahora HubSpot Forms API directo; será reemplazado por Worker Marketon
+      const HUBSPOT_PORTAL_ID = '2583031';
+      const HUBSPOT_FORM_ID = '6f9db620-165b-451b-8b49-76b441eea7ce';
+      const HUBSPOT_ENDPOINT = `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_ID}`;
+
+      // Free email providers list (soft warn)
+      const FREE_EMAIL_DOMAINS = ['gmail.com','hotmail.com','yahoo.com','outlook.com','live.com','icloud.com','proton.me','protonmail.com','me.com'];
+
+      const form = document.getElementById('diagnostico-form');
+      const formCard = document.getElementById('form-card');
+      const successView = document.getElementById('form-success');
+      const messageBox = document.getElementById('form-message');
+      const submitBtn = document.getElementById('form-submit');
+      const submitLabel = document.getElementById('submit-label');
+
+      // Get HubSpot tracking cookie
+      function getHutk() {
+        const match = document.cookie.match(/hubspotutk=([^;]+)/);
+        return match ? match[1] : '';
+      }
+
+      // Tracking (dataLayer for GTM)
+      function track(event, params) {
+        params = params || {};
+        params.event = event;
+        (window.dataLayer = window.dataLayer || []).push(params);
+      }
+
+      // Track CTA clicks
+      document.querySelectorAll('[data-track]').forEach(el => {
+        el.addEventListener('click', () => {
+          track(el.dataset.track, { label: el.textContent.trim().slice(0,50) });
+        });
+      });
+
+      // Field validation
+      function validateField(input) {
+        const err = document.getElementById('err-' + input.name);
+        const wrap = input.closest('.form-field');
+        let msg = '';
+
+        if (input.required && !input.value.trim()) {
+          msg = 'Este campo es requerido.';
+        } else if (input.value.trim() && input.minLength > 0 && input.value.trim().length < input.minLength) {
+          msg = `Mínimo ${input.minLength} caracteres.`;
+        } else if (input.type === 'email' && input.value) {
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
+            msg = 'Correo inválido.';
+          }
+        }
+        err.textContent = msg;
+        wrap.classList.toggle('has-error', !!msg);
+        return !msg;
+      }
+
+      // Free-email soft warning
+      const emailInput = document.getElementById('f-email');
+      emailInput.addEventListener('blur', () => {
+        const val = emailInput.value.trim().toLowerCase();
+        const domain = val.split('@')[1];
+        if (domain && FREE_EMAIL_DOMAINS.includes(domain)) {
+          showMessage('warn', 'Sugerimos usar tu correo corporativo para agilizar el diagnóstico. Aun así puedes continuar con este.');
+        } else {
+          hideMessage();
+        }
+      });
+
+      function showMessage(type, text) {
+        messageBox.className = 'form-message form-message--' + type;
+        messageBox.textContent = text;
+        messageBox.hidden = false;
+      }
+      function hideMessage() { messageBox.hidden = true; }
+
+      // Live validation on blur
+      form.querySelectorAll('input, textarea').forEach(input => {
+        input.addEventListener('blur', () => validateField(input));
+        input.addEventListener('input', () => {
+          if (input.closest('.form-field').classList.contains('has-error')) {
+            validateField(input);
+          }
+        });
+        input.addEventListener('focus', () => {
+          if (!input.dataset.tracked) {
+            track('form_start', { field: input.name });
+            input.dataset.tracked = '1';
+          }
+        }, { once: false });
+      });
+
+      // Submit handler
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Validate all
+        const inputs = form.querySelectorAll('input, textarea');
+        let allValid = true;
+        inputs.forEach(i => { if (!validateField(i)) allValid = false; });
+        if (!allValid) {
+          track('form_field_error', {});
+          return;
+        }
+
+        // Loading state
+        submitBtn.disabled = true;
+        submitLabel.innerHTML = 'Enviando <span class="spinner"></span>';
+        hideMessage();
+
+        // Payload HubSpot Forms API v3
+        const payload = {
+          fields: Array.from(inputs).map(input => ({
+            objectTypeId: '0-1',
+            name: input.name,
+            value: input.value.trim()
+          })).filter(f => f.value),
+          context: {
+            pageUri: window.location.href,
+            pageName: document.title,
+            hutk: getHutk()
+          }
+        };
+
+        try {
+          const res = await fetch(HUBSPOT_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.message || 'Error de servidor');
+          }
+
+          // Success
+          track('form_submit_success', {
+            email: payload.fields.find(f => f.name === 'email')?.value,
+            company: payload.fields.find(f => f.name === 'company')?.value
+          });
+
+          form.hidden = true;
+          successView.hidden = false;
+          successView.focus();
+
+        } catch (err) {
+          track('form_submit_fail', { error: err.message });
+          showMessage('error', 'Algo falló al enviar. Intenta de nuevo o escríbenos a hola@apto.mx');
+          submitBtn.disabled = false;
+          submitLabel.textContent = 'Agenda mi diagnóstico';
+        }
+      });
+
+    })();
+  </script>
+
+</body>
+</html>
