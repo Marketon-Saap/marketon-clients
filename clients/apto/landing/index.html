@@ -53,6 +53,9 @@
   <!-- GTM dataLayer init -->
   <script>window.dataLayer = window.dataLayer || [];</script>
 
+  <!-- HubSpot Tracking (cookie hubspotutk + page tracking + attribution) -->
+  <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/2583031.js"></script>
+
   <style>
     /* Design tokens · extraídos del sitio real apto.mx */
     :root {
@@ -1055,17 +1058,21 @@
         submitLabel.innerHTML = 'Enviando <span class="spinner"></span>';
         hideMessage();
 
+        const hutk = getHutk();
+        const context = {
+          pageUri: window.location.href,
+          pageName: document.title
+        };
+        // HubSpot API rechaza hutk vacío; solo incluirlo si existe
+        if (hutk) context.hutk = hutk;
+
         const payload = {
           fields: Array.from(inputs).map(input => ({
             objectTypeId: '0-1',
             name: input.name,
             value: input.value.trim()
           })).filter(f => f.value),
-          context: {
-            pageUri: window.location.href,
-            pageName: document.title,
-            hutk: getHutk()
-          }
+          context: context
         };
 
         try {
