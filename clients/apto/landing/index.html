@@ -562,6 +562,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
        Convierte grids verticales largos en scroll horizontal one-swipe-per-card.
        Reduce ~5000px de altura total mobile sin sacrificar contenido. */
     @media (max-width: 767px) {
+      /* Safety net · texto largo no rompe layout de cards en scroll-x */
+      .card__title, .card__body, .producto__label, .producto__desc, .paso h3, .paso .card__body {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
+      }
+      /* Dolores mobile: scroll horizontal 3 cards */
+      .cards-3 {
+        display: flex !important;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px !important;
+        padding: 4px 20px 20px;
+        margin: 0 -20px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .cards-3::-webkit-scrollbar { display: none; }
+      .cards-3 .card {
+        flex: 0 0 82vw;
+        max-width: 320px;
+        scroll-snap-align: start;
+      }
       /* Pilares mobile: scroll horizontal 5 cards */
       .pilares {
         display: flex !important;
@@ -652,6 +675,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         scroll-padding-left: 20px;
       }
       /* Micro hint "→" para indicar scrollable */
+      .section:has(.cards-3) .section__header::after,
       .section:has(.pilares) .section__header::after,
       .section:has(.productos) .section__header::after,
       .section:has(.metodo) .section__header::after,
