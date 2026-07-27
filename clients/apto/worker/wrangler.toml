@@ -4,7 +4,7 @@ compatibility_date = "2026-07-26"
 
 # Vars públicas · pipeline + form IDs (no son secretos)
 [vars]
-ALLOWED_ORIGIN = "https://mktgrupoplasenciaautomotriz.github.io"
+ALLOWED_ORIGIN = "https://landing.apto.mx,https://mktgrupoplasenciaautomotriz.github.io"
 HUBSPOT_PORTAL_ID = "2583031"
 HUBSPOT_FORM_ID = "6f9db620-165b-451b-8b49-76b441eea7ce"
 HUBSPOT_PIPELINE_ID = "922134387"

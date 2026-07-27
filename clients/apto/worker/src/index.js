@@ -53,7 +53,11 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const origin = request.headers.get('Origin');
-    const cors = CORS_HEADERS(env.ALLOWED_ORIGIN || origin);
+    // Multi-origin support · ALLOWED_ORIGIN puede ser comma-separated list.
+    // Reflejar el origen si está en la whitelist, si no usar el primero (fallback).
+    const allowedList = (env.ALLOWED_ORIGIN || '').split(',').map(s => s.trim()).filter(Boolean);
+    const matchedOrigin = allowedList.includes(origin) ? origin : (allowedList[0] || origin);
+    const cors = CORS_HEADERS(matchedOrigin);
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: cors });
