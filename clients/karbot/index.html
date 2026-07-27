@@ -697,7 +697,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .times-label {
   font-size: 13px; font-weight: 600; color: var(--slate-950); margin-bottom: 12px;
 }
-.times-label strong { color: var(--p-500); font-weight: 700; text-transform: capitalize; }
+.times-label strong { color: var(--p-500); font-weight: 700; }
+.times-label strong::first-letter { text-transform: uppercase; }
 .times-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 @media (max-width: 480px) { .times-grid { grid-template-columns: repeat(2, 1fr); } }
 .time-btn {
