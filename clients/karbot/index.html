@@ -613,60 +613,135 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .form-submit:disabled { opacity: .5; cursor: not-allowed; }
 .form-note { font-size: 12px; color: var(--slate-500); margin-top: 12px; text-align: center; }
 
-/* Slot picker */
-.slots-status {
-  font-size: 11px; color: var(--slate-500); font-weight: 500; font-style: italic;
-  margin-left: 8px; letter-spacing: 0;
+/* Row para form fields en 2 cols */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row .form-field { margin-bottom: 12px; }
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: 1fr; gap: 0; }
 }
-.slots-status.error { color: var(--coral); }
-.slots-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  max-height: 220px;
-  overflow-y: auto;
-  padding: 4px;
+
+/* Section headers dentro del form */
+.form-step {
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--p-500); margin: 20px 0 10px;
+  display: flex; align-items: center; gap: 8px;
+}
+.form-step:first-child { margin-top: 0; }
+.form-step-num {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--p-500); color: white; font-size: 11px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  letter-spacing: 0;
+}
+
+/* Calendar picker (date grid Calendly-style) */
+.picker {
+  border: 1.5px solid var(--slate-200); border-radius: 12px;
+  padding: 16px; margin-bottom: 16px; background: var(--white);
+}
+.picker-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+}
+.picker-month {
+  font-weight: 700; font-size: 15px; color: var(--slate-950); text-transform: capitalize;
+}
+.picker-nav {
+  width: 32px; height: 32px; border-radius: 8px;
   border: 1.5px solid var(--slate-200);
-  border-radius: 8px;
-  background: var(--white);
-}
-.slots-list:empty::after {
-  content: "Cargando horarios disponibles…";
-  padding: 20px;
-  color: var(--slate-500);
-  font-size: 13px;
-  text-align: center;
-  grid-column: 1 / -1;
-}
-.slot-btn {
-  padding: 10px 8px;
-  background: white;
-  border: 1.5px solid var(--slate-200);
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--slate-950);
-  cursor: pointer;
+  background: white; color: var(--slate-600);
+  font-size: 20px; line-height: 1; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
   transition: all .15s;
-  text-align: center;
-  line-height: 1.3;
 }
-.slot-btn:hover { border-color: var(--v-300); background: var(--violet-bg-2); }
-.slot-btn.selected {
-  border-color: var(--p-500);
-  background: var(--grad-cta);
-  color: white;
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(68,76,231,.25);
+.picker-nav:hover:not(:disabled) { border-color: var(--p-500); color: var(--p-500); }
+.picker-nav:disabled { opacity: .3; cursor: not-allowed; }
+.picker-dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 6px; }
+.picker-dow span {
+  text-align: center; font-size: 11px; font-weight: 600;
+  color: var(--slate-500); text-transform: uppercase; padding: 6px 0;
 }
-.slots-empty {
-  padding: 20px;
-  color: var(--slate-500);
-  font-size: 13px;
-  text-align: center;
+.picker-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.picker-day {
+  aspect-ratio: 1; border: none; border-radius: 8px;
+  background: transparent; font-family: inherit;
+  font-size: 13px; font-weight: 500;
+  color: var(--slate-950); cursor: pointer;
+  transition: all .15s;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.picker-day.other-month { visibility: hidden; pointer-events: none; }
+.picker-day.disabled { color: var(--slate-300); cursor: not-allowed; }
+.picker-day.available { background: rgba(68,76,231,.06); color: var(--p-500); font-weight: 600; }
+.picker-day.available:hover { background: rgba(68,76,231,.16); }
+.picker-day.selected {
+  background: var(--grad-cta); color: white; font-weight: 700;
+  box-shadow: 0 2px 8px rgba(68,76,231,.30);
+}
+.picker-day.today:not(.selected) { outline: 1.5px solid var(--p-500); outline-offset: -2px; }
+.picker-loading {
+  padding: 40px 20px; text-align: center;
+  color: var(--slate-500); font-size: 13px; font-style: italic;
   grid-column: 1 / -1;
 }
+.picker-hint {
+  margin-top: 10px; font-size: 12px; color: var(--slate-500);
+  text-align: center;
+}
+
+/* Time slots (revealed after day pick) */
+.times {
+  margin-bottom: 16px; padding: 16px;
+  border: 1.5px solid var(--slate-200); border-radius: 12px;
+  background: var(--violet-bg-2);
+}
+.times-label {
+  font-size: 13px; font-weight: 600; color: var(--slate-950); margin-bottom: 12px;
+}
+.times-label strong { color: var(--p-500); font-weight: 700; text-transform: capitalize; }
+.times-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+@media (max-width: 480px) { .times-grid { grid-template-columns: repeat(2, 1fr); } }
+.time-btn {
+  padding: 10px 4px; background: white;
+  border: 1.5px solid var(--slate-200); border-radius: 6px;
+  font-family: inherit; font-size: 12.5px; font-weight: 600;
+  color: var(--slate-950); cursor: pointer;
+  transition: all .15s; text-align: center;
+}
+.time-btn:hover { border-color: var(--v-300); background: var(--violet-bg-2); }
+.time-btn.selected {
+  border-color: var(--p-500); background: var(--grad-cta);
+  color: white; box-shadow: 0 2px 8px rgba(68,76,231,.25);
+}
+.times-empty {
+  grid-column: 1 / -1; padding: 12px 8px;
+  text-align: center; font-size: 12.5px; color: var(--slate-500);
+}
+
+/* Success card (post-submit) */
+.success {
+  padding: 32px 24px;
+  background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(68,76,231,.06));
+  border: 1.5px solid rgba(16,185,129,.3);
+  border-radius: 12px; text-align: center;
+}
+.success-icon {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #10B981; color: white;
+  font-size: 26px; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+.success-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; color: var(--slate-950); }
+.success-when { font-size: 15px; color: var(--slate-600); margin-bottom: 14px; font-weight: 500; }
+.success-note { font-size: 13.5px; color: var(--slate-500); margin-bottom: 20px; line-height: 1.55; }
+.success-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px;
+  background: var(--grad-cta); color: white;
+  border-radius: 10px; font-weight: 600; font-size: 14px;
+  box-shadow: var(--shadow-md);
+}
+.success-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
 
 @media (max-width: 900px) {
   .cta-final-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -1065,53 +1140,96 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </ul>
       </div>
       <form class="form-card" id="demoForm" onsubmit="return submitForm(event)">
-        <div class="form-title">Agenda tu demo · 30 minutos</div>
-        <div class="form-sub">Videollamada con nuestro equipo. Sin PowerPoint largo · sin pitch corporativo.</div>
+        <div id="formBody">
+          <div class="form-title">Agenda tu demo · 30 minutos</div>
+          <div class="form-sub">Videollamada con nuestro equipo · sin pitch corporativo.</div>
 
-        <div class="form-field">
-          <label for="nombre">Tu nombre</label>
-          <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="Juan Pérez">
-        </div>
-        <div class="form-field">
-          <label for="empresa">Nombre del grupo o agencia</label>
-          <input type="text" id="empresa" name="empresa" required autocomplete="organization" placeholder="Grupo Automotriz Ejemplo">
-        </div>
-        <div class="form-field">
-          <label for="email">Email de trabajo</label>
-          <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com">
-        </div>
-        <div class="form-field">
-          <label for="agencias">Cuántas agencias tienes</label>
-          <select id="agencias" name="agencias" required>
-            <option value="">Selecciona</option>
-            <option value="1">1 agencia</option>
-            <option value="2-5">2 a 5 agencias</option>
-            <option value="6-10">6 a 10 agencias</option>
-            <option value="11+">11 agencias o más</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label for="rol">Tu rol</label>
-          <select id="rol" name="rol" required>
-            <option value="">Selecciona</option>
-            <option value="director_grupo">Director de grupo</option>
-            <option value="director_marca">Director de marca</option>
-            <option value="director_agencia">Director / gerente de agencia</option>
-            <option value="marketing">Marketing</option>
-            <option value="finanzas">Finanzas / sistemas</option>
-            <option value="otro">Otro</option>
-          </select>
-        </div>
+          <!-- STEP 1 · Calendar picker -->
+          <div class="form-step"><span class="form-step-num">1</span> Elige el día</div>
+          <div class="picker">
+            <div class="picker-header">
+              <button type="button" id="prevMonth" class="picker-nav" aria-label="Mes anterior">‹</button>
+              <div class="picker-month" id="pickerMonth">—</div>
+              <button type="button" id="nextMonth" class="picker-nav" aria-label="Mes siguiente">›</button>
+            </div>
+            <div class="picker-dow">
+              <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+            </div>
+            <div class="picker-grid" id="pickerGrid" aria-live="polite">
+              <div class="picker-loading">Cargando disponibilidad…</div>
+            </div>
+            <div class="picker-hint" id="pickerHint">Días con disponibilidad en color</div>
+          </div>
 
-        <div class="form-field">
-          <label>Elige día y hora <span id="slotsStatus" class="slots-status">cargando disponibilidad…</span></label>
-          <div id="slotsList" class="slots-list" aria-live="polite"></div>
+          <!-- STEP 2 · Time slots (revealed after date pick) -->
+          <div id="timesWrap" hidden>
+            <div class="form-step"><span class="form-step-num">2</span> Elige la hora</div>
+            <div class="times">
+              <div class="times-label">Horarios · <strong id="timesDayLabel"></strong></div>
+              <div class="times-grid" id="timesGrid"></div>
+            </div>
+          </div>
+
+          <!-- STEP 3 · Perfil -->
+          <div class="form-step"><span class="form-step-num">3</span> Tus datos</div>
+          <div class="form-field">
+            <label for="nombre">Tu nombre</label>
+            <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="Juan Pérez">
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="empresa">Grupo o agencia</label>
+              <input type="text" id="empresa" name="empresa" required autocomplete="organization" placeholder="Grupo XYZ">
+            </div>
+            <div class="form-field">
+              <label for="rol">Tu rol</label>
+              <select id="rol" name="rol" required>
+                <option value="">Selecciona</option>
+                <option value="director_grupo">Director de grupo</option>
+                <option value="director_marca">Director de marca</option>
+                <option value="director_agencia">Director / gerente agencia</option>
+                <option value="marketing">Marketing</option>
+                <option value="finanzas">Finanzas / sistemas</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="email">Email de trabajo</label>
+              <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com">
+            </div>
+            <div class="form-field">
+              <label for="agencias">Agencias</label>
+              <select id="agencias" name="agencias" required>
+                <option value="">Selecciona</option>
+                <option value="1">1</option>
+                <option value="2-5">2 a 5</option>
+                <option value="6-10">6 a 10</option>
+                <option value="11+">11+</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-field" style="margin-bottom:8px;">
+            <label for="phone">WhatsApp <span style="color:var(--slate-500);font-weight:400;">(opcional · más rápido)</span></label>
+            <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+52 33 1234 5678">
+          </div>
+
           <input type="hidden" id="slotStart" name="slotStart">
           <input type="hidden" id="slotEnd" name="slotEnd">
+
+          <button type="submit" class="form-submit" id="submitBtn" disabled>Elige día y hora para continuar</button>
+          <p class="form-note">Recibirás invite con link de Google Meet en tu correo. No compartimos tus datos.</p>
         </div>
 
-        <button type="submit" class="form-submit" id="submitBtn" disabled>Elige un horario para continuar</button>
-        <p class="form-note">Al enviar recibirás invite con link de Google Meet en tu correo. No compartimos tus datos.</p>
+        <!-- Success state (revealed after successful book) -->
+        <div class="success" id="successCard" hidden>
+          <div class="success-icon">✓</div>
+          <div class="success-title" id="successTitle">Demo confirmada</div>
+          <div class="success-when" id="successWhen"></div>
+          <div class="success-note" id="successNote">Te llegó el invite a tu correo con el link de Google Meet.</div>
+          <a href="#" id="successCal" class="success-btn" target="_blank" rel="noopener" hidden>Ver en Google Calendar →</a>
+        </div>
       </form>
     </div>
   </div>
@@ -1213,133 +1331,275 @@ function track(name, params) {
 }
 
 // ============ Backend API config ============
-// TODO al deployar el Worker: reemplazar por la URL real (wrangler deploy la da)
 const WORKER_URL = 'https://karbot-landing-api.grupo-plasencia-automotriz.workers.dev';
-const WORKER_ENABLED = false; // cambiar a true cuando Isabel autorice OAuth (refresh_token subido a Cloudflare)
+const TZ = 'America/Mexico_City';
+const MONTHS_ES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+// State del picker
+const state = {
+  slots: [],           // raw slots del Worker
+  byDay: {},           // { 'YYYY-MM-DD': [slot, slot, ...] }
+  viewYear: null,      // año del mes visible
+  viewMonth: null,     // mes visible (0-indexed)
+  minMonth: null,      // primer mes con slots
+  maxMonth: null,      // último mes con slots
+  selectedDay: null,   // 'YYYY-MM-DD' seleccionado
+  selectedSlot: null,  // { start, end, label }
+  isMock: false,
+};
+
+// Utility: key YYYY-MM-DD en zona horaria MX (para agrupar slots)
+function dayKey(dateStr) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-CA', { timeZone: TZ }); // en-CA formato = YYYY-MM-DD
+}
+
+// Utility: parsea YYYY-MM-DD a componentes locales
+function parseKey(key) {
+  const [y, m, d] = key.split('-').map(Number);
+  return { y, m: m - 1, d };
+}
 
 // ============ Cargar slots disponibles ============
 async function loadSlots() {
-  const list = document.getElementById('slotsList');
-  const status = document.getElementById('slotsStatus');
-  if (!WORKER_ENABLED) {
-    list.innerHTML = '<div class="slots-empty">La reservación en línea se activa cuando el equipo termine de conectar el calendario. Mientras, agenda directo <a href="https://calendar.app.google/QRJZWBNQA5uRrHgs6" target="_blank" rel="noopener" style="color:var(--p-500); text-decoration:underline; font-weight:600;">aquí</a> o escríbenos por WhatsApp.</div>';
-    status.textContent = 'próximamente';
-    // Enable submit for fallback: redirige a Calendar directo
-    document.getElementById('submitBtn').disabled = false;
-    document.getElementById('submitBtn').textContent = 'Continuar a Google Calendar →';
-    return;
-  }
+  const grid = document.getElementById('pickerGrid');
+  const hint = document.getElementById('pickerHint');
   try {
-    const res = await fetch(`${WORKER_URL}/availability?days=14`);
-    if (!res.ok) throw new Error('load_failed');
+    const res = await fetch(`${WORKER_URL}/availability?days=21`);
+    if (!res.ok) throw new Error('load_failed_' + res.status);
     const data = await res.json();
-    if (!data.slots || data.slots.length === 0) {
-      list.innerHTML = '<div class="slots-empty">No hay horarios disponibles en los próximos 14 días · escríbenos por WhatsApp.</div>';
-      status.textContent = 'sin disponibilidad';
-      status.classList.add('error');
+    state.slots = data.slots || [];
+    state.isMock = !!data.mock;
+
+    if (state.slots.length === 0) {
+      grid.innerHTML = '<div class="picker-loading">Sin disponibilidad en las próximas 3 semanas · escríbenos por WhatsApp.</div>';
+      hint.textContent = '';
       return;
     }
-    list.innerHTML = data.slots.map((s, i) => `
-      <button type="button" class="slot-btn" data-start="${s.start}" data-end="${s.end}" onclick="pickSlot(this)">${s.label}</button>
-    `).join('');
-    status.textContent = `${data.slots.length} horarios disponibles`;
+
+    // Agrupar por día
+    state.byDay = {};
+    for (const s of state.slots) {
+      const key = dayKey(s.start);
+      (state.byDay[key] = state.byDay[key] || []).push(s);
+    }
+
+    // Determinar rango de meses visibles
+    const days = Object.keys(state.byDay).sort();
+    const firstDay = parseKey(days[0]);
+    const lastDay = parseKey(days[days.length - 1]);
+    state.minMonth = firstDay.y * 12 + firstDay.m;
+    state.maxMonth = lastDay.y * 12 + lastDay.m;
+
+    // Vista inicial: mes del primer día con disponibilidad
+    state.viewYear = firstDay.y;
+    state.viewMonth = firstDay.m;
+
+    renderCalendar();
+    if (state.isMock) {
+      hint.innerHTML = 'Días con disponibilidad en color · <span style="color:var(--slate-500);">(disponibilidad tentativa · Isabel confirma en 5 min)</span>';
+    }
   } catch (e) {
-    list.innerHTML = '<div class="slots-empty">Error cargando horarios · escríbenos por WhatsApp.</div>';
-    status.textContent = 'error';
-    status.classList.add('error');
+    grid.innerHTML = '<div class="picker-loading">Error cargando horarios · <a href="#" onclick="loadSlots();return false;" style="color:var(--p-500);text-decoration:underline;">reintentar</a></div>';
+    hint.textContent = '';
     track('slots_load_error', {message: e.message});
   }
 }
 
-function pickSlot(btn) {
-  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+// ============ Render calendar grid ============
+function renderCalendar() {
+  const grid = document.getElementById('pickerGrid');
+  const monthLabel = document.getElementById('pickerMonth');
+  const prevBtn = document.getElementById('prevMonth');
+  const nextBtn = document.getElementById('nextMonth');
+
+  monthLabel.textContent = `${MONTHS_ES[state.viewMonth]} ${state.viewYear}`;
+
+  const cur = state.viewYear * 12 + state.viewMonth;
+  prevBtn.disabled = cur <= state.minMonth;
+  nextBtn.disabled = cur >= state.maxMonth;
+
+  const firstOfMonth = new Date(state.viewYear, state.viewMonth, 1);
+  const startDow = firstOfMonth.getDay(); // 0=Dom
+  const daysInMonth = new Date(state.viewYear, state.viewMonth + 1, 0).getDate();
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: TZ });
+
+  const cells = [];
+  for (let i = 0; i < startDow; i++) {
+    cells.push('<button type="button" class="picker-day other-month" tabindex="-1" aria-hidden="true"></button>');
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = `${state.viewYear}-${String(state.viewMonth + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const available = !!state.byDay[key];
+    const isToday = key === today;
+    const isSelected = key === state.selectedDay;
+    const classes = ['picker-day'];
+    if (available) classes.push('available');
+    else classes.push('disabled');
+    if (isToday) classes.push('today');
+    if (isSelected) classes.push('selected');
+    const attrs = available ? `onclick="pickDay('${key}')"` : 'disabled';
+    cells.push(`<button type="button" class="${classes.join(' ')}" ${attrs}>${d}</button>`);
+  }
+  grid.innerHTML = cells.join('');
+}
+
+function changeMonth(delta) {
+  const newIdx = state.viewYear * 12 + state.viewMonth + delta;
+  if (newIdx < state.minMonth || newIdx > state.maxMonth) return;
+  state.viewYear = Math.floor(newIdx / 12);
+  state.viewMonth = newIdx % 12;
+  renderCalendar();
+}
+
+// ============ Pick day → reveal time slots ============
+function pickDay(key) {
+  state.selectedDay = key;
+  state.selectedSlot = null;
+  document.getElementById('slotStart').value = '';
+  document.getElementById('slotEnd').value = '';
+  renderCalendar();
+
+  const wrap = document.getElementById('timesWrap');
+  const label = document.getElementById('timesDayLabel');
+  const grid = document.getElementById('timesGrid');
+
+  const { y, m, d } = parseKey(key);
+  const nice = new Date(y, m, d).toLocaleDateString('es-MX', {
+    weekday: 'long', day: 'numeric', month: 'long', timeZone: TZ,
+  });
+  label.textContent = nice;
+
+  const slots = state.byDay[key] || [];
+  if (slots.length === 0) {
+    grid.innerHTML = '<div class="times-empty">Sin horarios este día</div>';
+  } else {
+    grid.innerHTML = slots.map(s => {
+      const time = new Date(s.start).toLocaleTimeString('es-MX', {
+        hour: 'numeric', minute: '2-digit', hour12: true, timeZone: TZ,
+      });
+      return `<button type="button" class="time-btn" data-start="${s.start}" data-end="${s.end}" onclick="pickTime(this)">${time}</button>`;
+    }).join('');
+  }
+  wrap.hidden = false;
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  updateSubmitCTA();
+  track('day_selected', {day: key});
+}
+
+function pickTime(btn) {
+  document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
+  state.selectedSlot = { start: btn.dataset.start, end: btn.dataset.end };
   document.getElementById('slotStart').value = btn.dataset.start;
   document.getElementById('slotEnd').value = btn.dataset.end;
+  updateSubmitCTA();
+  track('time_selected', {start: btn.dataset.start});
+}
+
+function updateSubmitCTA() {
   const submit = document.getElementById('submitBtn');
+  if (!state.selectedSlot) {
+    submit.disabled = true;
+    submit.textContent = state.selectedDay ? 'Elige un horario' : 'Elige día y hora';
+    return;
+  }
   submit.disabled = false;
-  submit.textContent = 'Confirmar demo →';
-  track('slot_selected', {start: btn.dataset.start});
+  const time = new Date(state.selectedSlot.start).toLocaleTimeString('es-MX', {
+    hour: 'numeric', minute: '2-digit', hour12: true, timeZone: TZ,
+  });
+  const day = new Date(state.selectedSlot.start).toLocaleDateString('es-MX', {
+    weekday: 'short', day: 'numeric', month: 'short', timeZone: TZ,
+  });
+  submit.textContent = `Confirmar · ${day} · ${time} →`;
 }
 
 // ============ Form submit ============
 async function submitForm(e) {
   e.preventDefault();
+  if (!state.selectedSlot) {
+    alert('Elige un día y horario antes de continuar.');
+    return false;
+  }
   const f = e.target;
   const data = {
     nombre: f.nombre.value.trim(),
     empresa: f.empresa.value.trim(),
     email: f.email.value.trim(),
+    phone: f.phone.value.trim() || null,
     agencias: f.agencias.value,
     rol: f.rol.value,
-    start: f.slotStart.value,
-    end: f.slotEnd.value
+    start: state.selectedSlot.start,
+    end: state.selectedSlot.end,
   };
 
-  // Track lead (siempre, antes del intento de booking)
   track('form_submit_demo', {agencias: data.agencias, rol: data.rol});
-  if (typeof fbq === 'function') fbq('track', 'Lead', {content_name: 'demo_form', ...data});
+  if (typeof fbq === 'function') fbq('track', 'Lead', {content_name: 'demo_form'});
   if (typeof gtag === 'function') gtag('event', 'generate_lead', {agencias: data.agencias, rol: data.rol, currency: 'MXN', value: 5000});
 
-  const toast = document.getElementById('toast');
   const submit = document.getElementById('submitBtn');
-
-  // Fallback: si Worker no está activo, redirige a Google Calendar directo (mismo link que el sitio actual)
-  if (!WORKER_ENABLED) {
-    toast.textContent = 'Abriendo Google Calendar…';
-    toast.classList.add('show');
-    setTimeout(() => {
-      window.open('https://calendar.app.google/QRJZWBNQA5uRrHgs6', '_blank', 'noopener');
-      toast.classList.remove('show');
-    }, 400);
-    return false;
-  }
-
-  // Con Worker activo · POST directo al API
-  if (!data.start || !data.end) {
-    alert('Elige un horario antes de continuar.');
-    return false;
-  }
-
   submit.disabled = true;
   submit.textContent = 'Confirmando…';
-  toast.textContent = 'Agendando tu demo…';
-  toast.classList.add('show');
 
   try {
     const res = await fetch(`${WORKER_URL}/book`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error('book_failed_' + res.status);
     const booked = await res.json();
 
-    track('demo_booked', {eventId: booked.eventId, meetLink: booked.meetLink});
+    track('demo_booked', {eventId: booked.eventId, mock: booked.mock, leadId: booked.leadId});
     if (typeof fbq === 'function') fbq('track', 'Schedule', {content_name: 'demo_booked'});
-    if (typeof gtag === 'function') gtag('event', 'schedule', {method: 'google_calendar'});
+    if (typeof gtag === 'function') gtag('event', 'schedule', {method: booked.mock ? 'manual' : 'google_calendar'});
 
-    toast.textContent = '¡Listo! Revisa tu correo, te llegó la invitación con el link de Google Meet.';
-    submit.textContent = '✓ Demo agendada';
-    // Auto-dismiss toast después de 6 segundos
-    setTimeout(() => toast.classList.remove('show'), 6000);
+    // Success card
+    document.getElementById('formBody').hidden = true;
+    const card = document.getElementById('successCard');
+    const when = document.getElementById('successWhen');
+    const note = document.getElementById('successNote');
+    const cal = document.getElementById('successCal');
+
+    const whenNice = new Date(booked.start || data.start).toLocaleString('es-MX', {
+      weekday: 'long', day: 'numeric', month: 'long',
+      hour: 'numeric', minute: '2-digit', hour12: true, timeZone: TZ,
+    });
+    when.textContent = whenNice;
+
+    if (booked.mock) {
+      note.innerHTML = 'Tu solicitud llegó al equipo. <strong>Isabel te confirma en menos de 5 min por WhatsApp o correo</strong> con el link de la videollamada.';
+    } else if (booked.meetLink) {
+      note.innerHTML = 'Te llegó el invite a tu correo con el link de Google Meet.';
+      cal.href = booked.htmlLink || booked.meetLink;
+      cal.hidden = false;
+    }
+    card.hidden = false;
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } catch (err) {
     track('demo_book_error', {message: err.message});
-    toast.textContent = 'Error agendando · escríbenos por WhatsApp para completar.';
-    toast.style.borderLeftColor = 'var(--coral)';
     submit.disabled = false;
-    submit.textContent = 'Reintentar';
+    submit.textContent = 'Reintentar · error de red';
+    const toast = document.getElementById('toast');
+    toast.textContent = 'Error agendando. Escríbenos por WhatsApp y lo resolvemos ahora.';
+    toast.style.borderLeftColor = 'var(--coral)';
+    toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 6000);
   }
 
   return false;
 }
 
-// Cargar slots al montar
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', loadSlots);
-} else {
+// ============ Init ============
+function initPicker() {
+  document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
+  document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
   loadSlots();
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPicker);
+} else {
+  initPicker();
 }
 
 // Track scroll depth
