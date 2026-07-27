@@ -4,15 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#031B3F">
-  <title>APTO · Diseñamos y construimos los sistemas críticos que tu operación necesita para escalar</title>
-  <meta name="description" content="Consultora de innovación y diseño. Estrategia + implementación handson en el mismo equipo. Sin decks de 120 slides. Sin overhead Big-Four.">
+  <title>APTO · Sistemas críticos para escalar tu operación</title>
+  <meta name="description" content="Diseñamos y construimos los sistemas que tu operación necesita para escalar. Casos: Coppel, APYMSA, Bayware. Diagnóstico sin costo · respuesta en menos de 24 horas.">
+  <link rel="canonical" href="https://apto.mx/">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="APTO · Sistemas críticos para escalar tu operación">
-  <meta property="og:description" content="Estrategia + implementación handson. Consultora de innovación y diseño para empresas medianas y corporativos.">
+  <meta property="og:description" content="Estrategia + implementación handson. Casos: Coppel, APYMSA, Bayware. Diagnóstico sin costo.">
   <meta property="og:url" content="https://apto.mx/">
-  <meta property="og:image" content="./assets/og-image-generated.png">
+  <meta property="og:image" content="./assets/og-image-generated.jpg">
   <meta property="og:image:width" content="1536">
   <meta property="og:image:height" content="864">
   <meta property="og:locale" content="es_MX">
@@ -43,15 +44,23 @@
   }
   </script>
 
-  <!-- Preload video poster + fonts -->
+  <!-- Preconnects · fonts + video CDN + tracking -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://apto.b-cdn.net" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap">
+  <link rel="preconnect" href="https://js.hs-scripts.com">
+  <link rel="preconnect" href="https://www.googletagmanager.com">
 
-  <!-- GTM dataLayer init -->
-  <script>window.dataLayer = window.dataLayer || [];</script>
+  <!-- Barlow · solo weights usados (500, 600) · non-blocking pattern -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600&display=swap"></noscript>
+
+  <!-- Google Tag Manager · dispara Google Ads Enhanced Conv + Meta Pixel + GA4 client-side -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-K7J6MQ8');</script>
 
   <!-- HubSpot Tracking (cookie hubspotutk + page tracking + attribution) -->
   <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/2583031.js"></script>
@@ -113,6 +122,16 @@
     .sr-only {
       position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+    /* Skip link · visible al focus keyboard (WCAG 2.4.1 + 2.4.7) */
+    .sr-only:focus, .sr-only:focus-visible {
+      position: fixed; top: 12px; left: 12px;
+      width: auto; height: auto; padding: 12px 20px; margin: 0;
+      clip: auto; overflow: visible; white-space: normal;
+      background: var(--blue-cta); color: var(--paper);
+      border-radius: 8px; z-index: 100;
+      font-family: var(--font-heading); font-weight: 600; font-size: 14px;
+      text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,.3);
     }
 
     /* Typography · Barlow para headings, uppercase estilo apto.mx */
@@ -200,7 +219,7 @@
     .btn:hover .btn__arrow { transform: translateX(4px); }
     .link-secondary { color: rgba(255,255,255,.72); font-size: 15px; font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
     .link-secondary:hover { color: var(--paper); }
-    .hero__trust { color: rgba(255,255,255,.55); font-size: 13px; margin-top: 24px; }
+    .hero__trust { color: rgba(255,255,255,.72); font-size: 13px; margin-top: 24px; }
     .hero__visual {
       aspect-ratio: 16/10;
       border-radius: 16px; overflow: hidden;
@@ -535,9 +554,16 @@
     .footer__bottom {
       margin-top: 56px; padding-top: 24px;
       border-top: 1px solid rgba(255,255,255,.1);
-      font-size: 12px; color: rgba(255,255,255,.5);
+      font-size: 12px; color: rgba(255,255,255,.7);
       display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
     }
+    /* Productos icons: filter via clase (deduplica inline style) */
+    .producto__icon-wrap img {
+      filter: brightness(0) saturate(100%) invert(78%) sepia(41%)
+              saturate(6084%) hue-rotate(199deg) brightness(105%) contrast(101%);
+    }
+    /* Footer social · target size WCAG 2.2 ≥24px */
+    .footer__social a { padding: 4px 0; }
 
     /* Sticky bottom CTA mobile */
     .sticky-cta-mobile {
@@ -557,9 +583,9 @@
   <a href="#cta-form" class="sr-only">Saltar al formulario de contacto</a>
 
   <!-- Nav -->
-  <nav class="nav" role="navigation" aria-label="Navegación principal">
+  <nav class="nav" aria-label="Navegación principal">
     <div class="container">
-      <a href="#" class="nav__logo" aria-label="APTO — Inicio">
+      <a href="#hero" class="nav__logo" aria-label="APTO — Inicio">
         <img src="./assets/logos/apto-logo-white.svg" alt="APTO" width="93" height="56">
       </a>
       <ul class="nav__menu">
@@ -568,10 +594,11 @@
         <li><a href="#metodo">Método</a></li>
         <li><a href="#cta-form">Contacto</a></li>
       </ul>
-      <a href="#cta-form" class="nav__cta" data-track="nav_cta_click">Agenda diagnóstico</a>
+      <a href="#cta-form" class="nav__cta" data-track="nav_cta_click">Agenda tu diagnóstico</a>
     </div>
   </nav>
 
+  <main>
   <!-- Hero con video de APTO -->
   <section class="hero" id="hero">
     <div class="container">
@@ -589,12 +616,13 @@
           </div>
         </div>
         <div class="hero__visual" aria-hidden="true">
-          <video autoplay muted loop playsinline
-                 poster="./assets/hero-abstract-to-concrete.png"
-                 preload="metadata">
+          <video muted loop playsinline
+                 poster="./assets/hero-abstract-to-concrete.jpg"
+                 preload="metadata"
+                 id="hero-video">
             <source src="https://apto.b-cdn.net/slide-1-vp9-chrome.webm" type="video/webm">
             <source src="https://apto.b-cdn.net/slide-1-hevc-safari.mp4" type="video/mp4; codecs=hvc1">
-            <img src="./assets/hero-abstract-to-concrete.png" alt="">
+            <img src="./assets/hero-abstract-to-concrete.jpg" alt="">
           </video>
         </div>
       </div>
@@ -709,27 +737,27 @@
       </header>
       <div class="productos">
         <article class="producto">
-          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-01.svg" alt="" width="40" height="40" style="filter: brightness(0) saturate(100%) invert(78%) sepia(41%) saturate(6084%) hue-rotate(199deg) brightness(105%) contrast(101%);"></div>
+          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-01.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">Apps y productos digitales</div>
           <p class="producto__desc">Producto end-to-end con documentación para dev.</p>
         </article>
         <article class="producto">
-          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-02.svg" alt="" width="40" height="40" style="filter: brightness(0) saturate(100%) invert(78%) sepia(41%) saturate(6084%) hue-rotate(199deg) brightness(105%) contrast(101%);"></div>
+          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-02.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">Sitios y experiencias web</div>
           <p class="producto__desc">Web pensada como producto, no como brochure.</p>
         </article>
         <article class="producto">
-          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-03.svg" alt="" width="40" height="40" style="filter: brightness(0) saturate(100%) invert(78%) sepia(41%) saturate(6084%) hue-rotate(199deg) brightness(105%) contrast(101%);"></div>
+          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-03.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">Sistemas operativos internos</div>
           <p class="producto__desc">ERPs, dashboards, herramientas que la operación necesita.</p>
         </article>
         <article class="producto">
-          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-04.svg" alt="" width="40" height="40" style="filter: brightness(0) saturate(100%) invert(78%) sepia(41%) saturate(6084%) hue-rotate(199deg) brightness(105%) contrast(101%);"></div>
+          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-04.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">Capacidades AI</div>
           <p class="producto__desc">Agentes, copilotos y automation sobre stack existente.</p>
         </article>
         <article class="producto">
-          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-06.svg" alt="" width="40" height="40" style="filter: brightness(0) saturate(100%) invert(78%) sepia(41%) saturate(6084%) hue-rotate(199deg) brightness(105%) contrast(101%);"></div>
+          <div class="producto__icon-wrap"><img src="./assets/icons/servicio-06.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">AI Ops</div>
           <p class="producto__desc">Operación asistida por AI para equipos que ya digitalizaron.</p>
         </article>
@@ -753,10 +781,10 @@
           <h3 class="caso__title">Un journey no-lineal para un ecosistema de miles de puntos de contacto.</h3>
           <p class="caso__body">Coppel no es una empresa de un solo producto. Diseñar journeys individuales por línea (celulares vs calcetines) genera retrabajo porque comparten puntos críticos como la caja. Aplicamos pensamiento sistémico a Service Design — imaginar el ecosistema como una ciudad, no lineal — y desarrollamos un mapa que sirve como base común para todos los productos.</p>
           <div class="caso__callout">+25% eficiencia en definición de nuevos servicios · metodología convertida en whitepaper interno</div>
-          <a href="#" class="caso__link" data-track="whitepaper_intent">Descargar whitepaper (próximamente) →</a>
+          <a href="#casos" class="caso__link" data-track="ver_mas_casos">Ver más casos ↓</a>
         </div>
         <div class="caso__visual">
-          <img src="./assets/case-coppel-systems.png" alt="Diagrama sistémico de nodos interconectados representando el journey no-lineal de Coppel" loading="lazy">
+          <img src="./assets/case-coppel-systems.jpg" alt="Diagrama sistémico de nodos interconectados representando el journey no-lineal de Coppel" loading="lazy">
         </div>
       </article>
 
@@ -826,27 +854,27 @@
           <form id="diagnostico-form" novalidate>
             <div class="form-field">
               <label for="f-firstname">Nombre <span class="req">*</span></label>
-              <input type="text" id="f-firstname" name="firstname" required minlength="2" autocomplete="given-name" placeholder="Nombre completo">
+              <input type="text" id="f-firstname" name="firstname" required minlength="2" autocomplete="given-name" placeholder="Nombre completo" aria-describedby="err-firstname">
               <span class="form-field__error" id="err-firstname" aria-live="polite"></span>
             </div>
             <div class="form-field">
               <label for="f-email">Correo <span class="req">*</span></label>
-              <input type="email" id="f-email" name="email" required autocomplete="email" placeholder="tu@empresa.com">
+              <input type="email" id="f-email" name="email" required autocomplete="email" placeholder="tu@empresa.com" aria-describedby="err-email">
               <span class="form-field__error" id="err-email" aria-live="polite"></span>
             </div>
             <div class="form-field">
               <label for="f-company">Empresa <span class="req">*</span></label>
-              <input type="text" id="f-company" name="company" required minlength="2" autocomplete="organization" placeholder="Nombre de la empresa">
+              <input type="text" id="f-company" name="company" required minlength="2" autocomplete="organization" placeholder="Nombre de la empresa" aria-describedby="err-company">
               <span class="form-field__error" id="err-company" aria-live="polite"></span>
             </div>
             <div class="form-field">
               <label for="f-jobtitle">Cargo <span class="req">*</span></label>
-              <input type="text" id="f-jobtitle" name="jobtitle" required minlength="2" autocomplete="organization-title" placeholder="Tu rol o cargo">
+              <input type="text" id="f-jobtitle" name="jobtitle" required minlength="2" autocomplete="organization-title" placeholder="Tu rol o cargo" aria-describedby="err-jobtitle">
               <span class="form-field__error" id="err-jobtitle" aria-live="polite"></span>
             </div>
             <div class="form-field">
               <label for="f-company_size">Tamaño de la empresa <span class="req">*</span></label>
-              <select id="f-company_size" name="company_size" required>
+              <select id="f-company_size" name="company_size" required aria-describedby="err-company_size">
                 <option value="">Selecciona…</option>
                 <option value="1-49">Menos de 50 colaboradores</option>
                 <option value="50-249">50–249 colaboradores</option>
@@ -857,7 +885,7 @@
             </div>
             <div class="form-field">
               <label for="f-industry">Industria <span class="req">*</span></label>
-              <select id="f-industry" name="industry" required>
+              <select id="f-industry" name="industry" required aria-describedby="err-industry">
                 <option value="">Selecciona…</option>
                 <option value="Retail">Retail / Comercio</option>
                 <option value="Manufacturing">Manufactura / Industrial</option>
@@ -878,15 +906,15 @@
               <span class="form-field__error" id="err-message" aria-live="polite"></span>
             </div>
             <button type="submit" class="btn btn--full" id="form-submit">
-              <span id="submit-label">Agenda mi diagnóstico</span>
+              <span id="submit-label">Agenda tu diagnóstico</span>
               <span class="btn__arrow">→</span>
             </button>
             <p class="form-privacy">Al enviar aceptas nuestro <a href="/privacidad">aviso de privacidad</a>.</p>
           </form>
-          <div id="form-success" class="form-success" hidden>
+          <div id="form-success" class="form-success" hidden tabindex="-1" role="status" aria-live="polite">
             <div class="form-success__icon" aria-hidden="true">✓</div>
             <h3 class="form-success__title">Recibimos tu solicitud.</h3>
-            <p class="form-success__body">Chucho responde en menos de 24 horas hábiles.</p>
+            <p class="form-success__body">Chucho Porras (Fractional CMO) responde personalmente en menos de 24 horas hábiles.</p>
             <a href="#casos" class="link-secondary">Mientras tanto, ver casos ↓</a>
           </div>
         </div>
@@ -934,6 +962,8 @@
     </div>
   </section>
 
+  </main>
+
   <!-- Footer con estructura real de apto.mx + spa actual -->
   <footer class="footer">
     <div class="container">
@@ -942,7 +972,7 @@
           <div class="footer__logo">
             <img src="./assets/logos/apto-logo-white.svg" alt="APTO" width="93" height="56">
           </div>
-          <p class="footer__tagline">Resolvemos retos a través de diseño, estrategia y tecnología.</p>
+          <p class="footer__tagline">Diseñamos y construimos los sistemas críticos que la operación necesita para escalar.</p>
           <div class="footer__social" style="display:flex;gap:16px;margin-top:20px">
             <a href="https://www.linkedin.com/company/apto-innovacion/" target="_blank" rel="noopener" aria-label="LinkedIn" style="color:rgba(255,255,255,.6);font-size:14px">LinkedIn</a>
             <a href="https://www.instagram.com/apto.innovation/" target="_blank" rel="noopener" aria-label="Instagram" style="color:rgba(255,255,255,.6);font-size:14px">Instagram</a>
@@ -1048,7 +1078,17 @@
         }
         err.textContent = msg;
         wrap.classList.toggle('has-error', !!msg);
+        input.setAttribute('aria-invalid', msg ? 'true' : 'false');
         return !msg;
+      }
+
+      // Respect prefers-reduced-motion: no autoplay video hero
+      const video = document.getElementById('hero-video');
+      if (video) {
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: no-preference)');
+        if (mediaQuery.matches) {
+          video.play().catch(() => {}); // ignore autoplay blocked
+        }
       }
 
       const emailInput = document.getElementById('f-email');
@@ -1178,7 +1218,7 @@
           } catch (err2) {
             showMessage('error', 'Algo falló al enviar. Intenta de nuevo o escríbenos a hola@apto.mx');
             submitBtn.disabled = false;
-            submitLabel.textContent = 'Agenda mi diagnóstico';
+            submitLabel.textContent = 'Agenda tu diagnóstico';
           }
         }
       });

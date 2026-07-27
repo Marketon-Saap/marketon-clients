@@ -1,49 +1,53 @@
 /**
  * APTO Landing Madre · Backend Marketon Orchestrator (Cloudflare Worker)
  *
- * Endpoint: POST /submit
+ * v2.0 (2026-07-27):
+ *  - Cloudflare D1 lead persistence · safety net (nunca se pierde un lead)
+ *  - Multi-recipient email notifications (5 destinatarios APTO+Marketon)
+ *  - Admin endpoint /admin/leads con Basic Auth para query
  *
- * Flow on submit:
+ * Endpoints:
+ *   POST /submit         · form submission handler (orquesta todo)
+ *   GET  /health         · health check + integration status
+ *   GET  /admin/leads    · lista los últimos N leads (protegido con Basic Auth)
+ *
+ * Flow on /submit:
  *   1. Validate + normalize payload
- *   2. HubSpot Forms API v3 (analytics + form UI capture)
- *   3. HubSpot CRM Contacts API (create/update + lifecyclestage=lead + industry + company_size)
- *   4. HubSpot CRM Deals API (create Deal en pipeline Marketon, stage=New Lead)
- *   5. HubSpot Associations API (Contact ↔ Deal, associationTypeId 3)
- *   6. Meta CAPI Lead event (server-side, dedup con Pixel client-side vía event_id) · si META_ACCESS_TOKEN
- *   7. GA4 generate_lead (Measurement Protocol) · si GA4_MEASUREMENT_ID
- *   8. Email notify chucho@marketon.mx · si RESEND_API_KEY
- *
- * All external calls are best-effort — if 2-8 fail, we still return 200 to the client
- * as long as HubSpot Contact was created (step 3). Deal (step 4) is critical; failure
- * there returns 500 to trigger client retry.
+ *   2. INSERT INTO leads (D1) · safety net PRIMERO (nunca perdemos un lead)
+ *   3. HubSpot Contact upsert (crm/v3/objects/contacts)
+ *   4. HubSpot Deal create en pipeline Marketon
+ *   5. Association Contact↔Deal
+ *   6. UPDATE leads SET hubspot_contact_id, hubspot_deal_id, hubspot_status
+ *   7. Meta CAPI + GA4 + Resend (non-blocking, waitUntil)
+ *   8. Return {ok, contactId, dealId, leadId}
  *
  * Env vars (vars):
- *   ALLOWED_ORIGIN                — https://mktgrupoplasenciaautomotriz.github.io o custom domain
- *   HUBSPOT_PORTAL_ID             — 2583031
- *   HUBSPOT_FORM_ID               — 6f9db620-165b-451b-8b49-76b441eea7ce
- *   HUBSPOT_PIPELINE_ID           — 922134387 (Marketon · APTO Sales Pipeline 2026H2)
- *   HUBSPOT_DEAL_STAGE_NEW_LEAD   — 1407911441
- *   DEFAULT_LIFECYCLE_STAGE       — "lead"
- *   NOTIFICATION_EMAIL_TO         — chucho@marketon.mx
+ *   ALLOWED_ORIGIN, HUBSPOT_PORTAL_ID, HUBSPOT_FORM_ID, HUBSPOT_PIPELINE_ID,
+ *   HUBSPOT_DEAL_STAGE_NEW_LEAD, DEFAULT_LIFECYCLE_STAGE,
+ *   NOTIFICATION_EMAIL_TO (comma-separated), NOTIFICATION_EMAIL_FROM
+ *
+ * Bindings:
+ *   APTO_LEADS_DB (D1)
  *
  * Secrets (wrangler secret put):
- *   HUBSPOT_TOKEN                 — Private App token
- *   META_ACCESS_TOKEN             — opcional (Pixel CAPI)
- *   META_TEST_EVENT_CODE          — opcional
- *   GA4_MEASUREMENT_ID            — opcional (G-XXXXXXX)
- *   GA4_API_SECRET                — opcional
- *   RESEND_API_KEY                — opcional
+ *   HUBSPOT_TOKEN            · required
+ *   META_ACCESS_TOKEN        · optional (Pixel CAPI)
+ *   META_TEST_EVENT_CODE     · optional
+ *   GA4_MEASUREMENT_ID       · optional (G-XXXXXXX)
+ *   GA4_API_SECRET           · optional
+ *   RESEND_API_KEY           · optional (para notify email)
+ *   ADMIN_BASIC_AUTH         · optional (formato "user:pass" base64) para /admin/leads
  */
 
 const CORS_HEADERS = (origin) => ({
   'Access-Control-Allow-Origin': origin || '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Max-Age': '86400',
 });
 
 const HUBSPOT_API = 'https://api.hubapi.com';
-const HUBSPOT_CONTACT_TO_DEAL_ASSOC_TYPE = 3; // canonical HubSpot association ID
+const HUBSPOT_CONTACT_TO_DEAL_ASSOC_TYPE = 3;
 
 export default {
   async fetch(request, env, ctx) {
@@ -59,27 +63,11 @@ export default {
       if (url.pathname === '/submit' && request.method === 'POST') {
         return await handleSubmit(request, env, cors, ctx);
       }
+      if (url.pathname === '/admin/leads' && request.method === 'GET') {
+        return await handleAdminLeads(request, env, url, cors);
+      }
       if (url.pathname === '/health' || url.pathname === '/') {
-        return json(
-          {
-            status: 'ok',
-            name: 'apto-landing-api',
-            version: '1.0.0',
-            endpoints: ['/submit'],
-            hubspot: {
-              portal: env.HUBSPOT_PORTAL_ID,
-              pipeline: env.HUBSPOT_PIPELINE_ID,
-              secretConfigured: !!env.HUBSPOT_TOKEN,
-            },
-            integrations: {
-              meta_capi: !!env.META_ACCESS_TOKEN,
-              ga4: !!env.GA4_MEASUREMENT_ID && !!env.GA4_API_SECRET,
-              email_notify: !!env.RESEND_API_KEY,
-            },
-          },
-          200,
-          cors
-        );
+        return await handleHealth(env, cors);
       }
       return json({ error: 'not_found' }, 404, cors);
     } catch (err) {
@@ -89,12 +77,87 @@ export default {
   },
 };
 
+/* ─── /health ────────────────────────────────────────────────────────────── */
+
+async function handleHealth(env, cors) {
+  // Health check ligero: cuenta leads en D1
+  let leadsTotal = null;
+  let leadsHubspotFailed = null;
+  let dbError = null;
+  try {
+    const r1 = await env.APTO_LEADS_DB.prepare('SELECT COUNT(*) as c FROM leads').first();
+    leadsTotal = r1?.c ?? 0;
+    const r2 = await env.APTO_LEADS_DB.prepare("SELECT COUNT(*) as c FROM leads WHERE hubspot_status='failed'").first();
+    leadsHubspotFailed = r2?.c ?? 0;
+  } catch (e) {
+    dbError = e.message;
+  }
+
+  return json(
+    {
+      status: 'ok',
+      name: 'apto-landing-api',
+      version: '2.0.0',
+      endpoints: ['POST /submit', 'GET /admin/leads', 'GET /health'],
+      hubspot: {
+        portal: env.HUBSPOT_PORTAL_ID,
+        pipeline: env.HUBSPOT_PIPELINE_ID,
+        secretConfigured: !!env.HUBSPOT_TOKEN,
+      },
+      integrations: {
+        meta_capi: !!env.META_ACCESS_TOKEN,
+        ga4: !!env.GA4_MEASUREMENT_ID && !!env.GA4_API_SECRET,
+        email_notify: !!env.RESEND_API_KEY,
+      },
+      d1: {
+        binding: !!env.APTO_LEADS_DB,
+        leads_total: leadsTotal,
+        leads_hubspot_failed: leadsHubspotFailed,
+        error: dbError,
+      },
+      notification_recipients: (env.NOTIFICATION_EMAIL_TO || '').split(',').map((s) => s.trim()).filter(Boolean),
+    },
+    200,
+    cors
+  );
+}
+
+/* ─── /admin/leads (basic auth) ──────────────────────────────────────────── */
+
+async function handleAdminLeads(request, env, url, cors) {
+  const auth = request.headers.get('Authorization') || '';
+  const expected = env.ADMIN_BASIC_AUTH; // formato "Basic base64(user:pass)"
+  if (!expected) {
+    return json({ error: 'admin_disabled', hint: 'set ADMIN_BASIC_AUTH secret' }, 503, cors);
+  }
+  if (auth !== `Basic ${expected}`) {
+    return new Response('Unauthorized', {
+      status: 401,
+      headers: {
+        'WWW-Authenticate': 'Basic realm="APTO Admin"',
+        ...cors,
+      },
+    });
+  }
+  const limit = Math.min(parseInt(url.searchParams.get('limit') || '50', 10), 500);
+  const rows = await env.APTO_LEADS_DB
+    .prepare(
+      `SELECT id, created_at, firstname, lastname, email, company, jobtitle, industry, company_size,
+              hubspot_status, hubspot_contact_id, hubspot_deal_id, hubspot_error,
+              meta_capi_status, ga4_status, resend_status
+       FROM leads ORDER BY created_at DESC LIMIT ?`
+    )
+    .bind(limit)
+    .all();
+  return json({ count: rows?.results?.length ?? 0, leads: rows?.results ?? [] }, 200, cors);
+}
+
 /* ─── /submit handler ────────────────────────────────────────────────────── */
 
 async function handleSubmit(request, env, cors, ctx) {
   const body = await request.json().catch(() => ({}));
 
-  // Validate required fields
+  // Validate required
   const errors = validatePayload(body);
   if (errors.length) {
     return json({ error: 'validation_error', fields: errors }, 400, cors);
@@ -103,44 +166,66 @@ async function handleSubmit(request, env, cors, ctx) {
   const contactProps = normalizeContactProps(body, env);
   const dealProps = normalizeDealProps(body, env);
   const context = body.context || {};
+  const clientIp = request.headers.get('CF-Connecting-IP') || '';
+  const userAgent = request.headers.get('User-Agent') || '';
+  const referrer = request.headers.get('Referer') || '';
 
-  // Steps 3-5: HubSpot Contact + Deal + Association (critical path)
-  let hubspotResult;
+  // Step 1: INSERT INTO leads (safety net) · ANTES de HubSpot
+  let leadId;
   try {
-    hubspotResult = await createHubSpotContactAndDeal(
-      env,
-      contactProps,
-      dealProps,
-      context
-    );
+    leadId = await insertLead(env, body, contactProps, context, clientIp, userAgent, referrer);
+  } catch (e) {
+    console.error('D1 INSERT failed (non-fatal):', e.message);
+    // No matamos el submit por D1 fail; seguimos con HubSpot
+  }
+
+  // Steps 2-4: HubSpot Contact + Deal + Association (path crítico)
+  let hubspotResult;
+  let hubspotError = null;
+  try {
+    hubspotResult = await createHubSpotContactAndDeal(env, contactProps, dealProps);
+    // Update D1 con success
+    if (leadId) {
+      ctx.waitUntil(
+        env.APTO_LEADS_DB
+          .prepare(
+            "UPDATE leads SET hubspot_status='success', hubspot_contact_id=?, hubspot_deal_id=?, updated_at=datetime('now') WHERE id=?"
+          )
+          .bind(hubspotResult.contactId, hubspotResult.dealId, leadId)
+          .run()
+          .catch((e) => console.error('D1 UPDATE fail:', e.message))
+      );
+    }
   } catch (err) {
-    console.error('HubSpot critical failure:', err.message);
+    hubspotError = err.message;
+    console.error('HubSpot failure (lead persisted in D1):', err.message);
+    if (leadId) {
+      ctx.waitUntil(
+        env.APTO_LEADS_DB
+          .prepare(
+            "UPDATE leads SET hubspot_status='failed', hubspot_error=?, updated_at=datetime('now') WHERE id=?"
+          )
+          .bind(err.message, leadId)
+          .run()
+          .catch((e) => console.error('D1 UPDATE fail:', e.message))
+      );
+    }
     return json(
-      { error: 'hubspot_failure', message: err.message },
+      { error: 'hubspot_failure', message: err.message, leadId },
       500,
       cors
     );
   }
 
-  // Step 2: HubSpot Forms API (analytics · non-blocking)
-  ctx.waitUntil(submitToHubSpotFormsAPI(env, body).catch((err) => {
-    console.error('Forms API non-critical failure:', err.message);
-  }));
-
-  // Steps 6-8: non-blocking side effects
+  // Step 5: HubSpot Forms API (analytics · non-blocking)
   ctx.waitUntil(
-    Promise.allSettled([
-      sendMetaCAPILeadEvent(env, contactProps, context, request).catch((e) =>
-        console.error('Meta CAPI failed:', e.message)
-      ),
-      sendGA4GenerateLead(env, contactProps, context).catch((e) =>
-        console.error('GA4 failed:', e.message)
-      ),
-      sendEmailNotification(env, contactProps, dealProps, hubspotResult).catch(
-        (e) => console.error('Email notify failed:', e.message)
-      ),
-    ])
+    submitToHubSpotFormsAPI(env, body).catch((err) =>
+      console.error('Forms API non-critical failure:', err.message)
+    )
   );
+
+  // Steps 6-8: non-blocking side effects con status updates
+  ctx.waitUntil(runSideEffects(env, contactProps, dealProps, context, request, hubspotResult, leadId));
 
   return json(
     {
@@ -148,10 +233,122 @@ async function handleSubmit(request, env, cors, ctx) {
       contactId: hubspotResult.contactId,
       dealId: hubspotResult.dealId,
       dealName: hubspotResult.dealName,
+      leadId,
     },
     200,
     cors
   );
+}
+
+async function runSideEffects(env, contactProps, dealProps, context, request, hubspotResult, leadId) {
+  const updates = {};
+
+  // Meta CAPI
+  try {
+    if (env.META_ACCESS_TOKEN) {
+      await sendMetaCAPILeadEvent(env, contactProps, context, request);
+      updates.meta_capi_status = 'success';
+    } else {
+      updates.meta_capi_status = 'skipped';
+    }
+  } catch (e) {
+    console.error('Meta CAPI failed:', e.message);
+    updates.meta_capi_status = 'failed';
+    updates.meta_capi_error = e.message;
+  }
+
+  // GA4
+  try {
+    if (env.GA4_MEASUREMENT_ID && env.GA4_API_SECRET) {
+      await sendGA4GenerateLead(env, contactProps, context);
+      updates.ga4_status = 'success';
+    } else {
+      updates.ga4_status = 'skipped';
+    }
+  } catch (e) {
+    console.error('GA4 failed:', e.message);
+    updates.ga4_status = 'failed';
+    updates.ga4_error = e.message;
+  }
+
+  // Resend email (multi-recipient)
+  try {
+    if (env.RESEND_API_KEY) {
+      await sendEmailNotification(env, contactProps, dealProps, hubspotResult);
+      updates.resend_status = 'success';
+    } else {
+      updates.resend_status = 'skipped';
+    }
+  } catch (e) {
+    console.error('Resend failed:', e.message);
+    updates.resend_status = 'failed';
+    updates.resend_error = e.message;
+  }
+
+  // Update D1 con status
+  if (leadId) {
+    try {
+      await env.APTO_LEADS_DB
+        .prepare(
+          `UPDATE leads
+           SET meta_capi_status=?, meta_capi_error=?, ga4_status=?, ga4_error=?, resend_status=?, resend_error=?, updated_at=datetime('now')
+           WHERE id=?`
+        )
+        .bind(
+          updates.meta_capi_status,
+          updates.meta_capi_error || null,
+          updates.ga4_status,
+          updates.ga4_error || null,
+          updates.resend_status,
+          updates.resend_error || null,
+          leadId
+        )
+        .run();
+    } catch (e) {
+      console.error('D1 side-effects UPDATE failed:', e.message);
+    }
+  }
+}
+
+/* ─── D1 · lead persistence ──────────────────────────────────────────────── */
+
+async function insertLead(env, body, contactProps, context, clientIp, userAgent, referrer) {
+  const stmt = env.APTO_LEADS_DB.prepare(
+    `INSERT INTO leads (
+      firstname, lastname, email, company, jobtitle, industry, company_size, message,
+      page_uri, page_name, hutk, fbp, fbc, ga_client_id,
+      utm_source, utm_medium, utm_campaign, utm_content, utm_term,
+      referrer, user_agent, client_ip, raw_payload
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  );
+  const result = await stmt
+    .bind(
+      contactProps.firstname,
+      contactProps.lastname || null,
+      contactProps.email,
+      contactProps.company,
+      contactProps.jobtitle,
+      contactProps.industry || null,
+      contactProps.company_size || null,
+      contactProps.message || null,
+      context.pageUri || null,
+      context.pageName || null,
+      context.hutk || null,
+      context.fbp || null,
+      context.fbc || null,
+      context.client_id || null,
+      context.utm_source || null,
+      context.utm_medium || null,
+      context.utm_campaign || null,
+      context.utm_content || null,
+      context.utm_term || null,
+      referrer,
+      userAgent,
+      clientIp,
+      JSON.stringify(body)
+    )
+    .run();
+  return result.meta?.last_row_id ?? null;
 }
 
 /* ─── Payload validation + normalization ─────────────────────────────────── */
@@ -194,93 +391,79 @@ function normalizeDealProps(body, env) {
     dealstage: env.HUBSPOT_DEAL_STAGE_NEW_LEAD,
     dealname: dealName,
   };
-  if (body.message) {
-    props.description = body.message.trim();
-  }
+  if (body.message) props.description = body.message.trim();
   return props;
 }
 
 /* ─── HubSpot Contact + Deal + Association ───────────────────────────────── */
 
-async function createHubSpotContactAndDeal(env, contactProps, dealProps, context) {
+async function createHubSpotContactAndDeal(env, contactProps, dealProps) {
   const token = env.HUBSPOT_TOKEN;
   if (!token) throw new Error('HUBSPOT_TOKEN not configured');
-
-  // 1. Upsert Contact by email (avoids duplicates)
   const contactId = await upsertContact(env, contactProps);
-
-  // 2. Create Deal
   const deal = await createDeal(env, dealProps, contactId);
-
-  return {
-    contactId,
-    dealId: deal.id,
-    dealName: dealProps.dealname,
-  };
+  return { contactId, dealId: deal.id, dealName: dealProps.dealname };
 }
 
 async function upsertContact(env, props) {
   const token = env.HUBSPOT_TOKEN;
   const email = props.email;
 
-  // Try create first
+  // Split lifecyclestage del rest — HubSpot APTO Portal bloquea "backward movement"
+  // silenciosamente. Al crear con lifecyclestage="lead", APTO auto-mapea a "Contacto"
+  // (146137940). Fix: crear sin lifecyclestage, luego clear+set en 2 pasos separados.
+  const targetLifecycle = props.lifecyclestage;
+  const propsWithoutLifecycle = { ...props };
+  delete propsWithoutLifecycle.lifecyclestage;
+
   const createRes = await fetch(`${HUBSPOT_API}/crm/v3/objects/contacts`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ properties: props }),
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ properties: propsWithoutLifecycle }),
   });
 
   if (createRes.ok) {
     const data = await createRes.json();
+    if (targetLifecycle) {
+      await forceLifecycleStage(env, data.id, targetLifecycle);
+    }
     return data.id;
   }
 
-  // If 409 conflict (email exists), update instead
   if (createRes.status === 409) {
     const searchRes = await fetch(`${HUBSPOT_API}/crm/v3/objects/contacts/search`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
       body: JSON.stringify({
-        filterGroups: [
-          { filters: [{ propertyName: 'email', operator: 'EQ', value: email }] },
-        ],
+        filterGroups: [{ filters: [{ propertyName: 'email', operator: 'EQ', value: email }] }],
         limit: 1,
         properties: ['email'],
       }),
     });
-    if (!searchRes.ok) {
-      throw new Error(`Contact search failed: ${searchRes.status}`);
-    }
+    if (!searchRes.ok) throw new Error(`Contact search failed: ${searchRes.status}`);
     const searchData = await searchRes.json();
-    if (!searchData.results?.length) {
-      throw new Error(`Contact ${email} conflict but not found in search`);
-    }
+    if (!searchData.results?.length) throw new Error(`Contact ${email} conflict but not found`);
     const contactId = searchData.results[0].id;
 
-    // Update lifecyclestage + any new props (don't overwrite existing firstname unless empty)
     const updateProps = { ...props };
-    delete updateProps.email; // email is immutable identifier here
+    delete updateProps.email;
+    const targetLifecycleForUpdate = updateProps.lifecyclestage;
+    delete updateProps.lifecyclestage;
 
     const updateRes = await fetch(
       `${HUBSPOT_API}/crm/v3/objects/contacts/${contactId}`,
       {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ properties: updateProps }),
       }
     );
     if (!updateRes.ok) {
       const errText = await updateRes.text();
       throw new Error(`Contact update failed: ${updateRes.status} ${errText}`);
+    }
+    if (targetLifecycleForUpdate) {
+      await forceLifecycleStage(env, contactId, targetLifecycleForUpdate);
     }
     return contactId;
   }
@@ -289,25 +472,46 @@ async function upsertContact(env, props) {
   throw new Error(`Contact create failed: ${createRes.status} ${errText}`);
 }
 
+// HubSpot bloquea "backward movement" de lifecyclestage silenciosamente.
+// Fix: clear (set "") → luego set target. 2 PATCH calls separadas.
+async function forceLifecycleStage(env, contactId, targetStage) {
+  const token = env.HUBSPOT_TOKEN;
+  const clearRes = await fetch(
+    `${HUBSPOT_API}/crm/v3/objects/contacts/${contactId}`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ properties: { lifecyclestage: '' } }),
+    }
+  );
+  if (!clearRes.ok) {
+    console.error('lifecyclestage clear failed (non-fatal):', clearRes.status);
+    return;
+  }
+  const setRes = await fetch(
+    `${HUBSPOT_API}/crm/v3/objects/contacts/${contactId}`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ properties: { lifecyclestage: targetStage } }),
+    }
+  );
+  if (!setRes.ok) {
+    console.error('lifecyclestage set failed (non-fatal):', setRes.status);
+  }
+}
+
 async function createDeal(env, dealProps, contactId) {
   const token = env.HUBSPOT_TOKEN;
   const res = await fetch(`${HUBSPOT_API}/crm/v3/objects/deals`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
     body: JSON.stringify({
       properties: dealProps,
       associations: [
         {
           to: { id: contactId },
-          types: [
-            {
-              associationCategory: 'HUBSPOT_DEFINED',
-              associationTypeId: HUBSPOT_CONTACT_TO_DEAL_ASSOC_TYPE,
-            },
-          ],
+          types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: HUBSPOT_CONTACT_TO_DEAL_ASSOC_TYPE }],
         },
       ],
     }),
@@ -340,26 +544,19 @@ async function submitToHubSpotFormsAPI(env, body) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ fields, context }),
   });
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Forms API submit failed: ${res.status} ${errText}`);
-  }
+  if (!res.ok) throw new Error(`Forms API submit failed: ${res.status}`);
 }
 
 /* ─── Meta CAPI Lead event ───────────────────────────────────────────────── */
 
 async function sendMetaCAPILeadEvent(env, contactProps, context, request) {
   if (!env.META_ACCESS_TOKEN) return;
-  const pixelId = '721335916342252'; // hardcoded pixel APTO
+  const pixelId = '721335916342252';
   const url = `https://graph.facebook.com/v18.0/${pixelId}/events?access_token=${env.META_ACCESS_TOKEN}`;
 
-  const userData = {
-    em: await sha256(contactProps.email),
-  };
-  const fbp = context.fbp || null;
-  const fbc = context.fbc || null;
-  if (fbp) userData.fbp = fbp;
-  if (fbc) userData.fbc = fbc;
+  const userData = { em: await sha256(contactProps.email) };
+  if (context.fbp) userData.fbp = context.fbp;
+  if (context.fbc) userData.fbc = context.fbc;
   const clientIp = request.headers.get('CF-Connecting-IP');
   const userAgent = request.headers.get('User-Agent');
   if (clientIp) userData.client_ip_address = clientIp;
@@ -375,10 +572,7 @@ async function sendMetaCAPILeadEvent(env, contactProps, context, request) {
         action_source: 'website',
         event_id: eventId,
         user_data: userData,
-        custom_data: {
-          currency: 'MXN',
-          value: 100, // valor tentativo lead APTO
-        },
+        custom_data: { currency: 'MXN', value: 100 },
       },
     ],
   };
@@ -389,10 +583,7 @@ async function sendMetaCAPILeadEvent(env, contactProps, context, request) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Meta CAPI failed: ${res.status} ${errText}`);
-  }
+  if (!res.ok) throw new Error(`Meta CAPI failed: ${res.status}`);
 }
 
 /* ─── GA4 Measurement Protocol · generate_lead ───────────────────────────── */
@@ -400,55 +591,45 @@ async function sendMetaCAPILeadEvent(env, contactProps, context, request) {
 async function sendGA4GenerateLead(env, contactProps, context) {
   if (!env.GA4_MEASUREMENT_ID || !env.GA4_API_SECRET) return;
   const url = `https://www.google-analytics.com/mp/collect?measurement_id=${env.GA4_MEASUREMENT_ID}&api_secret=${env.GA4_API_SECRET}`;
-
-  // GA4 requires client_id; use hash of email as fallback if not passed
   const clientId = context.client_id || (await sha256(contactProps.email)).slice(0, 20);
-
   const payload = {
     client_id: clientId,
-    events: [
-      {
-        name: 'generate_lead',
-        params: {
-          currency: 'MXN',
-          value: 100,
-          page_location: context.pageUri || 'https://apto.mx',
-        },
-      },
-    ],
+    events: [{ name: 'generate_lead', params: { currency: 'MXN', value: 100, page_location: context.pageUri || 'https://apto.mx' } }],
   };
-
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  // GA4 MP returns 204 no content on success
-  if (res.status >= 300) {
-    const errText = await res.text();
-    throw new Error(`GA4 MP failed: ${res.status} ${errText}`);
-  }
+  if (res.status >= 300) throw new Error(`GA4 MP failed: ${res.status}`);
 }
 
-/* ─── Email notify via Resend ────────────────────────────────────────────── */
+/* ─── Email notify via Resend (MULTI-RECIPIENT) ──────────────────────────── */
 
 async function sendEmailNotification(env, contactProps, dealProps, hubspotResult) {
   if (!env.RESEND_API_KEY) return;
-  const to = env.NOTIFICATION_EMAIL_TO || 'chucho@marketon.mx';
+  const recipients = (env.NOTIFICATION_EMAIL_TO || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!recipients.length) throw new Error('NOTIFICATION_EMAIL_TO not configured');
+  const from = env.NOTIFICATION_EMAIL_FROM || 'APTO Landing <no-reply@marketon.mx>';
 
   const html = `
     <h2>Nuevo lead APTO Landing Madre</h2>
-    <p><b>Nombre:</b> ${contactProps.firstname} ${contactProps.lastname || ''}</p>
-    <p><b>Email:</b> <a href="mailto:${contactProps.email}">${contactProps.email}</a></p>
-    <p><b>Empresa:</b> ${contactProps.company}</p>
-    <p><b>Cargo:</b> ${contactProps.jobtitle}</p>
-    ${contactProps.industry ? `<p><b>Industria:</b> ${contactProps.industry}</p>` : ''}
-    ${contactProps.company_size ? `<p><b>Tamaño empresa:</b> ${contactProps.company_size}</p>` : ''}
-    ${contactProps.message ? `<p><b>Mensaje:</b> ${contactProps.message}</p>` : ''}
+    <p><b>Nombre:</b> ${escapeHtml(contactProps.firstname)} ${escapeHtml(contactProps.lastname || '')}</p>
+    <p><b>Email:</b> <a href="mailto:${encodeURIComponent(contactProps.email)}">${escapeHtml(contactProps.email)}</a></p>
+    <p><b>Empresa:</b> ${escapeHtml(contactProps.company)}</p>
+    <p><b>Cargo:</b> ${escapeHtml(contactProps.jobtitle)}</p>
+    ${contactProps.industry ? `<p><b>Industria:</b> ${escapeHtml(contactProps.industry)}</p>` : ''}
+    ${contactProps.company_size ? `<p><b>Tamaño empresa:</b> ${escapeHtml(contactProps.company_size)}</p>` : ''}
+    ${contactProps.message ? `<p><b>Mensaje:</b> ${escapeHtml(contactProps.message)}</p>` : ''}
     <hr>
     <p><a href="https://app.hubspot.com/contacts/${env.HUBSPOT_PORTAL_ID}/record/0-1/${hubspotResult.contactId}">Ver Contact en HubSpot →</a></p>
     <p><a href="https://app.hubspot.com/contacts/${env.HUBSPOT_PORTAL_ID}/record/0-3/${hubspotResult.dealId}">Ver Deal en HubSpot →</a></p>
-    <p><small>Deal: ${dealProps.dealname} · Pipeline Marketon · New Lead</small></p>
+    <p><small>Deal: ${escapeHtml(dealProps.dealname)} · Pipeline Marketon · New Lead</small></p>
+    <hr>
+    <p><small style="color:#64748b">Notificación enviada a: ${recipients.map(escapeHtml).join(', ')}</small></p>
   `;
 
   const res = await fetch('https://api.resend.com/emails', {
@@ -458,8 +639,8 @@ async function sendEmailNotification(env, contactProps, dealProps, hubspotResult
       Authorization: `Bearer ${env.RESEND_API_KEY}`,
     },
     body: JSON.stringify({
-      from: 'APTO Landing <no-reply@marketon.mx>',
-      to: [to],
+      from,
+      to: recipients,
       subject: `Nuevo lead APTO · ${contactProps.company}`,
       html,
     }),
@@ -475,10 +656,7 @@ async function sendEmailNotification(env, contactProps, dealProps, hubspotResult
 function json(data, status, extraHeaders = {}) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...extraHeaders,
-    },
+    headers: { 'Content-Type': 'application/json', ...extraHeaders },
   });
 }
 
@@ -488,4 +666,13 @@ async function sha256(text) {
   return Array.from(new Uint8Array(hashBuf))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
+}
+
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
