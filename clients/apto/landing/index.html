@@ -106,7 +106,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       position: relative;
     }
     /* Section wrappers contienen scroll-x carousels · previene body overflow */
-    section, .section, .categoria, .no-somos, .pov-quote { overflow-x: hidden; }
+    section, .section, .categoria, .no-somos, .pov-quote, .footer, main, nav { overflow-x: hidden; }
+    /* Safety net universal para elementos que puedan tener padding-inline default */
+    ul, ol { padding-inline-start: 0; }
     /* Excepción · scroll-x containers necesitan overflow-x auto */
     @media (max-width: 767px) {
       .pilares, .productos, .metodo, .cards-3, .casos-secundarios, .categoria__grid {
