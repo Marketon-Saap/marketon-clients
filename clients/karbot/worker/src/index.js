@@ -225,15 +225,20 @@ async function handleBook(request, env, cors) {
   const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || '';
   const userAgent = request.headers.get('User-Agent') || '';
   const referrer = request.headers.get('Referer') || '';
+  const country = (request.headers.get('CF-IPCountry') || '').toLowerCase() || null; // Cloudflare geo IP · 2 letters ISO
   const isMock = !calendarRefreshToken(env);
+
+  // Enrichment del cliente (attribution + hashed PII para Enhanced Conversions/CAPI server-side futuro)
+  const enrichment = body.enrichment || {};
+  const attributionJson = JSON.stringify(enrichment);
 
   // ---------- 1) D1 insert · safety net ----------
   let leadId = null;
   try {
     const insertRes = await env.karbot_leads
       .prepare(
-        `INSERT INTO leads (nombre, empresa, email, phone, agencias, rol, slot_start, slot_end, mock, user_agent, ip, referrer)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        `INSERT INTO leads (nombre, empresa, email, phone, agencias, rol, slot_start, slot_end, mock, user_agent, ip, country, referrer, attribution_json)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
       )
       .bind(
         nombre,
@@ -247,7 +252,9 @@ async function handleBook(request, env, cors) {
         isMock ? 1 : 0,
         userAgent,
         ip,
-        referrer
+        country,
+        referrer,
+        attributionJson
       )
       .run();
     leadId = insertRes.meta.last_row_id;
@@ -337,6 +344,7 @@ async function handleBook(request, env, cors) {
     const result = await sendLeadNotification(env, {
       leadId, nombre, empresa, email, phone, agencias, rol,
       start, end, isMock, eventId, meetLink, htmlLink, calendarError,
+      country, ip, referrer, enrichment,
     });
     emailSent = result.sent;
     emailError = result.error;
@@ -389,6 +397,14 @@ async function sendLeadNotification(env, ctx) {
     ? `[Karbot Landing · MOCK] Nuevo lead · ${ctx.empresa} · ${whenLabel}`
     : `[Karbot Landing] Demo agendada · ${ctx.empresa} · ${whenLabel}`;
 
+  const enrich = ctx.enrichment || {};
+  const clickIds = enrich.click_ids || {};
+  const utm = enrich.utm || {};
+  const clickIdsLabel = ['gclid','fbclid','msclkid','ttclid','li_fat_id']
+    .filter(k => clickIds[k]).map(k => `${k}=${clickIds[k].slice(0,20)}…`).join(' · ') || '—';
+  const utmLabel = ['utm_source','utm_medium','utm_campaign']
+    .filter(k => utm[k]).map(k => `${k}=${utm[k]}`).join(' · ') || '—';
+
   const rows = [
     ['Empresa', ctx.empresa],
     ['Contacto', ctx.nombre],
@@ -398,6 +414,12 @@ async function sendLeadNotification(env, ctx) {
     ['Agencias', ctx.agencias || '—'],
     ['Slot', whenLabel],
     ['Lead ID', ctx.leadId],
+    ['Tier estimado', enrich.tier ? `${enrich.tier} · $${(enrich.value||0).toLocaleString('es-MX')} MXN` : '—'],
+    ['País (geo IP)', (ctx.country || '—').toUpperCase()],
+    ['Fuente (UTM)', utmLabel],
+    ['Click IDs ads', clickIdsLabel],
+    ['Referrer', enrich.referrer || ctx.referrer || 'directo'],
+    ['Landing', enrich.landing_path || '/'],
     ['Modo', ctx.isMock ? '⚠ MOCK · pendiente OAuth Isabel · agendar manualmente' : '✓ Evento creado en Calendar'],
   ];
   if (ctx.meetLink) rows.push(['Google Meet', ctx.meetLink]);

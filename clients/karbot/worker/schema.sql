@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS leads (
   email_error  TEXT,           -- mensaje de error si Resend falló
   user_agent   TEXT,
   ip           TEXT,
-  referrer     TEXT
+  country      TEXT,           -- CF-IPCountry header (Cloudflare geo IP)
+  referrer     TEXT,
+  attribution_json TEXT        -- JSON con click IDs (gclid/fbclid/fbp/fbc/ga_cid), UTM, hashed PII (Enhanced Conv/CAPI ready)
 );
 
 CREATE INDEX IF NOT EXISTS idx_leads_created ON leads(created_at DESC);
