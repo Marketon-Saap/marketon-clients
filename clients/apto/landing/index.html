@@ -240,12 +240,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       gap: 56px; flex-wrap: wrap;
     }
     .proof__logo {
-      height: 40px; width: auto; opacity: .55;
-      filter: grayscale(100%);
-      transition: opacity 200ms ease, filter 200ms ease;
+      height: 56px; width: auto; max-width: 160px; opacity: .85;
+      object-fit: contain;
+      transition: opacity 200ms ease;
     }
-    .proof__logo:hover { opacity: 1; filter: grayscale(0); }
-    @media (max-width: 767px) { .proof__logos { gap: 32px; } .proof__logo { height: 32px; } }
+    .proof__logo:hover { opacity: 1; }
+    @media (max-width: 767px) { .proof__logos { gap: 28px; } .proof__logo { height: 44px; max-width: 130px; } }
 
     /* Section base */
     .section { padding: 112px 0; }
@@ -275,13 +275,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-elev); }
     .card__icon-wrap {
-      width: 56px; height: 56px;
-      background: rgba(0,93,224,.08);
-      color: var(--blue-cta);
+      width: 64px; height: 64px;
+      background: var(--navy);
+      color: var(--paper);
       display: inline-flex; align-items: center; justify-content: center;
-      border-radius: 10px; margin-bottom: 24px;
+      border-radius: 12px; margin-bottom: 24px;
     }
-    .card__icon-wrap svg, .card__icon-wrap img { width: 32px; height: 32px; display: block; }
+    .card__icon-wrap svg { width: 36px; height: 36px; display: block; stroke: currentColor; }
+    /* SVGs oficiales APTO tienen stroke:#fff hardcoded → bg navy hace que se vean */
+    .card__icon-wrap img { width: 36px; height: 36px; display: block; }
     .card__title { font-size: 1.25rem; margin-bottom: 12px; color: var(--ink); font-family: var(--font-heading); }
     .card__body { color: var(--ink-muted); font-size: 15.5px; margin: 0; line-height: 1.55; }
 
@@ -322,12 +324,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       transform: translateY(-2px);
     }
     .producto__icon-wrap {
-      width: 48px; height: 48px;
+      width: 52px; height: 52px;
+      background: rgba(255,255,255,.08);
       color: #60A5FA;
       margin-bottom: 18px;
       display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 10px;
+      padding: 8px;
     }
-    .producto__icon-wrap svg, .producto__icon-wrap img { width: 100%; height: 100%; display: block; }
+    .producto__icon-wrap svg { width: 100%; height: 100%; display: block; stroke: currentColor; }
+    /* SVGs oficiales APTO ya tienen stroke:#fff → se ven sin filter en bg navy */
+    .producto__icon-wrap img { width: 100%; height: 100%; display: block; }
     .producto__label { font-size: 15px; font-weight: 600; margin-bottom: 8px; font-family: var(--font-heading); }
     .producto__desc { font-size: 13px; color: rgba(255,255,255,.65); line-height: 1.45; margin: 0; }
 
