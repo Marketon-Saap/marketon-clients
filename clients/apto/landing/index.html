@@ -489,7 +489,30 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       color: var(--ink);
       line-height: 1.5;
     }
-    @media (max-width: 767px) { .no-somos__list li { font-size: 14.5px; padding: 12px 0; } }
+    @media (max-width: 767px) {
+      .no-somos__list li { font-size: 14.5px; padding: 12px 0; }
+      /* Colapsar sección qué NO somos en mobile - solo mostrar 3 items + toggle */
+      .no-somos__list li:nth-child(n+4) { display: none; }
+      .no-somos__toggle {
+        display: block;
+        margin: 20px auto 0;
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 12px 24px;
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        color: var(--ink);
+        cursor: pointer;
+        min-height: 44px;
+      }
+      .no-somos.is-expanded .no-somos__list li { display: flex; }
+      .no-somos.is-expanded .no-somos__toggle { display: none; }
+    }
+    /* Toggle button oculto en desktop, todos los items visibles */
+    @media (min-width: 768px) { .no-somos__toggle { display: none; } }
     .no-somos__list li::before {
       content: "✕";
       color: #DC2626;
@@ -533,6 +556,118 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     @media (max-width: 767px) {
       .pilares, .cards-3 { gap: 12px !important; }
+    }
+
+    /* MOBILE · Horizontal scroll snap patterns (WCAG 2.5.7 + M3 carousel)
+       Convierte grids verticales largos en scroll horizontal one-swipe-per-card.
+       Reduce ~5000px de altura total mobile sin sacrificar contenido. */
+    @media (max-width: 767px) {
+      /* Pilares mobile: scroll horizontal 5 cards */
+      .pilares {
+        display: flex !important;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px !important;
+        padding: 4px 20px 20px;
+        margin: 0 -20px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .pilares::-webkit-scrollbar { display: none; }
+      .pilares .card {
+        flex: 0 0 82vw;
+        max-width: 320px;
+        scroll-snap-align: start;
+      }
+      /* Productos mobile: scroll horizontal 5 cards */
+      .productos {
+        display: flex !important;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px !important;
+        padding: 4px 20px 20px;
+        margin: 0 -20px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .productos::-webkit-scrollbar { display: none; }
+      .producto {
+        flex: 0 0 72vw;
+        max-width: 280px;
+        scroll-snap-align: start;
+      }
+      /* Método mobile: scroll horizontal 3 pasos */
+      .metodo {
+        display: flex !important;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px !important;
+        padding: 4px 20px 20px;
+        margin: 0 -20px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .metodo::-webkit-scrollbar { display: none; }
+      .metodo .paso {
+        flex: 0 0 82vw;
+        max-width: 320px;
+        scroll-snap-align: start;
+      }
+      /* Casos secundarios: mismo patrón scroll horizontal */
+      .casos-secundarios {
+        display: flex !important;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px !important;
+        padding: 4px 20px 4px;
+        margin: 0 -20px;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .casos-secundarios::-webkit-scrollbar { display: none; }
+      .casos-secundarios .card {
+        flex: 0 0 82vw;
+        max-width: 320px;
+        scroll-snap-align: start;
+      }
+      /* Categoría mobile: 3 cards horizontales scroll snap con APTO centrado */
+      .categoria__grid {
+        display: flex !important;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 12px !important;
+        padding: 4px 20px 20px;
+        margin: 24px -20px 0 !important;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+      }
+      .categoria__grid::-webkit-scrollbar { display: none; }
+      .categoria__col {
+        flex: 0 0 78vw;
+        max-width: 300px;
+        scroll-snap-align: start;
+      }
+      /* Hint visual "hay más" con gradient fade a los lados */
+      .pilares, .productos, .metodo, .casos-secundarios, .categoria__grid {
+        scroll-padding-left: 20px;
+      }
+      /* Micro hint "→" para indicar scrollable */
+      .section:has(.pilares) .section__header::after,
+      .section:has(.productos) .section__header::after,
+      .section:has(.metodo) .section__header::after,
+      .categoria .section__header::after {
+        content: "← desliza para ver más →";
+        display: block;
+        font-size: 11px;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-top: 16px;
+        opacity: 0.6;
+      }
+      .section--navy:has(.productos) .section__header::after {
+        color: rgba(255,255,255,0.5);
+      }
     }
     .card__icon-wrap {
       width: 64px; height: 64px;
@@ -1162,6 +1297,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <li><span><strong>No somos consultora AI-first.</strong> AI es una capa útil sobre una operación ya sana — no el punto de partida.</span></li>
         <li><span><strong>No trabajamos con startups sin fondeo confirmado.</strong> Sólo nivel Series A / Y Combinator o equivalente.</span></li>
       </ul>
+      <button class="no-somos__toggle" type="button" onclick="this.closest('.no-somos').classList.add('is-expanded'); this.remove();">Ver los 5 puntos restantes ↓</button>
     </div>
   </section>
 
