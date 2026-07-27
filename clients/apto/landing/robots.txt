@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mktgrupoplasenciaautomotriz.github.io/marketon-clients/clients/apto/landing/sitemap.xml
