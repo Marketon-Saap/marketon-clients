@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+package-lock.json.lock
+
+# Cloudflare Wrangler cache + local state
+.wrangler/
+wrangler.toml.bak
+.dev.vars
+.dev.vars.*
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.token
+
+# OS
+.DS_Store
+Thumbs.db
+._*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+.cache/
+
+# Test coverage
+coverage/
+
+# Downloads accidentally committed
+Downloads/

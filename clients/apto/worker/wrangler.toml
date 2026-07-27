@@ -1,0 +1,21 @@
+name = "apto-landing-api"
+main = "src/index.js"
+compatibility_date = "2026-07-26"
+
+# Vars públicas · pipeline + form IDs (no son secretos)
+[vars]
+ALLOWED_ORIGIN = "https://mktgrupoplasenciaautomotriz.github.io"
+HUBSPOT_PORTAL_ID = "2583031"
+HUBSPOT_FORM_ID = "6f9db620-165b-451b-8b49-76b441eea7ce"
+HUBSPOT_PIPELINE_ID = "922134387"
+HUBSPOT_DEAL_STAGE_NEW_LEAD = "1407911441"
+DEFAULT_LIFECYCLE_STAGE = "lead"
+NOTIFICATION_EMAIL_TO = "chucho@marketon.mx"
+
+# Secrets (NO poner aquí · se configuran con `wrangler secret put NAME`):
+#   HUBSPOT_TOKEN          — HubSpot Private App token (crm.objects.contacts+deals write)
+#   META_ACCESS_TOKEN      — Meta CAPI access token (Pixel 721335916342252) · opcional
+#   META_TEST_EVENT_CODE   — Meta CAPI test event code para debug · opcional
+#   GA4_MEASUREMENT_ID     — GA4 property (G-XXXXXXX) · opcional
+#   GA4_API_SECRET         — GA4 Measurement Protocol API secret · opcional
+#   RESEND_API_KEY         — Resend.com API key para email notify · opcional

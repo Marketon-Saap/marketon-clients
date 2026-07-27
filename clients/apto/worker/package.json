@@ -1,0 +1,21 @@
+{
+  "name": "apto-landing-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare Worker · APTO landing madre backend · Marketon orchestrator (HubSpot Contact+Deal en pipeline Marketon + Meta CAPI + GA4 + email notify)",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "secret:hubspot": "wrangler secret put HUBSPOT_TOKEN",
+    "secret:meta": "wrangler secret put META_ACCESS_TOKEN",
+    "secret:meta:test": "wrangler secret put META_TEST_EVENT_CODE",
+    "secret:ga4:id": "wrangler secret put GA4_MEASUREMENT_ID",
+    "secret:ga4:secret": "wrangler secret put GA4_API_SECRET",
+    "secret:resend": "wrangler secret put RESEND_API_KEY"
+  },
+  "devDependencies": {
+    "wrangler": "^4.83.0"
+  }
+}

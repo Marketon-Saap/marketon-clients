@@ -998,9 +998,14 @@
     (function() {
       'use strict';
 
+      // Marketon Worker orchestrator · single endpoint que crea Contact + Deal
+      // en pipeline Marketon + Meta CAPI + GA4 + email notify · docs:
+      // Landing/HubSpot-Backend-Credentials-v1.md
+      const MARKETON_ENDPOINT = 'https://apto-landing-api.grupo-plasencia-automotriz.workers.dev/submit';
+      // Fallback directo a HubSpot Forms API si Worker down (degradación grácil)
       const HUBSPOT_PORTAL_ID = '2583031';
       const HUBSPOT_FORM_ID = '6f9db620-165b-451b-8b49-76b441eea7ce';
-      const HUBSPOT_ENDPOINT = `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_ID}`;
+      const HUBSPOT_FALLBACK_ENDPOINT = `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_PORTAL_ID}/${HUBSPOT_FORM_ID}`;
 
       const FREE_EMAIL_DOMAINS = ['gmail.com','hotmail.com','yahoo.com','outlook.com','live.com','icloud.com','proton.me','protonmail.com','me.com','yahoo.com.mx','hotmail.com.mx'];
 
@@ -1100,33 +1105,47 @@
           pageUri: window.location.href,
           pageName: document.title
         };
-        // HubSpot API rechaza hutk vacío; solo incluirlo si existe
         if (hutk) context.hutk = hutk;
+        // Meta Pixel cookies para dedup client/server CAPI
+        const fbp = document.cookie.match(/_fbp=([^;]+)/)?.[1];
+        const fbc = document.cookie.match(/_fbc=([^;]+)/)?.[1];
+        if (fbp) context.fbp = fbp;
+        if (fbc) context.fbc = fbc;
+        // GA4 client_id (from _ga cookie)
+        const gaMatch = document.cookie.match(/_ga=GA\d+\.\d+\.([^;]+)/);
+        if (gaMatch) context.client_id = gaMatch[1];
 
-        const payload = {
-          fields: Array.from(inputs).map(input => ({
-            objectTypeId: '0-1',
-            name: input.name,
-            value: input.value.trim()
-          })).filter(f => f.value),
+        // Payload flat para Worker Marketon (Contact + Deal + CAPI + GA4 + email)
+        const workerPayload = {
+          firstname: document.getElementById('f-firstname').value.trim(),
+          email: document.getElementById('f-email').value.trim(),
+          company: document.getElementById('f-company').value.trim(),
+          jobtitle: document.getElementById('f-jobtitle').value.trim(),
+          industry: document.getElementById('f-industry').value.trim(),
+          company_size: document.getElementById('f-company_size').value.trim(),
+          message: document.getElementById('f-message').value.trim(),
           context: context
         };
 
         try {
-          const res = await fetch(HUBSPOT_ENDPOINT, {
+          const res = await fetch(MARKETON_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(workerPayload)
           });
 
           if (!res.ok) {
             const errData = await res.json().catch(() => ({}));
-            throw new Error(errData.message || 'Error de servidor');
+            throw new Error(errData.message || errData.error || 'Error de servidor');
           }
 
+          const data = await res.json();
+
           track('form_submit_success', {
-            email: payload.fields.find(f => f.name === 'email')?.value,
-            company: payload.fields.find(f => f.name === 'company')?.value
+            email: workerPayload.email,
+            company: workerPayload.company,
+            contact_id: data.contactId,
+            deal_id: data.dealId
           });
 
           form.hidden = true;
@@ -1135,9 +1154,32 @@
 
         } catch (err) {
           track('form_submit_fail', { error: err.message });
-          showMessage('error', 'Algo falló al enviar. Intenta de nuevo o escríbenos a hola@apto.mx');
-          submitBtn.disabled = false;
-          submitLabel.textContent = 'Agenda mi diagnóstico';
+          console.error('Worker submit failed, trying fallback HubSpot Forms API:', err.message);
+          // Degradación grácil · si Worker down, submit directo a HubSpot Forms API
+          try {
+            const fallbackPayload = {
+              fields: Array.from(inputs).map(input => ({
+                objectTypeId: '0-1',
+                name: input.name,
+                value: input.value.trim()
+              })).filter(f => f.value),
+              context: context
+            };
+            const res2 = await fetch(HUBSPOT_FALLBACK_ENDPOINT, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(fallbackPayload)
+            });
+            if (!res2.ok) throw new Error('Fallback también falló');
+            track('form_submit_success_fallback', { email: workerPayload.email });
+            form.hidden = true;
+            successView.hidden = false;
+            successView.focus();
+          } catch (err2) {
+            showMessage('error', 'Algo falló al enviar. Intenta de nuevo o escríbenos a hola@apto.mx');
+            submitBtn.disabled = false;
+            submitLabel.textContent = 'Agenda mi diagnóstico';
+          }
         }
       });
 
