@@ -13,9 +13,9 @@ BUFFER_MINUTES = "15"
 TIMEZONE = "America/Mexico_City"
 DAYS_OF_WEEK = "1,2,3,4,5"
 NOTIFY_EMAILS = "isabel@karlo.io,chucho@marketon.mx,diego@karlo.io,alejandro@karlo.io"
-NOTIFY_FROM = "Karbot Landing <no-reply@karbot.mx>"
+NOTIFY_FROM = "Karbot Landing <chucho@marketon.mx>"
 
-# D1 · safety net de leads (todo submit se guarda aquí, aunque Calendar/Resend fallen)
+# D1 · safety net de leads (todo submit se guarda aquí, aunque Calendar/Gmail fallen)
 [[d1_databases]]
 binding = "karbot_leads"
 database_name = "karbot-leads"
@@ -24,5 +24,5 @@ database_id = "b0877096-ce20-4aaf-ae1f-5051aa504a0f"
 # Secrets (NO poner aquí · se configuran con `wrangler secret put NAME`):
 #   GOOGLE_CLIENT_ID
 #   GOOGLE_CLIENT_SECRET
-#   GOOGLE_REFRESH_TOKEN
-#   RESEND_API_KEY         · para email notifications
+#   GOOGLE_CALENDAR_REFRESH_TOKEN  · Isabel autoriza · /oauth/start?service=calendar
+#   GOOGLE_GMAIL_REFRESH_TOKEN     · Chucho autoriza · /oauth/start?service=gmail
