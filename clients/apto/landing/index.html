@@ -105,6 +105,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       max-width: 100vw;
       position: relative;
     }
+    /* Section wrappers contienen scroll-x carousels · previene body overflow */
+    section, .section, .categoria, .no-somos, .pov-quote { overflow-x: hidden; }
+    /* Excepción · scroll-x containers necesitan overflow-x auto */
+    @media (max-width: 767px) {
+      .pilares, .productos, .metodo, .cards-3, .casos-secundarios, .categoria__grid {
+        overflow-x: auto !important;
+      }
+    }
     /* HubSpot inyecta modal overlay antes de que sea necesario · esconder hasta usar */
     #hs-interactives-modal-overlay:empty { display: none !important; }
     #hs-interactives-modal-overlay { max-width: 100vw; overflow-x: hidden; }
