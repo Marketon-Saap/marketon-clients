@@ -880,6 +880,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <span class="form-field__error" id="err-jobtitle" aria-live="polite"></span>
             </div>
             <div class="form-field">
+              <label for="f-phone">Teléfono (opcional)</label>
+              <input type="tel" id="f-phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="+52 55 1234 5678" aria-describedby="err-phone">
+              <span class="form-field__error" id="err-phone" aria-live="polite"></span>
+            </div>
+            <div class="form-field">
               <label for="f-company_size">Tamaño de la empresa <span class="req">*</span></label>
               <select id="f-company_size" name="company_size" required aria-describedby="err-company_size">
                 <option value="">Selecciona…</option>
@@ -1166,6 +1171,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         const workerPayload = {
           firstname: document.getElementById('f-firstname').value.trim(),
           email: document.getElementById('f-email').value.trim(),
+          phone: document.getElementById('f-phone')?.value?.trim() || '',
           company: document.getElementById('f-company').value.trim(),
           jobtitle: document.getElementById('f-jobtitle').value.trim(),
           industry: document.getElementById('f-industry').value.trim(),
@@ -1189,10 +1195,32 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           const data = await res.json();
 
           track('form_submit_success', {
+            // User data (raw · GA4/Meta hashea auto en sus lados)
             email: workerPayload.email,
+            phone: workerPayload.phone || '',
+            firstname: workerPayload.firstname,
+            lastname: workerPayload.lastname || '',
             company: workerPayload.company,
+            jobtitle: workerPayload.jobtitle,
+            industry: workerPayload.industry || '',
+            company_size: workerPayload.company_size || '',
+            country: 'MX', // default MX · Worker enriquece con CF-IPCountry
+            // Attribution IDs
+            gclid: new URLSearchParams(location.search).get('gclid') || '',
+            fbclid: new URLSearchParams(location.search).get('fbclid') || '',
+            fbp: context.fbp || '',
+            fbc: context.fbc || '',
+            ga_client_id: context.client_id || '',
+            hutk: context.hutk || '',
+            // System IDs
             contact_id: data.contactId,
-            deal_id: data.dealId
+            deal_id: data.dealId,
+            lead_id: data.leadId,
+            // Custom event params
+            value: 500,
+            currency: 'MXN',
+            page_url: location.href,
+            page_referrer: document.referrer
           });
 
           form.hidden = true;
