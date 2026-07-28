@@ -632,11 +632,21 @@ async function handleOAuthCallback(url, env) {
        <input id="tk" type="text" readonly value="${escapeHtml(refreshToken)}"
               style="width:100%;padding:14px;font-family:monospace;font-size:13px;border:1.5px solid #E5E7EB;border-radius:8px;background:#F8FAFC;color:#0F172A;box-sizing:border-box;">
      </div>
-     <button id="copyBtn" onclick="copyToken()"
-             style="padding:14px 28px;background:#10B981;color:white;font-size:15px;font-weight:600;border:none;border-radius:10px;cursor:pointer;font-family:inherit;">
-       📋 Copiar token
-     </button>
-     <p id="status" style="margin-top:14px;color:#10B981;font-weight:600;height:20px;"></p>
+     <div style="display:flex;gap:12px;flex-wrap:wrap;">
+       <button id="copyBtn" onclick="copyToken()"
+               style="padding:14px 28px;background:#10B981;color:white;font-size:15px;font-weight:600;border:none;border-radius:10px;cursor:pointer;font-family:inherit;">
+         📋 Copiar token
+       </button>
+       <button id="dlBtn" onclick="downloadToken()"
+               style="padding:14px 28px;background:#2563EB;color:white;font-size:15px;font-weight:600;border:none;border-radius:10px;cursor:pointer;font-family:inherit;">
+         📥 Descargar como .txt
+       </button>
+     </div>
+     <p id="status" style="margin-top:14px;color:#10B981;font-weight:600;min-height:20px;"></p>
+     <p style="margin-top:20px;padding:14px;background:#FEF3C7;border-left:4px solid #F59E0B;border-radius:6px;color:#92400E;font-size:13.5px;line-height:1.5;">
+       <strong>Mejor descarga el .txt y mándalo por WhatsApp como archivo adjunto.</strong>
+       Copiar y pegar el texto puede meter caracteres invisibles que rompen el token.
+     </p>
      <script>
        function copyToken() {
          var input = document.getElementById('tk');
@@ -644,14 +654,27 @@ async function handleOAuthCallback(url, env) {
          input.setSelectionRange(0, 99999);
          try {
            navigator.clipboard.writeText(input.value).then(function(){
-             document.getElementById('status').textContent = '✓ Copiado ('+input.value.length+' caracteres) · pega en WhatsApp';
+             document.getElementById('status').textContent = '✓ Copiado ('+input.value.length+' caracteres)';
              document.getElementById('copyBtn').textContent = '✓ Copiado';
              document.getElementById('copyBtn').style.background = '#0F172A';
            });
          } catch(e) {
            document.execCommand('copy');
-           document.getElementById('status').textContent = '✓ Copiado ('+input.value.length+' caracteres) · pega en WhatsApp';
+           document.getElementById('status').textContent = '✓ Copiado ('+input.value.length+' caracteres)';
          }
+       }
+       function downloadToken() {
+         var input = document.getElementById('tk');
+         var blob = new Blob([input.value], {type: 'text/plain'});
+         var a = document.createElement('a');
+         a.href = URL.createObjectURL(blob);
+         a.download = 'karbot-token-${cfg.secretName}.txt';
+         document.body.appendChild(a);
+         a.click();
+         document.body.removeChild(a);
+         document.getElementById('status').textContent = '✓ Descargado karbot-token-${cfg.secretName}.txt ('+input.value.length+' caracteres) · mándalo por WhatsApp como archivo adjunto';
+         document.getElementById('dlBtn').textContent = '✓ Descargado';
+         document.getElementById('dlBtn').style.background = '#0F172A';
        }
      </script>
      <hr style="margin:32px 0 20px;border:none;border-top:1px solid #E5E7EB;">
