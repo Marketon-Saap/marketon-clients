@@ -627,11 +627,41 @@ async function handleOAuthCallback(url, env) {
   return htmlPage(
     'Autorización lista ✓',
     `<h2 style="color:#10B981">✓ ${escapeHtml(cfg.who)} autorizó · ${escapeHtml(cfg.label)}</h2>
-     <p>Copia el bloque completo y guárdalo como secret en Cloudflare:</p>
-     <pre style="background:#0F172A;color:#93BBFC;padding:16px;overflow:auto;border-radius:8px;font-size:12px;font-family:monospace;">wrangler secret put ${cfg.secretName}
+     <p style="font-size:15px;">Tu token de acceso está listo. Click en el botón para copiarlo sin errores y mándaselo a Chucho:</p>
+     <div style="margin:20px 0;">
+       <input id="tk" type="text" readonly value="${escapeHtml(refreshToken)}"
+              style="width:100%;padding:14px;font-family:monospace;font-size:13px;border:1.5px solid #E5E7EB;border-radius:8px;background:#F8FAFC;color:#0F172A;box-sizing:border-box;">
+     </div>
+     <button id="copyBtn" onclick="copyToken()"
+             style="padding:14px 28px;background:#10B981;color:white;font-size:15px;font-weight:600;border:none;border-radius:10px;cursor:pointer;font-family:inherit;">
+       📋 Copiar token
+     </button>
+     <p id="status" style="margin-top:14px;color:#10B981;font-weight:600;height:20px;"></p>
+     <script>
+       function copyToken() {
+         var input = document.getElementById('tk');
+         input.select();
+         input.setSelectionRange(0, 99999);
+         try {
+           navigator.clipboard.writeText(input.value).then(function(){
+             document.getElementById('status').textContent = '✓ Copiado ('+input.value.length+' caracteres) · pega en WhatsApp';
+             document.getElementById('copyBtn').textContent = '✓ Copiado';
+             document.getElementById('copyBtn').style.background = '#0F172A';
+           });
+         } catch(e) {
+           document.execCommand('copy');
+           document.getElementById('status').textContent = '✓ Copiado ('+input.value.length+' caracteres) · pega en WhatsApp';
+         }
+       }
+     </script>
+     <hr style="margin:32px 0 20px;border:none;border-top:1px solid #E5E7EB;">
+     <details>
+       <summary style="cursor:pointer;color:#64748B;font-size:13px;">Ver comando técnico (solo para Chucho)</summary>
+       <pre style="background:#0F172A;color:#93BBFC;padding:16px;overflow:auto;border-radius:8px;font-size:12px;font-family:monospace;white-space:pre-wrap;word-break:break-all;margin-top:12px;">wrangler secret put ${cfg.secretName}
 # cuando pida el valor, pega:
 ${escapeHtml(refreshToken)}</pre>
-     <p style="margin-top:24px;color:#64748B;font-size:13px;">access_token válido hasta: ${new Date(Date.now() + (tokens.expires_in || 3600) * 1000).toISOString()}</p>`
+     </details>
+     <p style="margin-top:24px;color:#94A3B8;font-size:12px;">Token length: ${refreshToken.length} chars · access_token válido hasta ${new Date(Date.now() + (tokens.expires_in || 3600) * 1000).toISOString()}</p>`
   );
 }
 
