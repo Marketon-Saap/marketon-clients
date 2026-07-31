@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mktgrupoplasenciaautomotriz.github.io/marketon-clients/clients/karbot/sitemap.xml
+Sitemap: https://landing.karbot.mx/sitemap.xml

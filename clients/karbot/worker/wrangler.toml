@@ -5,7 +5,7 @@ compatibility_date = "2026-07-26"
 # Vars públicas (no secretos) · booking rules editables sin re-deploy secrets
 [vars]
 ISABEL_CALENDAR_ID = "isabel@karlo.io"
-ALLOWED_ORIGIN = "https://mktgrupoplasenciaautomotriz.github.io"
+ALLOWED_ORIGIN = "https://landing.karbot.mx"
 BUSINESS_HOURS_START = "10"
 BUSINESS_HOURS_END = "18"
 SLOT_MINUTES = "30"
