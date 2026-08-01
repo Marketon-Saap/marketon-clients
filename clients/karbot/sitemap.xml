@@ -2,12 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://landing.karbot.mx/clients/karbot/</loc>
+    <loc>https://landing.karbot.mx/</loc>
     <lastmod>2026-07-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://landing.karbot.mx/clients/karbot/assets/images/chat_ia_agent.png</image:loc>
+      <image:loc>https://landing.karbot.mx/assets/images/chat_ia_agent.png</image:loc>
       <image:title>Karbot atendiendo chat WhatsApp automotriz con IA</image:title>
     </image:image>
   </url>

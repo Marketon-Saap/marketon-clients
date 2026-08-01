@@ -1,0 +1,52 @@
+name: Deploy landing.karbot.mx
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'clients/karbot/**'
+      - '.github/workflows/deploy-landing-karbot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare _site from clients/karbot
+        run: |
+          mkdir -p _site
+          # Copiamos TODO el content de karbot al root del artifact
+          # Excluimos: worker/ (backend, no se sirve), *.md docs internas
+          rsync -av --exclude 'worker/' --exclude '*.md' clients/karbot/ _site/
+          # CNAME al root del artifact aplica el dominio a /
+          echo "landing.karbot.mx" > _site/CNAME
+          # Log de qué se está deployando
+          echo "=== _site tree ==="
+          find _site -maxdepth 2 -type f | head -30
+          echo "=== Total files ==="
+          find _site -type f | wc -l
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

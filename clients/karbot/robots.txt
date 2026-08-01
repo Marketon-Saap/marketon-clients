@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://landing.karbot.mx/clients/karbot/sitemap.xml
+Sitemap: https://landing.karbot.mx/sitemap.xml
