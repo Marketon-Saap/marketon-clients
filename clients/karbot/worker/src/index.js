@@ -358,7 +358,28 @@ async function handleBook(request, env, cors) {
     .run()
     .catch(() => {}); // no bloquear si falla update
 
-  // ---------- 4) Response ----------
+  // ---------- 4) Notion sync · Datasource KARBOT · soft-fail ----------
+  let notionPageId = null;
+  let notionError = null;
+  try {
+    const result = await createNotionDealPage(env, {
+      leadId, nombre, empresa, email, phone, agencias, rol,
+      start, end, isMock, eventId, meetLink, htmlLink, calendarError,
+      country, ip, referrer, enrichment,
+    });
+    notionPageId = result.pageId;
+    notionError = result.error;
+  } catch (err) {
+    notionError = err.message;
+  }
+
+  await env.karbot_leads
+    .prepare(`UPDATE leads SET notion_page_id = ?, notion_error = ? WHERE id = ?`)
+    .bind(notionPageId, notionError, leadId)
+    .run()
+    .catch(() => {});
+
+  // ---------- 5) Response ----------
   return json({
     ok: true,
     leadId,
@@ -369,9 +390,92 @@ async function handleBook(request, env, cors) {
     emailSent,
     emailError,
     calendarError,
+    notionPageId,
+    notionError,
     start,
     end,
   }, 200, cors);
+}
+
+// -------------------- Notion · create deal page in Datasource KARBOT --------------------
+// Crea 1 row en el pipeline canónico Karbot con Origen "Landing - CRO" · Funnel "Demo".
+// Sin nuevas etapas · respeta el schema existente del equipo Karbot.
+async function createNotionDealPage(env, ctx) {
+  if (!env.NOTION_TOKEN) return { pageId: null, error: 'no_notion_token' };
+  const dsId = env.NOTION_DATA_SOURCE_ID;
+  if (!dsId) return { pageId: null, error: 'no_notion_data_source_id' };
+
+  const enrich = ctx.enrichment || {};
+  const value = enrich.value || 0;
+  const tier = enrich.tier || 'starter';
+  const labelByTier = { enterprise: 'Alta', mid_market: 'Alta', smb: 'Media', starter: 'Baja' };
+  const tz = env.TIMEZONE || 'America/Mexico_City';
+  const whenLabel = ctx.start ? new Date(ctx.start).toLocaleString('es-MX', {
+    timeZone: tz, weekday: 'long', day: '2-digit', month: 'long',
+    hour: '2-digit', minute: '2-digit', hour12: true,
+  }) : '—';
+
+  // Título del row: usamos empresa como Negocio (title field)
+  const title = ctx.empresa || 'Lead sin empresa';
+
+  // Bloque de detalles con toda la info del lead
+  const clickIds = enrich.click_ids || {};
+  const utm = enrich.utm || {};
+  const detailsLines = [
+    `Contacto: ${ctx.nombre}`,
+    `Email: ${ctx.email || '—'}`,
+    `WhatsApp: ${ctx.phone || '—'}`,
+    `Rol: ${ctx.rol || '—'}`,
+    `Agencias: ${ctx.agencias || '—'}`,
+    `Slot demo: ${whenLabel}`,
+    `Tier estimado: ${tier} · $${value.toLocaleString('es-MX')} MXN`,
+    `País (geo IP): ${(ctx.country || '—').toUpperCase()}`,
+    `Lead ID (D1): ${ctx.leadId}`,
+    ctx.meetLink ? `Google Meet: ${ctx.meetLink}` : null,
+    ctx.htmlLink ? `Calendar event: ${ctx.htmlLink}` : null,
+    Object.keys(utm).length ? `UTM: ${Object.entries(utm).filter(([,v])=>v).map(([k,v])=>`${k}=${v}`).join(' · ')}` : null,
+    Object.keys(clickIds).length ? `Click IDs: ${Object.entries(clickIds).map(([k,v])=>`${k}=${String(v).slice(0,20)}…`).join(' · ')}` : null,
+    ctx.isMock ? '⚠ MOCK · pendiente OAuth Isabel · agendar manualmente' : null,
+  ].filter(Boolean);
+
+  const body = {
+    parent: { type: 'data_source_id', data_source_id: dsId },
+    properties: {
+      'Negocio': { title: [{ type: 'text', text: { content: title.slice(0, 200) } }] },
+      'Origen del lead': { select: { name: 'Landing - CRO' } },
+      'Funnel': { status: { name: 'Demo' } },
+      'Implementación‼️': { select: { name: 'Nuevo' } },
+      'Label': { select: { name: labelByTier[tier] || 'Media' } },
+      'Fecha Creación Deal': { date: { start: new Date().toISOString().slice(0, 10) } },
+      'Detalles': { rich_text: [{ type: 'text', text: { content: detailsLines.join('\n').slice(0, 2000) } }] },
+      ...(ctx.email ? { 'Correo cliente 3': { email: ctx.email } } : {}),
+      ...(ctx.phone ? { 'Tel. pagos': { phone_number: ctx.phone } } : {}),
+    },
+    children: [
+      { object: 'block', type: 'heading_3', heading_3: { rich_text: [{ type: 'text', text: { content: '📥 Lead capturado desde landing' } }] } },
+      { object: 'block', type: 'paragraph', paragraph: { rich_text: [{ type: 'text', text: { content: detailsLines.join('\n') } }] } },
+    ],
+  };
+
+  try {
+    const res = await fetch('https://api.notion.com/v1/pages', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.NOTION_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Notion-Version': '2022-06-28',
+      },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      return { pageId: null, error: `notion_${res.status}: ${err.slice(0, 300)}` };
+    }
+    const data = await res.json();
+    return { pageId: data.id, error: null };
+  } catch (err) {
+    return { pageId: null, error: `notion_fetch_failed: ${err.message}` };
+  }
 }
 
 // -------------------- Gmail API · email notification --------------------

@@ -14,6 +14,7 @@ TIMEZONE = "America/Mexico_City"
 DAYS_OF_WEEK = "1,2,3,4,5"
 NOTIFY_EMAILS = "isabel@karlo.io,chucho@marketon.mx,diego@karlo.io,alejandro@karlo.io"
 NOTIFY_FROM = "Karbot Landing <chucho@marketon.mx>"
+NOTION_DATA_SOURCE_ID = "312c45a5-fc07-8164-9d19-000bf2893b29"
 
 # D1 · safety net de leads (todo submit se guarda aquí, aunque Calendar/Gmail fallen)
 [[d1_databases]]
