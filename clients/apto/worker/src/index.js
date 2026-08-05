@@ -353,6 +353,19 @@ async function handleSubmit(request, env, cors, ctx) {
   const contactProps = normalizeContactProps(body, env);
   const dealProps = normalizeDealProps(body, env);
   const context = body.context || {};
+  // Backfill UTMs desde el pageUri si el frontend no los mandó (fallback determinístico)
+  // Google Ads / Meta Ads / cualquier paid channel manda utms en la query string;
+  // sin este parse, las columnas D1 utm_* quedan NULL aunque la data cruda esté en pageUri.
+  if (context.pageUri) {
+    try {
+      const uri = new URL(context.pageUri);
+      for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']) {
+        if (!context[k] && uri.searchParams.has(k)) {
+          context[k] = uri.searchParams.get(k);
+        }
+      }
+    } catch (_) { /* invalid URI · seguir */ }
+  }
   const clientIp = request.headers.get('CF-Connecting-IP') || '';
   const userAgent = request.headers.get('User-Agent') || '';
   const referrer = request.headers.get('Referer') || '';
