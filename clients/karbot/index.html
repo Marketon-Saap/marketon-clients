@@ -1106,6 +1106,162 @@ h1, h2, h3, h4, .hero-title, .hero-sub, .section-title, .problem-title,
     min-height: 44px;
   }
 }
+
+/* ============================================================
+   SECCIÓN "CÓMO COBRAMOS" · comparativa flat vs escalado (v5)
+   Encuadre A · QUICK-WIN 2026-08-06
+   ============================================================ */
+
+.cost-context { max-width: 720px; margin: 0 auto 40px; text-align: center; }
+.cost-context p { font-size: 17px; color: var(--slate-600); line-height: 1.6; }
+
+.cost-simulator {
+  max-width: 900px;
+  margin: 0 auto 48px;
+  background: var(--violet-bg);
+  border-radius: var(--radius-xl);
+  padding: 40px 32px;
+  border: 1.5px solid rgba(68,76,231,.08);
+}
+.cost-tabs { text-align: center; margin-bottom: 32px; }
+.cost-tab-label { font-size: 14px; font-weight: 600; color: var(--slate-600); margin-bottom: 14px; letter-spacing: 0.3px; }
+.cost-tab-buttons {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  background: white;
+  padding: 6px;
+  border-radius: 100px;
+  border: 1px solid var(--slate-200);
+  max-width: 100%;
+}
+.cost-tab {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--slate-600);
+  border-radius: 100px;
+  transition: all .2s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cost-tab:hover { color: var(--p-500); }
+.cost-tab.active { background: var(--grad-cta); color: white; box-shadow: var(--shadow-md); }
+
+.cost-bars { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+.cost-bar-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 110px;
+  align-items: center;
+  gap: 16px;
+}
+.cost-bar-label { font-size: 14px; color: var(--slate-600); font-weight: 500; }
+.cost-bar-label.karbot { color: var(--p-500); font-weight: 700; }
+.cost-bar-track {
+  height: 32px;
+  background: rgba(15,23,42,.04);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+.cost-bar-fill {
+  height: 100%;
+  border-radius: 8px;
+  transition: width .45s ease;
+  min-width: 40px;
+}
+.cost-bar-fill.karbot { background: var(--grad-cta); }
+.cost-bar-fill.compet { background: linear-gradient(90deg, var(--coral-light) 0%, var(--coral) 100%); }
+.cost-bar-value { font-size: 15px; font-weight: 700; color: var(--slate-950); text-align: right; }
+.cost-bar-value.karbot { color: var(--p-500); }
+
+.cost-savings {
+  text-align: center;
+  margin-top: 24px;
+  padding: 18px 24px;
+  background: white;
+  border-radius: var(--radius);
+  border: 1.5px dashed var(--p-500);
+  color: var(--p-500);
+  font-size: 16px;
+  font-weight: 700;
+}
+.cost-footnote { text-align: center; font-size: 12px; color: var(--slate-500); margin-top: 12px; }
+
+.cost-table-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.cost-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+.cost-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.cost-table th:first-child { background: var(--slate-950); color: white; }
+.cost-table th.th-competencia { background: var(--slate-100); color: var(--slate-600); text-align: center; }
+.cost-table th.th-karbot { background: var(--grad-cta); color: white; text-align: center; }
+.cost-table td {
+  padding: 16px 20px;
+  font-size: 15px;
+  color: var(--slate-600);
+  border-top: 1px solid var(--slate-200);
+  vertical-align: top;
+}
+.cost-table td:first-child { font-weight: 600; color: var(--slate-950); }
+.cost-table td.td-competencia { text-align: center; }
+.cost-table td.td-karbot {
+  color: var(--p-500);
+  font-weight: 700;
+  background: rgba(68,76,231,.03);
+  text-align: center;
+}
+.cost-table tr:hover td { background: rgba(68,76,231,.02); }
+.cost-table tr:hover td.td-karbot { background: rgba(68,76,231,.06); }
+
+.cost-cta-line {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 16px;
+  color: var(--slate-600);
+  font-weight: 500;
+}
+.cost-cta-line strong { color: var(--slate-950); }
+
+/* Responsive · sección precio */
+@media (max-width: 640px) {
+  .cost-simulator { padding: 24px 18px; margin-bottom: 32px; }
+  .cost-context { margin-bottom: 24px; }
+  .cost-context p { font-size: 15px; }
+  .cost-bar-row {
+    grid-template-columns: 1fr 90px;
+    grid-template-rows: auto auto;
+    gap: 4px 12px;
+  }
+  .cost-bar-label { grid-column: 1; font-size: 13px; }
+  .cost-bar-value { grid-column: 2; grid-row: 1; font-size: 14px; }
+  .cost-bar-track { grid-column: 1 / -1; grid-row: 2; }
+  .cost-tab-buttons { max-width: 100%; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .cost-tab-buttons::-webkit-scrollbar { display: none; }
+  .cost-tab { flex-shrink: 0; padding: 9px 14px; font-size: 13px; }
+  .cost-savings { font-size: 14px; padding: 14px 18px; }
+  .cost-table th, .cost-table td { padding: 12px 12px; font-size: 13px; }
+  .cost-table th { font-size: 11px; }
+  .cost-cta-line { font-size: 14px; margin-top: 24px; padding: 0 16px; }
+}
 </style>
 </head>
 <body>
@@ -1322,6 +1478,104 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <img loading="lazy" src="assets/integrations/zapier.png" alt="Zapier">
     </div>
     <p style="text-align:center; margin-top:32px; color:var(--slate-500); font-size:14px;">¿Tu CRM no está aquí? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" onclick="track('int_cta_ask')">Pregúntanos por tu integración</a>.</p>
+  </div>
+</section>
+
+<!-- ========== CÓMO COBRAMOS · comparativa flat vs escalado (v5 · quick-win) ========== -->
+<section class="section" id="como-cobramos">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Cómo cobramos</div>
+      <h2 class="section-title">El único WhatsApp con IA que <span class="accent">no te cobra por asesor</span></h2>
+      <p class="section-sub">Los demás cobran $500 a $1,700 MXN por cada usuario que sumes. Karbot: el mismo precio para 5, 10 o 50.</p>
+    </div>
+
+    <div class="cost-context">
+      <p>En automotive tu equipo comercial rota mucho. Con cobro por asesor, cada movimiento del piso te sube la factura. Con Karbot, no.</p>
+    </div>
+
+    <div class="cost-simulator">
+      <div class="cost-tabs">
+        <div class="cost-tab-label">¿Cuántos asesores tienes hoy?</div>
+        <div class="cost-tab-buttons" role="tablist">
+          <button type="button" class="cost-tab" data-users="5" onclick="setCostSim(5)">5 asesores</button>
+          <button type="button" class="cost-tab active" data-users="10" onclick="setCostSim(10)">10 asesores</button>
+          <button type="button" class="cost-tab" data-users="20" onclick="setCostSim(20)">20 asesores</button>
+          <button type="button" class="cost-tab" data-users="30" onclick="setCostSim(30)">30 asesores</button>
+        </div>
+      </div>
+
+      <div class="cost-bars" id="costBars" aria-live="polite"></div>
+
+      <div class="cost-savings" id="costSavings">Ahorro anual con Karbot: calculando…</div>
+      <p class="cost-footnote">Estimaciones a partir de pricing público de plataformas competidoras · agosto 2026. Nombres omitidos por respeto legal.</p>
+    </div>
+
+    <div class="cost-table-wrap">
+      <table class="cost-table">
+        <thead>
+          <tr>
+            <th>Concepto</th>
+            <th class="th-competencia">Competencia típica</th>
+            <th class="th-karbot">Karbot</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Modelo de precio</td>
+            <td class="td-competencia">Por usuario o flat con caps duros de mensajes</td>
+            <td class="td-karbot">Flat MXN · usuarios ilimitados</td>
+          </tr>
+          <tr>
+            <td>Precio para 10 usuarios</td>
+            <td class="td-competencia">$4,750 – $14,000 MXN/mes</td>
+            <td class="td-karbot">$5,000 MXN/mes</td>
+          </tr>
+          <tr>
+            <td>Costo por asesor nuevo</td>
+            <td class="td-competencia">+$500 a $1,700 MXN/mes cada uno</td>
+            <td class="td-karbot">$0 · cero costo por rotación</td>
+          </tr>
+          <tr>
+            <td>Especialización automotriz</td>
+            <td class="td-competencia">Multiindustria</td>
+            <td class="td-karbot">100% automotriz</td>
+          </tr>
+          <tr>
+            <td>Módulo postventa · taller</td>
+            <td class="td-competencia">No disponible</td>
+            <td class="td-karbot">Incluido</td>
+          </tr>
+          <tr>
+            <td>BDC centralizado multisucursal</td>
+            <td class="td-competencia">Limitado</td>
+            <td class="td-karbot">Nativo</td>
+          </tr>
+          <tr>
+            <td>Plantillas certificadas de WhatsApp</td>
+            <td class="td-competencia">No incluye</td>
+            <td class="td-karbot">1,000/mes/agencia</td>
+          </tr>
+          <tr>
+            <td>Calendario integrado para citas</td>
+            <td class="td-competencia">No disponible</td>
+            <td class="td-karbot">Incluido</td>
+          </tr>
+          <tr>
+            <td>Ligas de pago por WhatsApp</td>
+            <td class="td-competencia">No disponible</td>
+            <td class="td-karbot">Incluido</td>
+          </tr>
+          <tr>
+            <td>Integración a tu DMS (Quiter, Business Pro, CRM Pro)</td>
+            <td class="td-competencia">Vía Zapier · costo adicional</td>
+            <td class="td-karbot">Nativa · sin costo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="cost-cta-line"><strong>Todo incluido.</strong> Sin costos ocultos por integrar tu DMS.</p>
   </div>
 </section>
 
@@ -2120,6 +2374,79 @@ window.addEventListener('scroll', () => {
 document.querySelectorAll('a[href*="wa.me"]').forEach(a => {
   a.addEventListener('click', () => track('whatsapp_click_legacy', {href: a.href.slice(0, 80)}));
 });
+
+/* ============================================================
+   Cost simulator · encuadre A "flat vs escalado" (v5 quick-win)
+   Datos verificables · pricing público competencia agosto 2026
+   Ver: Clientes/Karbot/01-Contexto/COMERCIAL - Karbot/COMPETENCIA/pricing-comparison-2026-08.md
+   ============================================================ */
+const COST_SCENARIOS = {
+  5:  [
+    { label: 'Karbot flat',                    kind: 'karbot', value: 5000  },
+    { label: 'Plataforma A (per-user)',        kind: 'compet', value: 3325  },
+    { label: 'Plataforma B (por seat + IA)',   kind: 'compet', value: 5300  },
+    { label: 'Plataforma C (stack auto)',      kind: 'compet', value: 3800  }
+  ],
+  10: [
+    { label: 'Karbot flat',                    kind: 'karbot', value: 5000  },
+    { label: 'Plataforma A (per-user)',        kind: 'compet', value: 6650  },
+    { label: 'Plataforma B (por seat + IA)',   kind: 'compet', value: 7260  },
+    { label: 'Plataforma C (stack auto)',      kind: 'compet', value: 7600  }
+  ],
+  20: [
+    { label: 'Karbot flat',                    kind: 'karbot', value: 5000  },
+    { label: 'Plataforma A (per-user)',        kind: 'compet', value: 13300 },
+    { label: 'Plataforma B (por seat + IA)',   kind: 'compet', value: 12260 },
+    { label: 'Plataforma C (stack auto)',      kind: 'compet', value: 15200 }
+  ],
+  30: [
+    { label: 'Karbot flat',                    kind: 'karbot', value: 5000  },
+    { label: 'Plataforma A (per-user)',        kind: 'compet', value: 19950 },
+    { label: 'Plataforma B (por seat + IA)',   kind: 'compet', value: 17260 },
+    { label: 'Plataforma C (stack auto)',      kind: 'compet', value: 22800 }
+  ]
+};
+
+function setCostSim(userCount) {
+  const rows = COST_SCENARIOS[userCount] || COST_SCENARIOS[10];
+  const bars = document.getElementById('costBars');
+  const savings = document.getElementById('costSavings');
+  if (!bars || !savings) return;
+
+  const maxVal = Math.max.apply(null, rows.map(r => r.value));
+  const fmt = new Intl.NumberFormat('es-MX');
+
+  bars.innerHTML = rows.map(r => {
+    const pct = Math.round((r.value / maxVal) * 100);
+    const cls = r.kind === 'karbot' ? 'karbot' : '';
+    return '<div class="cost-bar-row">' +
+             '<div class="cost-bar-label ' + cls + '">' + r.label + '</div>' +
+             '<div class="cost-bar-track"><div class="cost-bar-fill ' + r.kind + '" style="width:' + pct + '%"></div></div>' +
+             '<div class="cost-bar-value ' + cls + '">$' + fmt.format(r.value) + '</div>' +
+           '</div>';
+  }).join('');
+
+  const karbotVal = rows.find(r => r.kind === 'karbot').value;
+  const compet = rows.filter(r => r.kind === 'compet').map(r => r.value);
+  const minCompet = Math.min.apply(null, compet);
+  const maxCompet = Math.max.apply(null, compet);
+  const yearMin = Math.max(0, (minCompet - karbotVal) * 12);
+  const yearMax = Math.max(0, (maxCompet - karbotVal) * 12);
+
+  savings.textContent = yearMin > 0
+    ? 'Ahorro anual con Karbot: $' + fmt.format(yearMin) + ' – $' + fmt.format(yearMax) + ' MXN'
+    : 'Con ' + userCount + ' asesores, Karbot ya es competitivo · el ahorro crece con cada asesor extra';
+
+  // Sync active tab
+  document.querySelectorAll('.cost-tab').forEach(function(btn) {
+    btn.classList.toggle('active', parseInt(btn.dataset.users, 10) === userCount);
+  });
+
+  if (window.track) window.track('cost_sim', { users: userCount });
+}
+
+// Initial render (default 10 asesores)
+if (document.getElementById('costBars')) setCostSim(10);
 </script>
 
 </body>
