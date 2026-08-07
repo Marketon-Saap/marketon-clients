@@ -1124,8 +1124,9 @@ body.sticky-hidden .sticky-cta-mobile { transform: translateY(120%); transition:
    Aplicado 2026-08-05 tras smoke test E2E que detectó overflow
    ============================================================ */
 
-/* 1 · Overflow protection global (evita scroll horizontal) */
-html, body { overflow-x: hidden; max-width: 100vw; }
+/* 1 · Overflow protection global (evita scroll horizontal SIN romper position:sticky del header)
+       overflow-x: clip = clip visual sin crear scroll container (preserva sticky) · Chrome 90+ Safari 16+ FF 81+ */
+html, body { overflow-x: clip; max-width: 100vw; }
 
 /* 2 · Word-wrap agresivo en headlines para que ninguna palabra fuerce overflow */
 h1, h2, h3, h4, .hero-title, .hero-sub, .section-title, .problem-title,
