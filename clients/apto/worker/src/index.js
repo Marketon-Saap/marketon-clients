@@ -516,10 +516,11 @@ async function insertLead(env, body, contactProps, context, clientIp, userAgent,
   const stmt = env.APTO_LEADS_DB.prepare(
     `INSERT INTO leads (
       firstname, lastname, email, company, jobtitle, industry, company_size, message,
+      privacy_consent, privacy_consent_ts, privacy_notice_url,
       page_uri, page_name, hutk, fbp, fbc, ga_client_id,
       utm_source, utm_medium, utm_campaign, utm_content, utm_term,
       referrer, user_agent, client_ip, raw_payload
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   );
   const result = await stmt
     .bind(
@@ -531,6 +532,9 @@ async function insertLead(env, body, contactProps, context, clientIp, userAgent,
       contactProps.industry || null,
       contactProps.company_size || null,
       contactProps.message || null,
+      body.privacy_consent === true ? 1 : 0,
+      body.privacy_consent_ts || null,
+      body.privacy_notice_url || null,
       context.pageUri || null,
       context.pageName || null,
       context.hutk || null,
@@ -564,6 +568,9 @@ function validatePayload(body) {
   if (body.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
     errors.push({ field: 'email', message: 'invalid email format' });
   }
+  if (body.privacy_consent !== true) {
+    errors.push({ field: 'privacy_consent', message: 'privacy consent required' });
+  }
   return errors;
 }
 
@@ -592,7 +599,14 @@ function normalizeDealProps(body, env) {
     dealstage: env.HUBSPOT_DEAL_STAGE_NEW_LEAD,
     dealname: dealName,
   };
-  if (body.message) props.description = body.message.trim();
+  const parts = [];
+  if (body.message) parts.push(body.message.trim());
+  if (body.privacy_consent === true) {
+    const ts = body.privacy_consent_ts || new Date().toISOString();
+    const url = body.privacy_notice_url || '';
+    parts.push(`\n---\nAviso de privacidad aceptado: ${ts}${url ? ' · ' + url : ''}`);
+  }
+  if (parts.length) props.description = parts.join('');
   return props;
 }
 

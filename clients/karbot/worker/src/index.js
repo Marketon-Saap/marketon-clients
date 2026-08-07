@@ -216,10 +216,28 @@ async function handleAvailability(url, env, cors) {
 // 4) Return con lead_id + status de cada paso
 async function handleBook(request, env, cors) {
   const body = await request.json();
-  const { nombre, empresa, agencias, rol, email, phone, start, end } = body;
+  const {
+    nombre, empresa, agencias, rol, email, phone, start, end,
+    phone_country_code, phone_number,
+    privacy_accepted, privacy_accepted_at, privacy_notice_url,
+  } = body;
 
-  if (!nombre || !empresa || !start || !end) {
-    return json({ error: 'missing_fields', required: ['nombre', 'empresa', 'start', 'end'] }, 400, cors);
+  // Required fields
+  if (!nombre || !empresa || !email || !phone || !agencias || !rol || !start || !end) {
+    return json({ error: 'missing_fields', required: ['nombre','empresa','email','phone','agencias','rol','start','end'] }, 400, cors);
+  }
+  // Field validations (server-side gate mirror del client)
+  if (!/^[A-ZÁÉÍÓÚÑÜ ]{5,60}$/.test(nombre)) {
+    return json({ error: 'invalid_nombre', message: 'Solo mayúsculas, sin caracteres especiales, 5-60 chars.' }, 400, cors);
+  }
+  if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email)) {
+    return json({ error: 'invalid_email' }, 400, cors);
+  }
+  if (phone_number && !/^[0-9]{10}$/.test(phone_number)) {
+    return json({ error: 'invalid_phone', message: 'Teléfono debe ser 10 dígitos.' }, 400, cors);
+  }
+  if (privacy_accepted !== true) {
+    return json({ error: 'privacy_not_accepted', message: 'Debes aceptar el Aviso de privacidad.' }, 400, cors);
   }
 
   const ip = request.headers.get('CF-Connecting-IP') || request.headers.get('X-Forwarded-For') || '';
@@ -231,32 +249,45 @@ async function handleBook(request, env, cors) {
   // Enrichment del cliente (attribution + hashed PII para Enhanced Conversions/CAPI server-side futuro)
   const enrichment = body.enrichment || {};
   const attributionJson = JSON.stringify(enrichment);
+  const privacyAcceptedAtIso = privacy_accepted_at || new Date().toISOString();
+  const privacyNoticeUrlVal = privacy_notice_url || 'https://karbot.mx/aviso-privacidad';
 
   // ---------- 1) D1 insert · safety net ----------
   let leadId = null;
   try {
-    const insertRes = await env.karbot_leads
-      .prepare(
-        `INSERT INTO leads (nombre, empresa, email, phone, agencias, rol, slot_start, slot_end, mock, user_agent, ip, country, referrer, attribution_json)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-      )
-      .bind(
-        nombre,
-        empresa,
-        email || null,
-        phone || null,
-        agencias || null,
-        rol || null,
-        start,
-        end,
-        isMock ? 1 : 0,
-        userAgent,
-        ip,
-        country,
-        referrer,
-        attributionJson
-      )
-      .run();
+    // Attempt full insert (con columnas nuevas). Si falla por columnas inexistentes, fallback legacy.
+    let insertRes;
+    try {
+      insertRes = await env.karbot_leads
+        .prepare(
+          `INSERT INTO leads (nombre, empresa, email, phone, phone_country_code, phone_number, agencias, rol, slot_start, slot_end, mock, user_agent, ip, country, referrer, attribution_json, privacy_accepted, privacy_accepted_at, privacy_notice_url)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        )
+        .bind(
+          nombre, empresa, email, phone,
+          phone_country_code || null, phone_number || null,
+          agencias, rol, start, end,
+          isMock ? 1 : 0, userAgent, ip, country, referrer, attributionJson,
+          privacy_accepted ? 1 : 0, privacyAcceptedAtIso, privacyNoticeUrlVal,
+        )
+        .run();
+    } catch (schemaErr) {
+      // Fallback legacy schema (sin columnas nuevas) — persistimos igual en attribution_json
+      const legacyAttr = JSON.stringify({
+        ...enrichment,
+        _v2_fields: {
+          phone_country_code, phone_number,
+          privacy_accepted, privacy_accepted_at: privacyAcceptedAtIso, privacy_notice_url: privacyNoticeUrlVal,
+        },
+      });
+      insertRes = await env.karbot_leads
+        .prepare(
+          `INSERT INTO leads (nombre, empresa, email, phone, agencias, rol, slot_start, slot_end, mock, user_agent, ip, country, referrer, attribution_json)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+        )
+        .bind(nombre, empresa, email, phone, agencias, rol, start, end, isMock ? 1 : 0, userAgent, ip, country, referrer, legacyAttr)
+        .run();
+    }
     leadId = insertRes.meta.last_row_id;
   } catch (err) {
     return json({ error: 'db_insert_failed', message: err.message }, 500, cors);
@@ -343,6 +374,8 @@ async function handleBook(request, env, cors) {
   try {
     const result = await sendLeadNotification(env, {
       leadId, nombre, empresa, email, phone, agencias, rol,
+      phone_country_code, phone_number,
+      privacy_accepted, privacy_accepted_at: privacyAcceptedAtIso, privacy_notice_url: privacyNoticeUrlVal,
       start, end, isMock, eventId, meetLink, htmlLink, calendarError,
       country, ip, referrer, enrichment,
     });
@@ -364,6 +397,8 @@ async function handleBook(request, env, cors) {
   try {
     const result = await createNotionDealPage(env, {
       leadId, nombre, empresa, email, phone, agencias, rol,
+      phone_country_code, phone_number,
+      privacy_accepted, privacy_accepted_at: privacyAcceptedAtIso, privacy_notice_url: privacyNoticeUrlVal,
       start, end, isMock, eventId, meetLink, htmlLink, calendarError,
       country, ip, referrer, enrichment,
     });
@@ -421,15 +456,24 @@ async function createNotionDealPage(env, ctx) {
   // Bloque de detalles con toda la info del lead
   const clickIds = enrich.click_ids || {};
   const utm = enrich.utm || {};
+  const phoneDisplay = ctx.phone_country_code && ctx.phone_number
+    ? `${ctx.phone_country_code} ${ctx.phone_number}`
+    : (ctx.phone || '—');
+  const privacyLine = ctx.privacy_accepted
+    ? `✓ Aviso de privacidad aceptado · ${ctx.privacy_accepted_at || '—'} · ${ctx.privacy_notice_url || 'https://karbot.mx/aviso-privacidad'}`
+    : '⚠ Aviso de privacidad NO aceptado';
+
   const detailsLines = [
     `Contacto: ${ctx.nombre}`,
     `Email: ${ctx.email || '—'}`,
-    `WhatsApp: ${ctx.phone || '—'}`,
+    `WhatsApp: ${phoneDisplay}`,
+    `Código país: ${ctx.phone_country_code || '—'}`,
     `Rol: ${ctx.rol || '—'}`,
     `Agencias: ${ctx.agencias || '—'}`,
     `Slot demo: ${whenLabel}`,
     `Tier estimado: ${tier} · $${value.toLocaleString('es-MX')} MXN`,
     `País (geo IP): ${(ctx.country || '—').toUpperCase()}`,
+    privacyLine,
     `Lead ID (D1): ${ctx.leadId}`,
     ctx.meetLink ? `Google Meet: ${ctx.meetLink}` : null,
     ctx.htmlLink ? `Calendar event: ${ctx.htmlLink}` : null,

@@ -842,6 +842,72 @@ body.sticky-hidden .sticky-cta-mobile { transform: translateY(120%); transition:
   border-color: var(--p-500);
   box-shadow: 0 0 0 3px rgba(68,76,231,.12);
 }
+.form-field input:invalid:not(:placeholder-shown),
+.form-field select:invalid:not(:focus) {
+  border-color: rgba(220,38,38,.55);
+}
+.form-field .req {
+  color: #DC2626;
+  font-weight: 700;
+  margin-left: 2px;
+}
+.form-field .form-hint {
+  font-size: 12px;
+  color: var(--slate-500);
+  margin-top: 6px;
+  line-height: 1.35;
+}
+.form-field.error .form-hint { color: #DC2626; }
+
+/* Phone: country code + number split */
+.phone-input {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 8px;
+}
+.phone-input .phone-cc {
+  padding: 12px 8px;
+  font-size: 14px;
+  background: white;
+}
+.phone-input .phone-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+@media (max-width: 480px) {
+  .phone-input { grid-template-columns: 130px 1fr; }
+  .phone-input .phone-cc { font-size: 13px; padding: 12px 6px; }
+}
+
+/* Consent checkbox */
+.form-consent { margin: 20px 0 8px; }
+.form-consent .consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--slate-600);
+  margin-bottom: 0;
+}
+.form-consent input[type="checkbox"] {
+  width: 18px; height: 18px;
+  min-width: 18px;
+  margin-top: 2px;
+  accent-color: var(--p-500);
+  cursor: pointer;
+}
+.form-consent a {
+  color: var(--p-500);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.form-consent a:hover { color: var(--p-600); }
+.form-consent .req { color: #DC2626; }
+
 .form-submit {
   width: 100%;
   padding: 16px;
@@ -1847,16 +1913,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <!-- STEP 3 · Perfil -->
           <div class="form-step"><span class="form-step-num">3</span> Tus datos</div>
           <div class="form-field">
-            <label for="nombre">Tu nombre</label>
-            <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="Juan Pérez">
+            <label for="nombre">Nombre completo <span class="req">*</span></label>
+            <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="JUAN PÉREZ GARCÍA" inputmode="text" autocapitalize="characters" spellcheck="false" pattern="[A-ZÁÉÍÓÚÑÜ ]{5,60}" title="Solo mayúsculas, sin caracteres especiales" maxlength="60">
+            <div class="form-hint" id="hint-nombre">Solo mayúsculas · sin números ni símbolos</div>
           </div>
           <div class="form-row">
             <div class="form-field">
-              <label for="empresa">Grupo o agencia</label>
-              <input type="text" id="empresa" name="empresa" required autocomplete="organization" placeholder="Grupo XYZ">
+              <label for="empresa">Grupo o agencia <span class="req">*</span></label>
+              <input type="text" id="empresa" name="empresa" required autocomplete="organization" placeholder="Grupo XYZ" maxlength="80">
             </div>
             <div class="form-field">
-              <label for="rol">Tu rol</label>
+              <label for="rol">Tu rol <span class="req">*</span></label>
               <select id="rol" name="rol" required>
                 <option value="">Selecciona</option>
                 <option value="director_grupo">Director de grupo</option>
@@ -1870,11 +1937,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
           <div class="form-row">
             <div class="form-field">
-              <label for="email">Email de trabajo</label>
-              <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com">
+              <label for="email">Email de trabajo <span class="req">*</span></label>
+              <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Email válido (debe contener @, sin caracteres especiales)" maxlength="120">
             </div>
             <div class="form-field">
-              <label for="agencias">Agencias</label>
+              <label for="agencias">Agencias <span class="req">*</span></label>
               <select id="agencias" name="agencias" required>
                 <option value="">Selecciona</option>
                 <option value="1">1</option>
@@ -1884,9 +1951,44 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               </select>
             </div>
           </div>
-          <div class="form-field" style="margin-bottom:8px;">
-            <label for="phone">WhatsApp <span style="color:var(--slate-500);font-weight:400;">(opcional · más rápido)</span></label>
-            <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+52 33 1234 5678">
+          <div class="form-field">
+            <label for="phone">WhatsApp <span class="req">*</span></label>
+            <div class="phone-input">
+              <select id="phoneCC" name="phoneCC" required aria-label="Código de país" class="phone-cc">
+                <option value="+52" data-flag="🇲🇽" selected>🇲🇽 México +52</option>
+                <option value="+1"  data-flag="🇺🇸">🇺🇸 EE.UU. / Canadá +1</option>
+                <option value="+34" data-flag="🇪🇸">🇪🇸 España +34</option>
+                <option value="+54" data-flag="🇦🇷">🇦🇷 Argentina +54</option>
+                <option value="+55" data-flag="🇧🇷">🇧🇷 Brasil +55</option>
+                <option value="+56" data-flag="🇨🇱">🇨🇱 Chile +56</option>
+                <option value="+57" data-flag="🇨🇴">🇨🇴 Colombia +57</option>
+                <option value="+51" data-flag="🇵🇪">🇵🇪 Perú +51</option>
+                <option value="+58" data-flag="🇻🇪">🇻🇪 Venezuela +58</option>
+                <option value="+593" data-flag="🇪🇨">🇪🇨 Ecuador +593</option>
+                <option value="+591" data-flag="🇧🇴">🇧🇴 Bolivia +591</option>
+                <option value="+598" data-flag="🇺🇾">🇺🇾 Uruguay +598</option>
+                <option value="+595" data-flag="🇵🇾">🇵🇾 Paraguay +595</option>
+                <option value="+506" data-flag="🇨🇷">🇨🇷 Costa Rica +506</option>
+                <option value="+507" data-flag="🇵🇦">🇵🇦 Panamá +507</option>
+                <option value="+502" data-flag="🇬🇹">🇬🇹 Guatemala +502</option>
+                <option value="+503" data-flag="🇸🇻">🇸🇻 El Salvador +503</option>
+                <option value="+504" data-flag="🇭🇳">🇭🇳 Honduras +504</option>
+                <option value="+505" data-flag="🇳🇮">🇳🇮 Nicaragua +505</option>
+                <option value="+509" data-flag="🇭🇹">🇭🇹 Haití +509</option>
+                <option value="+53"  data-flag="🇨🇺">🇨🇺 Cuba +53</option>
+                <option value="+1809" data-flag="🇩🇴">🇩🇴 República Dominicana +1</option>
+                <option value="+1787" data-flag="🇵🇷">🇵🇷 Puerto Rico +1</option>
+              </select>
+              <input type="tel" id="phone" name="phone" required autocomplete="tel-national" inputmode="numeric" placeholder="3312345678" pattern="[0-9]{10}" maxlength="10" title="10 dígitos, solo números" class="phone-num">
+            </div>
+            <div class="form-hint" id="hint-phone">10 dígitos, sin espacios ni guiones</div>
+          </div>
+
+          <div class="form-field form-consent">
+            <label class="consent-label">
+              <input type="checkbox" id="privacy" name="privacy" required>
+              <span>He leído y acepto el <a href="https://karbot.mx/aviso-privacidad" target="_blank" rel="noopener" data-track="privacy_link_click">Aviso de privacidad</a> de Karbot. <span class="req">*</span></span>
+            </label>
           </div>
 
           <input type="hidden" id="slotStart" name="slotStart">
@@ -2291,15 +2393,68 @@ function updateSubmitCTA() {
     submit.textContent = state.selectedDay ? 'Elige un horario' : 'Elige día y hora';
     return;
   }
-  submit.disabled = false;
+  // Validar TODOS los required + privacy
+  const f = document.getElementById('demoForm');
+  const nombre = (f.nombre.value || '').trim();
+  const empresa = (f.empresa.value || '').trim();
+  const email = (f.email.value || '').trim();
+  const phone = (f.phone.value || '').trim();
+  const agencias = f.agencias.value;
+  const rol = f.rol.value;
+  const privacy = f.privacy.checked;
+  const validNombre = /^[A-ZÁÉÍÓÚÑÜ ]{5,60}$/.test(nombre);
+  const validEmail = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email);
+  const validPhone = /^[0-9]{10}$/.test(phone);
+  const allValid = validNombre && empresa.length >= 2 && validEmail && validPhone && !!agencias && !!rol && privacy;
+  submit.disabled = !allValid;
   const time = new Date(state.selectedSlot.start).toLocaleTimeString('es-MX', {
     hour: 'numeric', minute: '2-digit', hour12: true, timeZone: TZ,
   });
   const day = new Date(state.selectedSlot.start).toLocaleDateString('es-MX', {
     weekday: 'short', day: 'numeric', month: 'short', timeZone: TZ,
   });
-  submit.textContent = `Confirmar · ${day} · ${time} →`;
+  submit.textContent = allValid ? `Confirmar · ${day} · ${time} →` : `Completa el formulario`;
 }
+
+// ============ Live validation & auto-format ============
+(function initFormValidation(){
+  const wire = () => {
+    const nombre = document.getElementById('nombre');
+    const phone = document.getElementById('phone');
+    const email = document.getElementById('email');
+    const empresa = document.getElementById('empresa');
+    const agencias = document.getElementById('agencias');
+    const rol = document.getElementById('rol');
+    const privacy = document.getElementById('privacy');
+    if (!nombre || !phone || !privacy) return;
+    // Auto-uppercase + strip caracteres especiales en nombre
+    nombre.addEventListener('input', () => {
+      const cursor = nombre.selectionStart;
+      const cleaned = nombre.value.toUpperCase().replace(/[^A-ZÁÉÍÓÚÑÜ ]/g, '');
+      if (nombre.value !== cleaned) {
+        nombre.value = cleaned;
+        try { nombre.setSelectionRange(cursor, cursor); } catch(e){}
+      }
+      updateSubmitCTA();
+    });
+    // Phone: solo dígitos, 10 max
+    phone.addEventListener('input', () => {
+      const cleaned = phone.value.replace(/[^0-9]/g, '').slice(0, 10);
+      if (phone.value !== cleaned) phone.value = cleaned;
+      updateSubmitCTA();
+    });
+    // Email + otros: revalidar on input/change
+    [email, empresa, agencias, rol, privacy].forEach(el => {
+      el.addEventListener('input', updateSubmitCTA);
+      el.addEventListener('change', updateSubmitCTA);
+    });
+    // Country code también revalida (para gate submit)
+    const cc = document.getElementById('phoneCC');
+    cc && cc.addEventListener('change', updateSubmitCTA);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire);
+  else wire();
+})();
 
 // ============ Attribution + browser IDs (para GA4 Enhanced Conversions + Meta AAM/CAPI) ============
 // Click IDs de ads: capturamos del URL Y persistimos 30d en localStorage (attribution window)
@@ -2394,13 +2549,30 @@ async function submitForm(e) {
     return false;
   }
   const f = e.target;
+  const nombreVal = f.nombre.value.trim();
+  const empresaVal = f.empresa.value.trim();
+  const emailVal = f.email.value.trim();
+  const phoneNum = (f.phone.value || '').replace(/[^0-9]/g, '');
+  const phoneCC = f.phoneCC.value || '+52';
+  const phoneE164 = phoneCC + phoneNum; // ej: +523312345678
+  const privacyAccepted = !!f.privacy.checked;
+  // Server-side gate mirror (defensive)
+  if (!/^[A-ZÁÉÍÓÚÑÜ ]{5,60}$/.test(nombreVal)) { alert('Nombre completo: solo mayúsculas, sin caracteres especiales.'); return false; }
+  if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(emailVal)) { alert('Email inválido.'); return false; }
+  if (!/^[0-9]{10}$/.test(phoneNum)) { alert('WhatsApp: 10 dígitos, solo números.'); return false; }
+  if (!privacyAccepted) { alert('Debes aceptar el Aviso de privacidad.'); return false; }
   const data = {
-    nombre: f.nombre.value.trim(),
-    empresa: f.empresa.value.trim(),
-    email: f.email.value.trim(),
-    phone: f.phone.value.trim() || null,
+    nombre: nombreVal,
+    empresa: empresaVal,
+    email: emailVal,
+    phone: phoneE164,
+    phone_country_code: phoneCC,
+    phone_number: phoneNum,
     agencias: f.agencias.value,
     rol: f.rol.value,
+    privacy_accepted: privacyAccepted,
+    privacy_accepted_at: new Date().toISOString(),
+    privacy_notice_url: 'https://karbot.mx/aviso-privacidad',
     start: state.selectedSlot.start,
     end: state.selectedSlot.end,
   };

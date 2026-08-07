@@ -19,6 +19,11 @@ CREATE TABLE IF NOT EXISTS leads (
   company_size TEXT,
   message TEXT,
 
+  -- Legal · consent LFPDPPP (proof of consent)
+  privacy_consent INTEGER DEFAULT 0,      -- 0 = not accepted, 1 = accepted
+  privacy_consent_ts TEXT,                -- ISO timestamp del acceptance
+  privacy_notice_url TEXT,                -- URL del aviso vigente al aceptar
+
   -- Context del cliente (attribution)
   page_uri TEXT,
   page_name TEXT,
