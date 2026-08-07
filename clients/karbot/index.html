@@ -1984,16 +1984,57 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 <script>
+// ============ Mapping micro-conversión → Meta standard event ============
+// Standard events aparecen en columnas nativas de Ads Manager y son optimizables por Andromeda.
+// - Contact: intención de agendar (CTAs cold en cualquier sección)
+// - InitiateCheckout: alta intención post-precio/planes (CTAs que aparecen después de ver el economics)
+// - ViewContent: consumo pasivo (secondary CTAs, interacciones con simulador)
+// - null: ruido (logo/social) — solo trackCustom para logs
+const META_STD_EVENT_MAP = {
+  // High intent (post-price/plans decision zone) → InitiateCheckout
+  'cobramos_cta_click': 'InitiateCheckout',
+  'planes_cta_click': 'InitiateCheckout',
+  'planes_enterprise_click': 'InitiateCheckout',
+  // Contact intent (todos los CTA que llevan a agendar demo)
+  'nav_cta_demo': 'Contact',
+  'hero_cta_demo': 'Contact',
+  'sol_cta_demo': 'Contact',
+  'cap_cta_demo': 'Contact',
+  'problema_cta_click': 'Contact',
+  'pasos_cta_click': 'Contact',
+  'caso_cta_click': 'Contact',
+  'integraciones_cta_click': 'Contact',
+  'integraciones_cta_ask': 'Contact',
+  'faq_cta_click': 'Contact',
+  'sticky_mobile_cta_click': 'Contact',
+  // Content consumption (secondary CTA, sim interaction)
+  'hero_cta_learn': 'ViewContent',
+  'cost_sim_click': 'ViewContent',
+};
+
 // Instrumentación de eventos custom
 function track(name, params) {
   const p = params || {};
-  // GA4
+  // GA4 (custom event)
   if (typeof gtag === 'function') {
     gtag('event', name, p);
   }
-  // Meta Pixel · custom event
+  // Meta Pixel · custom event (para logs internos y trackCustom columns)
   if (typeof fbq === 'function') {
     fbq('trackCustom', name, p);
+    // Standard event mirror para que aparezca en columnas nativas Ads Manager
+    const stdEvent = META_STD_EVENT_MAP[name];
+    if (stdEvent) {
+      const eventId = `${name}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+      fbq('track', stdEvent, {
+        content_name: name,
+        content_category: 'karbot_microconversion',
+        content_ids: [`karbot_${name}`],
+        currency: 'MXN',
+        source: 'landing_karbot',
+        ...p,
+      }, { eventID: eventId });
+    }
   }
   // Clarity · custom tag
   if (typeof clarity === 'function') {
