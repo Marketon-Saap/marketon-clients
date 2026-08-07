@@ -859,40 +859,73 @@ body.sticky-hidden .sticky-cta-mobile { transform: translateY(120%); transition:
 }
 .form-field.error .form-hint { color: #DC2626; }
 
-/* Phone: country code button + number split */
+/* Phone: unified container · CC button + number con divider interno · matchea altura otros inputs */
 .phone-input {
   display: grid;
-  grid-template-columns: 96px 1fr;
-  gap: 8px;
-}
-.phone-cc-btn {
-  display: inline-flex; align-items: center; justify-content: space-between;
-  gap: 6px;
-  padding: 12px 10px;
+  grid-template-columns: auto 1px 1fr;
+  align-items: stretch;
   border: 1.5px solid var(--slate-200);
   border-radius: 8px;
   background: white;
+  transition: border-color .2s, box-shadow .2s;
+  overflow: hidden;
+}
+.phone-input:hover { border-color: var(--slate-300); }
+.phone-input:focus-within {
+  border-color: var(--p-500);
+  box-shadow: 0 0 0 3px rgba(68,76,231,.12);
+}
+.phone-cc-btn {
+  display: inline-flex; align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  min-height: 48px;
+  border: 0;
+  background: transparent;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--slate-950);
   cursor: pointer;
-  transition: border-color .2s, box-shadow .2s;
-  min-height: 48px;
-  width: 100%;
+  transition: background .15s;
+  white-space: nowrap;
 }
-.phone-cc-btn:focus { outline: none; border-color: var(--p-500); box-shadow: 0 0 0 3px rgba(68,76,231,.12); }
-.phone-cc-btn:hover { border-color: var(--slate-300); }
-.phone-cc-btn .phone-cc-flag { font-size: 18px; line-height: 1; }
-.phone-cc-btn .phone-cc-dial { font-variant-numeric: tabular-nums; letter-spacing: 0.3px; }
-.phone-cc-btn .phone-cc-caret { color: var(--slate-500); font-size: 11px; margin-left: 2px; }
+.phone-cc-btn:focus { outline: none; }
+.phone-cc-btn:hover { background: rgba(15,23,42,.03); }
+.phone-cc-btn:active { background: rgba(15,23,42,.06); }
+.phone-cc-btn .phone-cc-flag { font-size: 20px; line-height: 1; }
+.phone-cc-btn .phone-cc-dial {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.2px;
+  color: var(--slate-950);
+}
+.phone-cc-btn .phone-cc-caret {
+  width: 12px; height: 12px;
+  color: var(--slate-500);
+  transition: transform .18s;
+  flex-shrink: 0;
+}
+.phone-cc-btn[aria-expanded="true"] .phone-cc-caret { transform: rotate(180deg); color: var(--p-500); }
+.phone-input .phone-divider {
+  background: var(--slate-200);
+  height: 60%;
+  align-self: center;
+}
 .phone-input .phone-num {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  padding: 12px 14px !important;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.5px;
+  min-height: 48px;
+  width: 100%;
+  box-shadow: none !important;
 }
+.phone-input .phone-num:focus { box-shadow: none !important; }
 @media (max-width: 380px) {
-  .phone-input { grid-template-columns: 88px 1fr; }
-  .phone-cc-btn { padding: 12px 8px; font-size: 14px; }
+  .phone-cc-btn { padding: 0 10px; gap: 6px; font-size: 14px; }
+  .phone-cc-btn .phone-cc-flag { font-size: 18px; }
 }
 
 /* ===== Country picker bottom-sheet modal ===== */
@@ -2061,10 +2094,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <button type="button" id="phoneCCBtn" class="phone-cc-btn" aria-label="Elige código de país" aria-haspopup="dialog" aria-expanded="false">
                 <span class="phone-cc-flag" id="phoneCCFlag">🇲🇽</span>
                 <span class="phone-cc-dial" id="phoneCCDial">+52</span>
-                <span class="phone-cc-caret" aria-hidden="true">▾</span>
+                <svg class="phone-cc-caret" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                  <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
               </button>
+              <span class="phone-divider" aria-hidden="true"></span>
               <input type="hidden" id="phoneCC" name="phoneCC" value="+52" required>
-              <input type="tel" id="phone" name="phone" required autocomplete="tel-national" inputmode="numeric" placeholder="3312345678" pattern="[0-9]{10}" maxlength="10" title="10 dígitos, solo números" class="phone-num">
+              <input type="tel" id="phone" name="phone" required autocomplete="tel-national" inputmode="numeric" placeholder="33 1234 5678" pattern="[0-9]{10}" maxlength="10" title="10 dígitos, solo números" class="phone-num">
             </div>
             <div class="form-hint" id="hint-phone">10 dígitos, sin espacios ni guiones</div>
           </div>
