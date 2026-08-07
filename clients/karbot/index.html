@@ -227,6 +227,9 @@ src="https://www.facebook.com/tr?id=1213198990249979&ev=PageView&noscript=1"/></
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+section[id], .cta-final[id] { scroll-margin-top: 76px; }
+@media (max-width: 900px) { section[id], .cta-final[id] { scroll-margin-top: 64px; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body {
   font-family: var(--font);
   font-size: 16px;
@@ -270,8 +273,114 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .nav-cta:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
 .nav-mobile-toggle { display: none; }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .nav-links { display: none; }
+  .logo { height: 24px; }
+  .header {
+    position: fixed; top: 0; left: 0; right: 0;
+    transform: translateY(0);
+    transition: transform 260ms cubic-bezier(.16,1,.3,1);
+    will-change: transform;
+  }
+  .header.header--hidden { transform: translateY(-100%); }
+  body { padding-top: 60px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .header { transition: none !important; }
+}
+
+/* ===== SECTION CTA (mid-section conversion buttons) ===== */
+.section-cta { display: flex; justify-content: center; margin-top: 44px; }
+.section-cta__link {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font); font-weight: 600;
+  font-size: 15px; letter-spacing: 0.01em;
+  text-decoration: none;
+  padding: 14px 26px; border-radius: 100px;
+  color: var(--p-500);
+  border: 1.5px solid rgba(68,76,231,.25);
+  background: rgba(68,76,231,.03);
+  transition: all .2s ease;
+  cursor: pointer;
+}
+.section-cta__link .arr { font-size: 18px; line-height: 1; transition: transform 180ms ease; }
+.section-cta__link:hover {
+  border-color: var(--p-500);
+  background: rgba(68,76,231,.08);
+  transform: translateY(-1px);
+}
+.section-cta__link:hover .arr { transform: translateX(3px); }
+.section-cta__link--primary {
+  background: var(--grad-cta);
+  color: white;
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+}
+.section-cta__link--primary:hover {
+  color: white;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  background: var(--grad-cta);
+}
+.section-alt .section-cta__link {
+  background: rgba(255,255,255,.6);
+  border-color: rgba(68,76,231,.35);
+}
+.section-alt .section-cta__link:hover {
+  background: rgba(255,255,255,.9);
+}
+/* --primary reafirmado con doble-clase para ganar specificity sobre .section-alt override */
+.section-cta__link.section-cta__link--primary,
+.section-alt .section-cta__link.section-cta__link--primary {
+  background: var(--grad-cta);
+  color: white;
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+}
+.section-cta__link.section-cta__link--primary:hover,
+.section-alt .section-cta__link.section-cta__link--primary:hover {
+  color: white;
+  background: var(--grad-cta);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* ===== STICKY MOBILE CTA (bottom bar) ===== */
+.sticky-cta-mobile {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,.98);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--slate-200);
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  z-index: 90;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+  display: none;
+}
+.sticky-cta-mobile .btn-primary {
+  width: 100%; justify-content: center;
+  padding: 14px 24px; min-height: 48px; font-size: 15px;
+}
+@media (max-width: 900px) {
+  .sticky-cta-mobile { display: block; }
+  body { padding-bottom: 84px; }
+}
+/* Oculta sticky mobile CTA cuando el usuario está viendo el form (evita duplicidad visual) */
+body.sticky-hidden .sticky-cta-mobile { transform: translateY(120%); transition: transform .3s ease; }
+
+/* ===== FORM HIGHLIGHT (glow al llegar via scroll) ===== */
+@keyframes formGlow {
+  0%   { box-shadow: 0 0 0 0 rgba(115,72,255,0), 0 8px 32px rgba(0,0,0,.06); }
+  30%  { box-shadow: 0 0 0 8px rgba(115,72,255,.25), 0 12px 40px rgba(115,72,255,.20); }
+  100% { box-shadow: 0 0 0 0 rgba(115,72,255,0), 0 8px 32px rgba(0,0,0,.06); }
+}
+.form-card.form-highlight { animation: formGlow 1.8s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .form-card.form-highlight { animation: none !important; }
+}
+
+@media (max-width: 768px) {
+  .section-cta { margin-top: 32px; }
+  .section-cta__link { padding: 12px 20px; font-size: 14px; }
 }
 
 /* ===== HERO ===== */
@@ -1345,6 +1454,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="problem-desc">Cuando un vendedor renuncia se lleva los contactos, las conversaciones y a veces hasta clientes activos. Nadie tiene forma de auditar quién habló con quién ni cuándo.</p>
       </div>
     </div>
+    <div class="section-cta">
+      <a class="section-cta__link" href="#contacto" data-track="problema_cta_click">Karbot resuelve los tres <span class="arr" aria-hidden="true">→</span></a>
+    </div>
   </div>
 </section>
 
@@ -1442,6 +1554,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="step-desc">Los prospectos entran al bot, el bot los califica y agenda. Tu vendedor recibe solo los que ya están listos para cerrar.</div>
       </div>
     </div>
+    <div class="section-cta">
+      <a class="section-cta__link" href="#contacto" data-track="pasos_cta_click">Empieza tu piloto de 3 días <span class="arr" aria-hidden="true">→</span></a>
+    </div>
   </div>
 </section>
 
@@ -1456,6 +1571,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <strong>Resultado:</strong> Reducción de tiempo de respuesta de 6 horas a 3 segundos · pipeline auditable por primera vez
         <br><em style="opacity:.55; font-size:12px; margin-top:8px; display:block;">Cifras a validar con Diego · placeholder para pilot Karbot en Grupo Andrade</em>
       </div>
+    </div>
+    <div class="section-cta">
+      <a class="section-cta__link" href="#contacto" data-track="caso_cta_click">Quiero esos resultados en mi grupo <span class="arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
@@ -1477,7 +1595,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <img loading="lazy" src="assets/integrations/businesspro.png" alt="Business Pro">
       <img loading="lazy" src="assets/integrations/zapier.png" alt="Zapier">
     </div>
-    <p style="text-align:center; margin-top:32px; color:var(--slate-500); font-size:14px;">¿Tu CRM no está aquí? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" onclick="track('int_cta_ask')">Pregúntanos por tu integración</a>.</p>
+    <div class="section-cta">
+      <a class="section-cta__link" href="#contacto" data-track="integraciones_cta_click">Agenda demo · revisamos tu stack juntos <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Tu CRM no está aquí? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="integraciones_cta_ask">Pregúntanos por tu integración</a>.</p>
   </div>
 </section>
 
@@ -1576,6 +1697,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <p class="cost-cta-line"><strong>Todo incluido.</strong> Sin costos ocultos por integrar tu DMS.</p>
+    <div class="section-cta">
+      <a class="section-cta__link section-cta__link--primary" href="#contacto" data-track="cobramos_cta_click">Reserva tu demo y cotización <span class="arr" aria-hidden="true">→</span></a>
+    </div>
   </div>
 </section>
 
@@ -1617,7 +1741,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="plan-note">Descuentos por volumen: 3-5 agencias 5% · 6-10 agencias 8% · 11+ agencias 10%</p>
       </div>
     </div>
-    <p style="text-align:center; margin-top:32px; color:var(--slate-500); font-size:14px;">¿Grupo con 10+ marcas? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" onclick="track('plans_enterprise')">Pídenos plan enterprise</a>.</p>
+    <div class="section-cta">
+      <a class="section-cta__link section-cta__link--primary" href="#contacto" data-track="planes_cta_click">Agenda demo · elige tu plan <span class="arr" aria-hidden="true">→</span></a>
+    </div>
+    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Grupo con 10+ marcas? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="planes_enterprise_click">Pídenos plan enterprise</a>.</p>
   </div>
 </section>
 
@@ -1649,6 +1776,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <summary class="faq-question">¿Cuánto tarda la implementación real? <span class="arrow">+</span></summary>
         <div class="faq-answer">Con tu Business Manager, número comercial y accesos de partner ya entregados, arrancamos en 72 horas (3 días). Si necesitas armar Business Manager desde cero o conseguir la línea, te acompañamos a hacerlo con Meta y sumamos unos días extra. Karbot cree en que tú eres dueño de tus activos, pero si por alguna razón no puedes conseguirlos tú, también los podemos habilitar de nuestro lado.</div>
       </details>
+    </div>
+    <div class="section-cta">
+      <a class="section-cta__link" href="#contacto" data-track="faq_cta_click">¿Sin dudas? Agenda tu demo <span class="arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
@@ -1833,6 +1963,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- Toast -->
 <div class="toast" id="toast">Abriendo WhatsApp con tu información…</div>
 
+<!-- Sticky mobile CTA · flotante bottom siempre visible <900px -->
+<div class="sticky-cta-mobile" aria-hidden="false">
+  <a href="#contacto" class="btn-primary" data-track="sticky_mobile_cta_click">Agenda tu demo · gratis</a>
+</div>
+
 <script>
 // Instrumentación de eventos custom
 function track(name, params) {
@@ -1852,6 +1987,79 @@ function track(name, params) {
   // GTM dataLayer
   (window.dataLayer = window.dataLayer || []).push({event: name, ...p});
 }
+
+// ============ Delegación data-track (todos los CTAs de conversión) ============
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-track]');
+  if (!el) return;
+  const evt = el.dataset.track;
+  if (!evt) return;
+  const label = (el.textContent || '').trim().slice(0, 60);
+  track(evt, { label, href: el.getAttribute('href') || null });
+});
+
+// ============ Header smart-hide (mobile <900px) ============
+(function initSmartHideNav(){
+  const nav = document.querySelector('.header');
+  if (!nav) return;
+  let lastY = window.scrollY || 0;
+  let ticking = false;
+  const TOP_ZONE = 100;
+  const DELTA = 8;
+  function onScroll(){
+    if (window.innerWidth > 900) { nav.classList.remove('header--hidden'); return; }
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(() => {
+      const y = window.scrollY || 0;
+      const diff = y - lastY;
+      if (Math.abs(diff) > DELTA) {
+        if (y < TOP_ZONE) nav.classList.remove('header--hidden');
+        else if (diff > 0) nav.classList.add('header--hidden');
+        else nav.classList.remove('header--hidden');
+        lastY = y;
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+})();
+
+// ============ Form glow + auto-focus al llegar via smooth-scroll ============
+(function initFormArrivalFX(){
+  const form = document.getElementById('demoForm');
+  const contacto = document.getElementById('contacto');
+  const nameInput = document.getElementById('nombre');
+  if (!form || !contacto) return;
+
+  function triggerArrival(){
+    form.classList.remove('form-highlight');
+    void form.offsetWidth; // reflow para reiniciar animación
+    form.classList.add('form-highlight');
+    // Auto-focus solo desktop (mobile puede molestar por teclado)
+    if (nameInput && window.innerWidth > 900) {
+      setTimeout(() => { try { nameInput.focus({preventScroll:true}); } catch(e){} }, 900);
+    }
+    // Oculta sticky mobile bar cuando el form está visible
+    document.body.classList.add('sticky-hidden');
+    setTimeout(() => document.body.classList.remove('sticky-hidden'), 4000);
+  }
+
+  // Cuando el hash cambia a #contacto (todos los CTAs internos usan href="#contacto")
+  window.addEventListener('hashchange', () => {
+    if (location.hash === '#contacto') triggerArrival();
+  });
+
+  // Intercepta clicks a #contacto también para no depender solo del hashchange
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href="#contacto"]');
+    if (!a) return;
+    setTimeout(triggerArrival, 350);
+  });
+
+  // Si la URL ya trae #contacto al cargar
+  if (location.hash === '#contacto') setTimeout(triggerArrival, 400);
+})();
 
 // ============ Backend API config ============
 const WORKER_URL = 'https://karbot-landing-api.grupo-plasencia-automotriz.workers.dev';
