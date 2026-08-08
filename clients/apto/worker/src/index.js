@@ -78,8 +78,10 @@ export default {
       }
       return json({ error: 'not_found' }, 404, cors);
     } catch (err) {
+      // Log completo server-side; response al cliente sanitizada (evita leak de tokens,
+      // stack traces, IDs internos, mensajes de upstream vendors al DataLayer/console).
       console.error('Unhandled error:', err.message, err.stack);
-      return json({ error: 'server_error', message: err.message }, 500, cors);
+      return json({ error: 'server_error', message: 'internal_error' }, 500, cors);
     }
   },
 };
@@ -410,8 +412,10 @@ async function handleSubmit(request, env, cors, ctx) {
           .catch((e) => console.error('D1 UPDATE fail:', e.message))
       );
     }
+    // Response al cliente sanitizado: mensaje genérico · detalle completo solo en logs
+    // (evita leak de tokens HubSpot, portal IDs, rate-limit details al FE/DataLayer)
     return json(
-      { error: 'hubspot_failure', message: err.message, leadId },
+      { error: 'hubspot_failure', message: 'upstream_error', leadId },
       500,
       cors
     );
@@ -533,7 +537,8 @@ async function insertLead(env, body, contactProps, context, clientIp, userAgent,
       contactProps.company_size || null,
       contactProps.message || null,
       body.privacy_consent === true ? 1 : 0,
-      body.privacy_consent_ts || null,
+      // Timestamp del server, no del cliente · prueba legal LFPDPPP defendible
+      body.privacy_consent === true ? new Date().toISOString() : null,
       body.privacy_notice_url || null,
       context.pageUri || null,
       context.pageName || null,
@@ -591,9 +596,11 @@ function normalizeContactProps(body, env) {
 }
 
 function normalizeDealProps(body, env) {
-  const dealName = `${(body.firstname || '').trim()}${
+  // HubSpot dealname max 320 chars · truncar con elipsis para evitar 400 upstream
+  const rawDealName = `${(body.firstname || '').trim()}${
     body.lastname ? ' ' + body.lastname.trim() : ''
   } · ${(body.company || '').trim()}`;
+  const dealName = rawDealName.length > 300 ? rawDealName.slice(0, 297) + '…' : rawDealName;
   const props = {
     pipeline: env.HUBSPOT_PIPELINE_ID,
     dealstage: env.HUBSPOT_DEAL_STAGE_NEW_LEAD,
@@ -602,7 +609,8 @@ function normalizeDealProps(body, env) {
   const parts = [];
   if (body.message) parts.push(body.message.trim());
   if (body.privacy_consent === true) {
-    const ts = body.privacy_consent_ts || new Date().toISOString();
+    // Server-side timestamp · client-supplied ts NO se usa (evita predating manipulable)
+    const ts = new Date().toISOString();
     const url = body.privacy_notice_url || '';
     parts.push(`\n---\nAviso de privacidad aceptado: ${ts}${url ? ' · ' + url : ''}`);
   }

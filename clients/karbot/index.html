@@ -3266,7 +3266,7 @@ async function submitForm(e) {
       note.innerHTML = 'Te llegó el invite a tu correo con el link de Google Meet.';
       // Defensa XSS: validar que href sea de dominios permitidos (Google Calendar/Meet o Karbot)
       const raw = booked.htmlLink || booked.meetLink || '';
-      const safe = /^https:\/\/(calendar\.google\.com|meet\.google\.com|(www\.)?karbot\.mx)\//i.test(raw) ? raw : '#';
+      const safe = /^https:\/\/(calendar\.google\.com|meet\.google\.com|www\.google\.com\/calendar|(www\.)?karbot\.mx)\//i.test(raw) ? raw : '#';
       cal.href = safe;
       if (safe !== '#') cal.hidden = false;
     }

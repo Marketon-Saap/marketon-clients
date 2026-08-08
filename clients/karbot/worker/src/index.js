@@ -27,7 +27,7 @@
 const CORS_HEADERS = (origin) => ({
   'Access-Control-Allow-Origin': origin || '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, Idempotency-Key',
   'Access-Control-Max-Age': '86400',
 });
 
@@ -227,14 +227,16 @@ async function handleBook(request, env, cors) {
     return json({ error: 'missing_fields', required: ['nombre','empresa','email','phone','agencias','rol','start','end'] }, 400, cors);
   }
   // Field validations (server-side gate mirror del client)
-  if (!/^[A-ZÁÉÍÓÚÑÜ ]{5,60}$/.test(nombre)) {
-    return json({ error: 'invalid_nombre', message: 'Solo mayúsculas, sin caracteres especiales, 5-60 chars.' }, 400, cors);
+  // Nombre: acepta mayúsculas + apóstrofes/guiones/puntos (D'ANGELO, PEREZ-LOPEZ, JR.), min 3
+  if (!/^[A-ZÁÉÍÓÚÑÜ '\.\-]{3,60}$/.test(nombre)) {
+    return json({ error: 'invalid_nombre', message: 'Nombre completo (3-60 caracteres, sin números).' }, 400, cors);
   }
   if (!/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email)) {
     return json({ error: 'invalid_email' }, 400, cors);
   }
-  if (phone_number && !/^[0-9]{10}$/.test(phone_number)) {
-    return json({ error: 'invalid_phone', message: 'Teléfono debe ser 10 dígitos.' }, 400, cors);
+  // Phone: 7-15 dígitos (E.164 range) — client valida por país específico
+  if (phone_number && !/^[0-9]{7,15}$/.test(phone_number)) {
+    return json({ error: 'invalid_phone', message: 'Teléfono entre 7 y 15 dígitos.' }, 400, cors);
   }
   if (privacy_accepted !== true) {
     return json({ error: 'privacy_not_accepted', message: 'Debes aceptar el Aviso de privacidad.' }, 400, cors);
