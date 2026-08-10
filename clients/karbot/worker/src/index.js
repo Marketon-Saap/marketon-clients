@@ -31,6 +31,30 @@ const CORS_HEADERS = (origin) => ({
   'Access-Control-Max-Age': '86400',
 });
 
+// SHA-256 helper · Cloudflare Workers native crypto.subtle
+async function sha256Hex(input) {
+  if (input == null || input === '') return null;
+  const norm = String(input).trim().toLowerCase();
+  const buf = new TextEncoder().encode(norm);
+  const hash = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Detector unificado de QA/smoke submissions
+// Se aplica: (a) skip Meta CAPI standard events (b) prefix [SMOKE] en email notif
+// (c) restringir email a chucho@marketon.mx (no spam al team) (d) log en D1 is_smoke=1
+const SMOKE_MARKER_RX = /\b(SMOKE|TEST|QA|E2E|MOCK|DEV|STAGING)\b/i;
+function isSmokeSubmission(body) {
+  if (!body || typeof body !== 'object') return false;
+  if (body.is_smoke === true || body.enrichment?.smoke === true) return true;
+  const nombre = String(body.nombre || '');
+  const empresa = String(body.empresa || '');
+  const email = String(body.email || '').toLowerCase();
+  if (SMOKE_MARKER_RX.test(nombre) || SMOKE_MARKER_RX.test(empresa)) return true;
+  if (/\+(?:smoke|test|qa|e2e|dev|staging|mock)@/.test(email)) return true;
+  return false;
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -247,6 +271,7 @@ async function handleBook(request, env, cors) {
   const referrer = request.headers.get('Referer') || '';
   const country = (request.headers.get('CF-IPCountry') || '').toLowerCase() || null; // Cloudflare geo IP · 2 letters ISO
   const isMock = !calendarRefreshToken(env);
+  const isSmoke = isSmokeSubmission(body);
 
   // Enrichment del cliente (attribution + hashed PII para Enhanced Conversions/CAPI server-side futuro)
   const enrichment = body.enrichment || {};
@@ -262,8 +287,8 @@ async function handleBook(request, env, cors) {
     try {
       insertRes = await env.karbot_leads
         .prepare(
-          `INSERT INTO leads (nombre, empresa, email, phone, phone_country_code, phone_number, agencias, rol, slot_start, slot_end, mock, user_agent, ip, country, referrer, attribution_json, privacy_accepted, privacy_accepted_at, privacy_notice_url)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+          `INSERT INTO leads (nombre, empresa, email, phone, phone_country_code, phone_number, agencias, rol, slot_start, slot_end, mock, user_agent, ip, country, referrer, attribution_json, privacy_accepted, privacy_accepted_at, privacy_notice_url, is_smoke)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
         )
         .bind(
           nombre, empresa, email, phone,
@@ -271,6 +296,7 @@ async function handleBook(request, env, cors) {
           agencias, rol, start, end,
           isMock ? 1 : 0, userAgent, ip, country, referrer, attributionJson,
           privacy_accepted ? 1 : 0, privacyAcceptedAtIso, privacyNoticeUrlVal,
+          isSmoke ? 1 : 0,
         )
         .run();
     } catch (schemaErr) {
@@ -280,6 +306,7 @@ async function handleBook(request, env, cors) {
         _v2_fields: {
           phone_country_code, phone_number,
           privacy_accepted, privacy_accepted_at: privacyAcceptedAtIso, privacy_notice_url: privacyNoticeUrlVal,
+          is_smoke: isSmoke,
         },
       });
       insertRes = await env.karbot_leads
@@ -378,7 +405,7 @@ async function handleBook(request, env, cors) {
       leadId, nombre, empresa, email, phone, agencias, rol,
       phone_country_code, phone_number,
       privacy_accepted, privacy_accepted_at: privacyAcceptedAtIso, privacy_notice_url: privacyNoticeUrlVal,
-      start, end, isMock, eventId, meetLink, htmlLink, calendarError,
+      start, end, isMock, isSmoke, eventId, meetLink, htmlLink, calendarError,
       country, ip, referrer, enrichment,
     });
     emailSent = result.sent;
@@ -416,11 +443,30 @@ async function handleBook(request, env, cors) {
     .run()
     .catch(() => {});
 
-  // ---------- 5) Response ----------
+  // ---------- 5) Meta CAPI · Conversions API server-side · dedup con Pixel client via event_id ----------
+  // Recupera ~30% attribution perdida por iOS 14+ ITP / adblockers · Advanced Matching con hashes
+  let capi = { sent: false, error: 'not_attempted', events_received: 0 };
+  try {
+    capi = await sendMetaCAPI(env, {
+      leadId, nombre, empresa, email, phone, agencias, rol,
+      start, isSmoke, ip, userAgent, referrer, enrichment,
+    });
+  } catch (err) {
+    capi = { sent: false, error: `capi_exception: ${err.message}`, events_received: 0 };
+  }
+
+  await env.karbot_leads
+    .prepare(`UPDATE leads SET capi_sent = ?, capi_error = ?, capi_events_received = ? WHERE id = ?`)
+    .bind(capi.sent ? 1 : 0, capi.error || null, capi.events_received || 0, leadId)
+    .run()
+    .catch(() => {});
+
+  // ---------- 6) Response ----------
   return json({
     ok: true,
     leadId,
     mock: isMock,
+    isSmoke,
     eventId,
     meetLink,
     htmlLink,
@@ -429,9 +475,108 @@ async function handleBook(request, env, cors) {
     calendarError,
     notionPageId,
     notionError,
+    capi: { sent: capi.sent, error: capi.error, events_received: capi.events_received },
     start,
     end,
   }, 200, cors);
+}
+
+// -------------------- Meta CAPI · server-side conversion event --------------------
+// Envía Lead a Meta Conversions API con event_id que matchea el fbq('track','Lead',{eventID})
+// del client Pixel → dedup automático. Advanced Matching via hashed email/phone/name/country.
+// Requiere secrets:
+//   META_PIXEL_ID           → default '1213198990249979' (Karbot - Web)
+//   META_ACCESS_TOKEN       → System User token con ads_management + business_management
+//   META_TEST_EVENT_CODE    → opcional · si presente, todos los smokes usan test_event_code
+async function sendMetaCAPI(env, ctx) {
+  const accessToken = env.META_ACCESS_TOKEN;
+  if (!accessToken) return { sent: false, error: 'no_meta_access_token', events_received: 0 };
+
+  const pixelId = env.META_PIXEL_ID || '1213198990249979';
+  const enrich = ctx.enrichment || {};
+  const eventId = enrich.event_id || `karbot_lead_srv_${ctx.leadId}_${Date.now()}`;
+  const value = Number(enrich.value || 0);
+  const nowUnix = Math.floor(Date.now() / 1000);
+
+  // Advanced Matching · usa hashes del client (SHA-256 hex, ya normalizados lowercase)
+  // Si no vienen del client, computar aquí (fallback defensivo)
+  const [emHash, phHash, fnHash, lnHash, ctHash] = await Promise.all([
+    enrich.email_hash || sha256Hex(ctx.email),
+    enrich.phone_hash || sha256Hex((ctx.phone || '').replace(/[^0-9]/g, '')),
+    enrich.fn_hash || sha256Hex((ctx.nombre || '').split(' ')[0] || ''),
+    enrich.ln_hash || sha256Hex((ctx.nombre || '').split(' ').slice(1).join(' ') || ''),
+    sha256Hex(enrich.country || 'mx'),
+  ]);
+
+  const userData = {};
+  if (emHash) userData.em = [emHash];
+  if (phHash) userData.ph = [phHash];
+  if (fnHash) userData.fn = [fnHash];
+  if (lnHash) userData.ln = [lnHash];
+  if (ctHash) userData.country = [ctHash];
+  if (eventId) userData.external_id = [eventId];
+  if (ctx.ip) userData.client_ip_address = ctx.ip;
+  if (ctx.userAgent) userData.client_user_agent = ctx.userAgent;
+  if (enrich.fbp) userData.fbp = enrich.fbp;
+  if (enrich.fbc) userData.fbc = enrich.fbc;
+
+  const customData = {
+    currency: 'MXN',
+    value,
+    content_name: 'demo_karbot',
+    content_category: 'automotive_saas',
+    content_ids: [`karbot_demo_${ctx.rol || 'lead'}`],
+    lead_tier: enrich.tier || 'starter',
+    lead_type: 'demo_scheduled',
+    form_type: 'landing_calendar',
+    rol: ctx.rol,
+    agencias: ctx.agencias,
+  };
+
+  const payload = {
+    data: [{
+      event_name: 'Lead',
+      event_time: nowUnix,
+      event_id: eventId,                          // ← DEDUP KEY con Pixel client
+      event_source_url: enrich.landing_path
+        ? `https://landing.karbot.mx${enrich.landing_path}`
+        : 'https://landing.karbot.mx/',
+      action_source: 'website',
+      user_data: userData,
+      custom_data: customData,
+    }],
+  };
+
+  // Modo TEST · smokes van a test_event_code (aparecen en Events Manager > Test Events, NO en producción)
+  if (ctx.isSmoke) {
+    const testCode = env.META_TEST_EVENT_CODE || 'TEST99999';
+    payload.test_event_code = testCode;
+  }
+
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/v20.0/${pixelId}/events?access_token=${encodeURIComponent(accessToken)}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }
+    );
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || data.error) {
+      const msg = data.error?.message || data.error?.error_user_msg || `capi_http_${res.status}`;
+      return { sent: false, error: msg.slice(0, 200), events_received: 0, fbtrace_id: data.fbtrace_id };
+    }
+    return {
+      sent: true,
+      error: null,
+      events_received: data.events_received || 0,
+      fbtrace_id: data.fbtrace_id,
+      test_mode: !!ctx.isSmoke,
+    };
+  } catch (err) {
+    return { sent: false, error: `capi_fetch_failed: ${err.message}`, events_received: 0 };
+  }
 }
 
 // -------------------- Notion · create deal page in Datasource KARBOT --------------------
@@ -532,8 +677,14 @@ async function sendLeadNotification(env, ctx) {
   if (!refreshToken) {
     return { sent: false, error: 'no_gmail_refresh_token' };
   }
-  const to = (env.NOTIFY_EMAILS || '')
+  const allEmails = (env.NOTIFY_EMAILS || '')
     .split(',').map((s) => s.trim()).filter(Boolean);
+  // Smokes solo van a chucho@marketon.mx (no spam al team con QA runs)
+  const to = ctx.isSmoke
+    ? allEmails.filter(e => /chucho@marketon\.mx/i.test(e)).length
+      ? allEmails.filter(e => /chucho@marketon\.mx/i.test(e))
+      : ['chucho@marketon.mx']
+    : allEmails;
   if (to.length === 0) return { sent: false, error: 'no_notify_emails' };
 
   const from = env.NOTIFY_FROM || 'Karbot Landing <chucho@marketon.mx>';
@@ -543,9 +694,14 @@ async function sendLeadNotification(env, ctx) {
     hour: '2-digit', minute: '2-digit', hour12: true,
   });
 
-  const subject = ctx.isMock
-    ? `[Karbot Landing · MOCK] Nuevo lead · ${ctx.empresa} · ${whenLabel}`
-    : `[Karbot Landing] Demo agendada · ${ctx.empresa} · ${whenLabel}`;
+  const subjectPrefix = ctx.isSmoke
+    ? '[Karbot · SMOKE TEST]'
+    : ctx.isMock ? '[Karbot Landing · MOCK]' : '[Karbot Landing]';
+  const subject = ctx.isSmoke
+    ? `${subjectPrefix} QA submission · ${ctx.empresa}`
+    : ctx.isMock
+      ? `${subjectPrefix} Nuevo lead · ${ctx.empresa} · ${whenLabel}`
+      : `${subjectPrefix} Demo agendada · ${ctx.empresa} · ${whenLabel}`;
 
   const enrich = ctx.enrichment || {};
   const clickIds = enrich.click_ids || {};

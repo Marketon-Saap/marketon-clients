@@ -2311,8 +2311,9 @@ function track(name, params) {
   if (typeof fbq === 'function') {
     fbq('trackCustom', name, p);
     // Standard event mirror para que aparezca en columnas nativas Ads Manager
+    // SMOKE GUARD · si detectamos QA activo, saltamos standard events para no contaminar reporting.
     const stdEvent = META_STD_EVENT_MAP[name];
-    if (stdEvent) {
+    if (stdEvent && !window._karbotIsSmoke) {
       const eventId = `${name}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
       fbq('track', stdEvent, {
         content_name: name,
@@ -2970,6 +2971,23 @@ function getOrCreateSessionEventId() {
   }
   return window._karbotSessionEventId;
 }
+
+// ============ Smoke/QA detector ============
+// Los submits marcados como SMOKE/TEST/QA NO disparan fbq('track','Lead'/'Schedule') ni gtag standard
+// events → mantiene Ads Manager y GA4 conversions limpios (sin contaminación por QA runs).
+// Custom events (trackCustom, gtag custom, dataLayer, Clarity) SÍ se disparan para poder debuggear.
+// Sync con el mismo detector del Worker (worker/src/index.js SMOKE_MARKER_RX).
+const SMOKE_MARKER_RX = /\b(SMOKE|TEST|QA|E2E|MOCK|DEV|STAGING)\b/i;
+function isSmokeSubmission(nombre, empresa, email) {
+  const n = String(nombre || '');
+  const c = String(empresa || '');
+  const e = String(email || '').toLowerCase();
+  if (SMOKE_MARKER_RX.test(n) || SMOKE_MARKER_RX.test(c)) return true;
+  if (/\+(?:smoke|test|qa|e2e|dev|staging|mock)@/.test(e)) return true;
+  return false;
+}
+// State global: seteado durante submitForm si es smoke, consultado por track() para gate standard events
+window._karbotIsSmoke = false;
 async function submitForm(e) {
   e.preventDefault();
   // GUARD DOBLE-SUBMIT · antes de cualquier await. Si el botón ya está deshabilitado, salir.
@@ -3016,6 +3034,9 @@ async function submitForm(e) {
     const err = w.querySelector('.form-error'); if (err) err.remove();
     const inp = w.querySelector('input,select'); if (inp) inp.setAttribute('aria-invalid','false');
   });
+  // SMOKE detect · gate para todos los standard events Meta/GA4 downstream
+  const isSmoke = isSmokeSubmission(nombreVal, empresaVal, emailVal);
+  window._karbotIsSmoke = isSmoke;
   const data = {
     nombre: nombreVal,
     empresa: empresaVal,
@@ -3097,6 +3118,7 @@ async function submitForm(e) {
       user_rol: data.rol,
       user_agencias: data.agencias,
       user_tier: tier,
+      is_smoke: isSmoke,
     });
     // GA4 Enhanced Conversions user_data (Google hashea/valida server-side si Enhanced Conversions habilitado)
     gtag('set', 'user_data', {
@@ -3105,9 +3127,13 @@ async function submitForm(e) {
       address: { first_name: firstName, last_name: lastName, country },
     });
     // GA4 recommended event · generate_lead
-    gtag('event', 'generate_lead', {
+    // SMOKE GUARD · para smokes disparamos evento CUSTOM (no el standard 'generate_lead') para que
+    // no cuente en conversions. El evento debug queda para diagnostics.
+    const ga4EventName = isSmoke ? 'smoke_lead_debug' : 'generate_lead';
+    gtag('event', ga4EventName, {
       ...enrichedPayload,
       transaction_id: eventId,
+      is_smoke: isSmoke,
     });
   }
 
@@ -3123,28 +3149,43 @@ async function submitForm(e) {
         external_id: eventId,
       });
     } catch(e) { /* fbq.set puede no existir en versiones viejas — degradación silenciosa */ }
-    fbq('track', 'Lead', {
-      content_name: 'demo_karbot',
-      content_category: 'automotive_saas',
-      content_ids: [`karbot_demo_${data.rol}`],
-      currency: 'MXN',
-      value,
-      lead_tier: tier,
-      agencias: data.agencias,
-      rol: data.rol,
-      form_type: 'landing_calendar',
-    }, { eventID: eventId });
+    // SMOKE GUARD · Lead standard event solo si NO es smoke → mantiene Ads Manager limpio.
+    // Custom event queda como huella para debugging del pixel sin contaminar reporting.
+    if (isSmoke) {
+      fbq('trackCustom', 'SmokeLeadDebug', {
+        content_name: 'demo_karbot_smoke',
+        currency: 'MXN',
+        value,
+        lead_tier: tier,
+        rol: data.rol,
+        agencias: data.agencias,
+      }, { eventID: eventId });
+    } else {
+      fbq('track', 'Lead', {
+        content_name: 'demo_karbot',
+        content_category: 'automotive_saas',
+        content_ids: [`karbot_demo_${data.rol}`],
+        currency: 'MXN',
+        value,
+        lead_tier: tier,
+        agencias: data.agencias,
+        rol: data.rol,
+        form_type: 'landing_calendar',
+      }, { eventID: eventId });
+    }
   }
 
   // Track custom (GTM dataLayer + Clarity tag) con payload full
   track('form_submit_demo', enrichedPayload);
 
   // Inyectar enrichments al body que se envía al Worker (para CAPI server-side + D1 attribution log)
+  data.is_smoke = isSmoke;
   data.enrichment = {
     event_id: eventId,
     value,
     tier,
     country,
+    smoke: isSmoke,
     utm,
     click_ids: clickIds,
     fbp, fbc, ga_client_id: gaCid,
@@ -3228,21 +3269,31 @@ async function submitForm(e) {
     };
 
     // GA4 event · schedule (recommended) + purchase-like value tracking
+    // SMOKE GUARD · en smokes disparamos solo custom (demo_booked) NO standard 'schedule'.
     if (typeof gtag === 'function') {
-      gtag('event', 'schedule', bookedPayload);
-      gtag('event', 'demo_booked', bookedPayload); // custom event para GA4 dashboards
+      if (!isSmoke) gtag('event', 'schedule', bookedPayload);
+      gtag('event', 'demo_booked', {...bookedPayload, is_smoke: isSmoke}); // custom event para GA4 dashboards
     }
 
-    // Meta Pixel · Schedule (standard event · CTR conversion)
+    // Meta Pixel · Schedule (standard event · CTR conversion) — solo si NO es smoke
     if (typeof fbq === 'function') {
-      fbq('track', 'Schedule', {
-        content_name: 'demo_karbot',
-        content_category: 'automotive_saas',
-        currency: 'MXN',
-        value: value,
-        lead_tier: tier,
-        booking_method: bookedPayload.booking_method,
-      }, { eventID: `karbot_book_${booked.leadId}` });
+      if (isSmoke) {
+        fbq('trackCustom', 'SmokeScheduleDebug', {
+          content_name: 'demo_karbot_smoke',
+          currency: 'MXN',
+          value: value,
+          lead_tier: tier,
+        }, { eventID: `karbot_smoke_book_${booked.leadId}` });
+      } else {
+        fbq('track', 'Schedule', {
+          content_name: 'demo_karbot',
+          content_category: 'automotive_saas',
+          currency: 'MXN',
+          value: value,
+          lead_tier: tier,
+          booking_method: bookedPayload.booking_method,
+        }, { eventID: `karbot_book_${booked.leadId}` });
+      }
     }
 
     track('demo_booked', bookedPayload);
