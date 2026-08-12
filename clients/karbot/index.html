@@ -65,37 +65,9 @@
       "name": "Karbot Automotriz",
       "operatingSystem": "Web",
       "applicationCategory": "BusinessApplication",
-      "description": "Plataforma comercial que gestiona ventas y post-venta por WhatsApp para grupos automotrices en México. Bot con IA que califica leads, agenda pruebas de manejo y aparta con Karlo Pay.",
+      "description": "Plataforma comercial que gestiona ventas por WhatsApp para grupos automotrices en México. Bot con IA que califica leads y agenda pruebas de manejo.",
       "url": "https://landing.karbot.mx/",
-      "publisher": { "@id": "https://karbot.mx/#org" },
-      "offers": [
-        {
-          "@type": "Offer",
-          "name": "Karbot PRO",
-          "price": "5000",
-          "priceCurrency": "MXN",
-          "priceSpecification": {
-            "@type": "UnitPriceSpecification",
-            "price": "5000",
-            "priceCurrency": "MXN",
-            "unitText": "MONTH",
-            "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitText": "agency" }
-          }
-        },
-        {
-          "@type": "Offer",
-          "name": "Karbot TOTAL",
-          "price": "7000",
-          "priceCurrency": "MXN",
-          "priceSpecification": {
-            "@type": "UnitPriceSpecification",
-            "price": "7000",
-            "priceCurrency": "MXN",
-            "unitText": "MONTH",
-            "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitText": "agency" }
-          }
-        }
-      ]
+      "publisher": { "@id": "https://karbot.mx/#org" }
     },
     {
       "@type": "FAQPage",
@@ -123,7 +95,7 @@
         {
           "@type": "Question",
           "name": "¿Cuánto tarda la implementación real?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Con tu Business Manager, número comercial y accesos de partner ya entregados, arrancamos en 72 horas (3 días). Si necesitas armar Business Manager desde cero o conseguir la línea, te acompañamos con Meta y sumamos unos días extra. Karbot cree en que tú eres dueño de tus activos, pero si no puedes conseguirlos tú, también los habilitamos de nuestro lado." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Con tu Business Manager, número comercial y accesos de partner ya entregados, comienzas a operar en 2 días con todo conectado. Si necesitas armar Business Manager desde cero o conseguir la línea, te acompañamos con Meta y sumamos unos días extra." }
         }
       ]
     },
@@ -637,41 +609,38 @@ body.sticky-hidden .sticky-cta-mobile { transform: translateY(120%); transition:
 
 @media (max-width: 800px) { .steps { grid-template-columns: 1fr; } }
 
-/* ===== CASO · Grupo Andrade ===== */
-.case {
-  padding: 48px 40px;
-  background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 40%, #1a3a8a 100%);
-  color: white;
-  border-radius: var(--radius-xl);
+/* ===== TESTIMONIOS · quotes textuales de karbot.mx ===== */
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.testimonial {
+  padding: 28px 26px;
+  background: var(--white);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--slate-700);
+  font-weight: 500;
   position: relative;
-  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(15,23,42,.04);
 }
-.case::before {
-  content: '';
+.testimonial::before {
+  content: '“';
   position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 6px;
-  background: var(--grad-cta);
+  top: -8px; left: 18px;
+  font-size: 60px;
+  line-height: 1;
+  color: var(--p-500);
+  font-family: Georgia, serif;
+  opacity: .6;
 }
-.case-eyebrow {
-  font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-  color: var(--v-200); text-transform: uppercase; margin-bottom: 12px;
-}
-.case-quote {
-  font-size: clamp(22px, 3vw, 30px);
-  font-weight: 600;
-  line-height: 1.35;
-  margin-bottom: 24px;
-  color: white;
-}
-.case-attr {
-  font-size: 14px;
-  color: rgba(255,255,255,.65);
-  border-top: 1px solid rgba(255,255,255,.15);
-  padding-top: 20px;
-  margin-top: 24px;
-}
-.case-attr strong { color: white; font-weight: 600; }
+@media (max-width: 900px) { .testimonial-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .testimonial-grid { grid-template-columns: 1fr; } }
 
 /* ===== INTEGRACIONES ===== */
 .integrations-grid {
@@ -1682,17 +1651,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ========== TRUST BAR ========== -->
 <section class="trust">
   <div class="container">
-    <p class="trust-label">Grupos automotrices que ya venden con Karbot</p>
-    <div class="trust-logos">
-      <img loading="lazy" src="assets/brands/grupo_plasencia.png" alt="Grupo Plasencia">
-      <img loading="lazy" src="assets/brands/autos_soni.png" alt="Autos Soni">
-      <img loading="lazy" src="assets/brands/premier.png" alt="Premier">
-      <img loading="lazy" src="assets/brands/grupo_cever.png" alt="Grupo Cever">
-      <img loading="lazy" src="assets/brands/naosa.png" alt="Naosa">
-      <img loading="lazy" src="assets/brands/autopolis.png" alt="Autopolis">
-      <img loading="lazy" src="assets/brands/vamsa.png" alt="Vamsa">
-      <img loading="lazy" src="assets/brands/gomex.png" alt="Gomex">
-    </div>
+    <p class="trust-label">Más de 200 empresas ya confían en Karbot</p>
   </div>
 </section>
 
@@ -1736,13 +1695,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="solution-content">
         <div class="section-eyebrow" style="text-align:left; margin-bottom:12px;">Lo que hace Karbot</div>
         <h3>Una línea comercial de WhatsApp que atiende, califica y agenda mientras tu equipo duerme</h3>
-        <p style="color:var(--slate-600); font-size:16px; margin-bottom:8px;">Karbot conecta tu cuenta oficial de WhatsApp para empresas con una IA que entiende de coches. Contesta al lead, le pregunta lo que un vendedor le preguntaría, aparta con Karlo Pay y le pasa al asesor solo los que ya están listos para cerrar.</p>
+        <p style="color:var(--slate-600); font-size:16px; margin-bottom:8px;">Karbot conecta tu cuenta oficial de WhatsApp para empresas con una IA conversacional. Contesta al lead, le pregunta lo que un vendedor le preguntaría, y le pasa al asesor solo los que ya están listos para cerrar.</p>
         <ul class="solution-list">
-          <li><strong>Línea comercial certificada por Meta.</strong> Los mensajes salen con la reputación de la plataforma, no con la de tu asesor. Sin bloqueos por mala práctica.</li>
-          <li><strong>IA que califica en 3 minutos.</strong> Modelo que le interesa, presupuesto, ciudad, urgencia, si necesita financiamiento. Todo antes de que un humano meta las manos.</li>
+          <li><strong>WhatsApp certificado.</strong> Los mensajes salen con la reputación de la plataforma, no con la de tu asesor. Evita bloqueos en tu línea y convertirte en spam.</li>
+          <li><strong>IA que califica antes de que llegue el humano.</strong> Modelo que le interesa, presupuesto, ciudad, urgencia, si necesita financiamiento.</li>
           <li><strong>Agenda prueba de manejo sola.</strong> Consulta el calendario del asesor, propone horarios y confirma con cliente y vendedor.</li>
-          <li><strong>Apartado con enganche automático.</strong> Karbot genera la liga de pago con Karlo Pay directo en la conversación de WhatsApp.</li>
-          <li><strong>Reportería auditable por asesor.</strong> Tiempo de respuesta, cuántas conversaciones ignoró, cuántas cerró. Sin excusas, sin bases negras.</li>
+          <li><strong>Asignación automática de leads.</strong> Karbot reparte las conversaciones entre tu equipo según tus reglas.</li>
+          <li><strong>Reportería y evaluación de asesores.</strong> Tiempo de respuesta, volumen de conversaciones, resultados. Todo auditable.</li>
         </ul>
         <a href="#contacto" class="btn-primary" onclick="track('sol_cta_demo')">Quiero ver cómo funciona →</a>
       </div>
@@ -1775,13 +1734,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <div class="cap-item">
         <span class="cap-icon" aria-hidden="true">🎯</span>
-        <div class="cap-title">Reparto justo de leads entre asesores</div>
-        <div class="cap-desc">El sistema asigna los leads según quién está disponible y qué tan rápido responde cada quien. Los asesores que atienden bien reciben más leads. Los que ignoran conversaciones, ven menos. Todo queda registrado.</div>
-      </div>
-      <div class="cap-item">
-        <span class="cap-icon" aria-hidden="true">💳</span>
-        <div class="cap-title">Apartado con Karlo Pay integrado</div>
-        <div class="cap-desc">El cliente aparta el vehículo desde el mismo chat de WhatsApp. Karbot le manda la liga de pago, el cliente da el enganche y tu vendedor termina de cerrar en piso.</div>
+        <div class="cap-title">Asignación automática de leads</div>
+        <div class="cap-desc">Karbot reparte las conversaciones entre tu equipo según tus reglas. Alertas de leads ignorados y evaluación de asesores incluidas.</div>
       </div>
       <div class="cap-item">
         <span class="cap-icon" aria-hidden="true">📊</span>
@@ -1800,8 +1754,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">Cómo se ve el día 1</div>
-      <h2 class="section-title">Del contrato firmado al primer prospecto atendido: <span class="accent">3 días</span></h2>
-      <p class="section-sub">Con la info que nos entregas (Business Manager, números, accesos de partner) armamos la conexión técnica. Tú cargas tu catálogo. En 72 horas está atendiendo.</p>
+      <h2 class="section-title">Del contrato firmado al primer prospecto atendido: <span class="accent">2 días</span></h2>
+      <p class="section-sub">Con la info que nos entregas (Business Manager, números, accesos de partner) armamos la conexión técnica. Tú cargas tu catálogo. Comienzas a operar en 2 días, te entregamos todo conectado.</p>
     </div>
     <div class="steps">
       <div class="step">
@@ -1821,25 +1775,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
     <div class="section-cta">
-      <a class="section-cta__link" href="#contacto" data-track="pasos_cta_click">Empieza tu piloto de 3 días <span class="arr" aria-hidden="true">→</span></a>
+      <a class="section-cta__link" href="#contacto" data-track="pasos_cta_click">Arranca en 2 días <span class="arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
 
-<!-- ========== CASO · Grupo Andrade ========== -->
+<!-- ========== TESTIMONIOS · quotes textuales de karbot.mx ========== -->
 <section class="section section-alt">
   <div class="container">
-    <div class="case">
-      <div class="case-eyebrow">Caso de estudio · Grupo automotriz nacional</div>
-      <blockquote class="case-quote">"Karbot atendió a 100% de los prospectos fuera de horario y agendó 34 pruebas de manejo el primer mes · antes teníamos ventas perdidas cada noche."</blockquote>
-      <div class="case-attr">
-        <strong>Cliente:</strong> Grupo Andrade · más de 20 sucursales<br>
-        <strong>Resultado:</strong> Reducción de tiempo de respuesta de 6 horas a 3 segundos · pipeline auditable por primera vez
-        <br><em style="opacity:.55; font-size:12px; margin-top:8px; display:block;">Cifras a validar con Diego · placeholder para pilot Karbot en Grupo Andrade</em>
-      </div>
+    <div class="section-header">
+      <div class="section-eyebrow">Testimonios</div>
+      <h2 class="section-title">Lo que dicen quienes ya <span class="accent">venden con Karbot</span></h2>
+    </div>
+    <div class="testimonial-grid">
+      <blockquote class="testimonial">"Antes no teníamos trazabilidad de lo que pasaba en WhatsApp, hoy marketing sabe qué campañas sí funcionan."</blockquote>
+      <blockquote class="testimonial">"La implementación fue rapidísima, capacitaron a nuestro equipo y empezamos a operar en menos de una semana."</blockquote>
+      <blockquote class="testimonial">"El chatbot responde primeras consultas 30% más rápido de lo que lo hacíamos antes."</blockquote>
+      <blockquote class="testimonial">"Hemos duplicado nuestro porcentaje de conversión de leads digitales."</blockquote>
+      <blockquote class="testimonial">"Ya no dejamos clientes en visto por ser fin de semana."</blockquote>
+      <blockquote class="testimonial">"El equipo ya no pasa horas en el celular contestando mensajes."</blockquote>
     </div>
     <div class="section-cta">
-      <a class="section-cta__link" href="#contacto" data-track="caso_cta_click">Quiero esos resultados en mi grupo <span class="arr" aria-hidden="true">→</span></a>
+      <a class="section-cta__link" href="#contacto" data-track="caso_cta_click">Quiero los mismos resultados <span class="arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
@@ -1849,168 +1806,72 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">Integraciones</div>
-      <h2 class="section-title">Nos conectamos <span class="accent">con lo que ya tienes</span></h2>
-      <p class="section-sub">Los leads y las conversaciones fluyen a tu CRM o DMS actual. Sin migraciones.</p>
-    </div>
-    <div class="integrations-grid">
-      <img loading="lazy" src="assets/integrations/salesforce.png" alt="Salesforce">
-      <img loading="lazy" src="assets/integrations/hubspot.png" alt="HubSpot">
-      <img loading="lazy" src="assets/integrations/zoho.png" alt="Zoho">
-      <img loading="lazy" src="assets/integrations/crmpro.png" alt="CRMPro">
-      <img loading="lazy" src="assets/integrations/quiter.png" alt="Quiter">
-      <img loading="lazy" src="assets/integrations/businesspro.png" alt="Business Pro">
-      <img loading="lazy" src="assets/integrations/zapier.png" alt="Zapier">
+      <h2 class="section-title">Integración fluida <span class="accent">con tu CRM o DMS</span></h2>
+      <p class="section-sub">Karbot está diseñado para integrarse con CRMs, DMS y otros sistemas de gestión, permitiendo que la información fluya de manera bidireccional. Cuando se requieren integraciones más específicas, ofrecemos opciones de conexión flexibles.</p>
     </div>
     <div class="section-cta">
       <a class="section-cta__link" href="#contacto" data-track="integraciones_cta_click">Agenda demo · revisamos tu stack juntos <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Tu CRM no está aquí? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="integraciones_cta_ask">Pregúntanos por tu integración</a>.</p>
+    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Tu CRM en particular? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="integraciones_cta_ask">Pregúntanos por tu integración</a>.</p>
   </div>
 </section>
 
-<!-- ========== CÓMO COBRAMOS · comparativa flat vs escalado (v5 · quick-win) ========== -->
+<!-- ========== CÓMO COBRAMOS · usuarios ilimitados (alineado con karbot.mx) ========== -->
 <section class="section" id="como-cobramos">
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">Cómo cobramos</div>
-      <h2 class="section-title">El único WhatsApp con IA que <span class="accent">no te cobra por asesor</span></h2>
-      <p class="section-sub">Los demás cobran $500 a $1,700 MXN por cada usuario que sumes. Karbot: el mismo precio para 5, 10 o 50.</p>
+      <h2 class="section-title">Usuarios <span class="accent">ilimitados</span> incluidos</h2>
+      <p class="section-sub">Sólo necesitas una licencia mensual para todos tus usuarios. Sin cobros extra por sumar asesores a tu piso de venta.</p>
     </div>
 
     <div class="cost-context">
-      <p>En automotive tu equipo comercial rota mucho. Con cobro por asesor, cada movimiento del piso te sube la factura. Con Karbot, no.</p>
+      <p>En automotive tu equipo comercial rota mucho. Con Karbot, cada movimiento del piso no te sube la factura: los usuarios que sumes están incluidos en tu licencia.</p>
     </div>
 
-    <div class="cost-simulator">
-      <div class="cost-tabs">
-        <div class="cost-tab-label">¿Cuántos asesores tienes hoy?</div>
-        <div class="cost-tab-buttons" role="tablist">
-          <button type="button" class="cost-tab" data-users="5" onclick="setCostSim(5)">5 asesores</button>
-          <button type="button" class="cost-tab active" data-users="10" onclick="setCostSim(10)">10 asesores</button>
-          <button type="button" class="cost-tab" data-users="20" onclick="setCostSim(20)">20 asesores</button>
-          <button type="button" class="cost-tab" data-users="30" onclick="setCostSim(30)">30 asesores</button>
-        </div>
-      </div>
-
-      <div class="cost-bars" id="costBars" aria-live="polite"></div>
-
-      <div class="cost-savings" id="costSavings">Ahorro anual con Karbot: calculando…</div>
-      <p class="cost-footnote">Estimaciones a partir de pricing público de plataformas competidoras · agosto 2026. Nombres omitidos por respeto legal.</p>
-    </div>
-
-    <div class="cost-table-wrap">
-      <table class="cost-table">
-        <thead>
-          <tr>
-            <th>Concepto</th>
-            <th class="th-competencia">Competencia típica</th>
-            <th class="th-karbot">Karbot</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Modelo de precio</td>
-            <td class="td-competencia">Por usuario o flat con caps duros de mensajes</td>
-            <td class="td-karbot">Flat MXN · usuarios ilimitados</td>
-          </tr>
-          <tr>
-            <td>Precio para 10 usuarios</td>
-            <td class="td-competencia">$4,750 – $14,000 MXN/mes</td>
-            <td class="td-karbot">$5,000 MXN/mes</td>
-          </tr>
-          <tr>
-            <td>Costo por asesor nuevo</td>
-            <td class="td-competencia">+$500 a $1,700 MXN/mes cada uno</td>
-            <td class="td-karbot">$0 · cero costo por rotación</td>
-          </tr>
-          <tr>
-            <td>Especialización automotriz</td>
-            <td class="td-competencia">Multiindustria</td>
-            <td class="td-karbot">100% automotriz</td>
-          </tr>
-          <tr>
-            <td>Módulo postventa · taller</td>
-            <td class="td-competencia">No disponible</td>
-            <td class="td-karbot">Incluido</td>
-          </tr>
-          <tr>
-            <td>BDC centralizado multisucursal</td>
-            <td class="td-competencia">Limitado</td>
-            <td class="td-karbot">Nativo</td>
-          </tr>
-          <tr>
-            <td>Plantillas certificadas de WhatsApp</td>
-            <td class="td-competencia">No incluye</td>
-            <td class="td-karbot">1,000/mes/agencia</td>
-          </tr>
-          <tr>
-            <td>Calendario integrado para citas</td>
-            <td class="td-competencia">No disponible</td>
-            <td class="td-karbot">Incluido</td>
-          </tr>
-          <tr>
-            <td>Ligas de pago por WhatsApp</td>
-            <td class="td-competencia">No disponible</td>
-            <td class="td-karbot">Incluido</td>
-          </tr>
-          <tr>
-            <td>Integración a tu DMS (Quiter, Business Pro, CRM Pro)</td>
-            <td class="td-competencia">Vía Zapier · costo adicional</td>
-            <td class="td-karbot">Nativa · sin costo</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <p class="cost-cta-line"><strong>Todo incluido.</strong> Sin costos ocultos por integrar tu DMS.</p>
     <div class="section-cta">
       <a class="section-cta__link section-cta__link--primary" href="#contacto" data-track="cobramos_cta_click">Reserva tu demo y cotización <span class="arr" aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
 
-<!-- ========== PLANES ========== -->
+<!-- ========== PLANES · alineado con karbot.mx/pricing ========== -->
 <section class="section section-alt" id="planes">
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">Planes</div>
-      <h2 class="section-title">Precio <span class="accent">por agencia · sin cobrar por asesor</span></h2>
-      <p class="section-sub">Usuarios ilimitados incluidos. 1,000 mensajes de salida mensuales incluidos. Sin cargos ocultos.</p>
+      <h2 class="section-title">Conoce <span class="accent">nuestros planes</span></h2>
+      <p class="section-sub">Tenemos las mejores herramientas adecuadas a tu negocio. Usuarios ilimitados en ambos planes.</p>
     </div>
     <div class="plans-grid">
       <div class="plan-card">
-        <div class="plan-name">Karbot PRO</div>
-        <div class="plan-price"><span class="cur">$</span>5,000 <span class="per">MXN/agencia/mes</span></div>
-        <div class="plan-setup">+ $5,000 MXN setup único · descuentos por volumen desde 3 agencias</div>
+        <div class="plan-name">Karbot</div>
         <ul class="plan-features">
-          <li>Línea comercial certificada de WhatsApp</li>
-          <li>Usuarios ilimitados sin cargo por asesor</li>
-          <li>1,000 mensajes salida/mes incluidos</li>
-          <li>Reportería y tablero de leads auditable</li>
-          <li>Encuestas de satisfacción</li>
-          <li>Bot con IA atendiendo a cualquier hora</li>
+          <li><strong>¡Usuarios ilimitados!</strong></li>
+          <li>1,000 mensajes de salida</li>
+          <li>Conversaciones ilimitadas</li>
+          <li>Chatbot con menús y submenús ilimitados</li>
+          <li>Asignación automática de leads</li>
+          <li>Reportes de rendimiento y evaluación de asesores</li>
         </ul>
       </div>
       <div class="plan-card featured">
         <div class="plan-badge">Recomendado</div>
-        <div class="plan-name">Karbot TOTAL</div>
-        <div class="plan-price"><span class="cur">$</span>7,000 <span class="per">MXN/agencia/mes</span></div>
-        <div class="plan-setup">+ $7,000 MXN setup único · descuentos por volumen desde 3 agencias</div>
+        <div class="plan-name">Karbot IA</div>
         <ul class="plan-features">
-          <li><strong>Todo lo de PRO, más:</strong></li>
-          <li>Apartado con Karlo Pay dentro del chat</li>
-          <li>Verificación de visita a sucursal con QR</li>
-          <li>Análisis con IA de qué modelos piden, qué precios rechazan, qué asesor cierra mejor</li>
-          <li>Auditoría automática por asesor</li>
-          <li>Setup express en 3 días</li>
+          <li><strong>Todo lo de Karbot, más:</strong></li>
+          <li>IA conversacional</li>
+          <li>Generación de campañas con IA</li>
+          <li>Smart send (envíos optimizados)</li>
+          <li>Chatbot conversacional IA</li>
+          <li>Agente IA</li>
         </ul>
-        <p class="plan-note">Descuentos por volumen: 3-5 agencias 5% · 6-10 agencias 8% · 11+ agencias 10%</p>
       </div>
     </div>
     <div class="section-cta">
-      <a class="section-cta__link section-cta__link--primary" href="#contacto" data-track="planes_cta_click">Agenda demo · elige tu plan <span class="arr" aria-hidden="true">→</span></a>
+      <a class="section-cta__link section-cta__link--primary" href="#contacto" data-track="planes_cta_click">Agenda demo · te compartimos pricing <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Grupo con 10+ marcas? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="planes_enterprise_click">Pídenos plan enterprise</a>.</p>
+    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Necesitas más mensajes de salida? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="planes_enterprise_click">Contáctanos</a>.</p>
   </div>
 </section>
 
@@ -2040,7 +1901,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </details>
       <details class="faq-item">
         <summary class="faq-question">¿Cuánto tarda la implementación real? <span class="arrow">+</span></summary>
-        <div class="faq-answer">Con tu Business Manager, número comercial y accesos de partner ya entregados, arrancamos en 72 horas (3 días). Si necesitas armar Business Manager desde cero o conseguir la línea, te acompañamos a hacerlo con Meta y sumamos unos días extra. Karbot cree en que tú eres dueño de tus activos, pero si por alguna razón no puedes conseguirlos tú, también los podemos habilitar de nuestro lado.</div>
+        <div class="faq-answer">Con tu Business Manager, número comercial y accesos de partner ya entregados, comienzas a operar en 2 días con todo conectado. Si necesitas armar Business Manager desde cero o conseguir la línea, te acompañamos a hacerlo con Meta y sumamos unos días extra. Karbot cree en que tú eres dueño de tus activos, pero si por alguna razón no puedes conseguirlos tú, también los podemos habilitar de nuestro lado.</div>
       </details>
     </div>
     <div class="section-cta">
