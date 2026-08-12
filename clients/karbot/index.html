@@ -3020,18 +3020,14 @@ async function submitForm(e) {
       phone_number: phoneN,
       address: { first_name: firstName, last_name: lastName, country },
     });
-    // GA4 recommended event · generate_lead
-    // SMOKE GUARD · para smokes disparamos evento CUSTOM (no el standard 'generate_lead') para que
-    // no cuente en conversions. El evento debug queda para diagnostics.
-    const ga4EventName = isSmoke ? 'smoke_lead_debug' : 'generate_lead';
-    gtag('event', ga4EventName, {
-      ...enrichedPayload,
-      transaction_id: eventId,
-      is_smoke: isSmoke,
-    });
+    // NOTA IMPORTANTE · el evento 'generate_lead' NO se dispara aquí.
+    // Se dispara post-book-success (más abajo), porque el objetivo del negocio es
+    // "prospecto calificado = cita agendada", no "formulario enviado".
+    // Si el book al Worker falla, no cuenta como conversion.
   }
 
   // Meta Pixel · Advanced Matching sin re-init (fbq('set','userData',...)) evita duplicate PageView
+  // OJO: Solo Advanced Matching aquí. El fbq('track','Lead') se dispara post-book (no aquí).
   if (typeof fbq === 'function') {
     try {
       fbq('set', 'userData', {
@@ -3043,33 +3039,10 @@ async function submitForm(e) {
         external_id: eventId,
       });
     } catch(e) { /* fbq.set puede no existir en versiones viejas — degradación silenciosa */ }
-    // SMOKE GUARD · Lead standard event solo si NO es smoke → mantiene Ads Manager limpio.
-    // Custom event queda como huella para debugging del pixel sin contaminar reporting.
-    if (isSmoke) {
-      fbq('trackCustom', 'SmokeLeadDebug', {
-        content_name: 'demo_karbot_smoke',
-        currency: 'MXN',
-        value,
-        lead_tier: tier,
-        rol: data.rol,
-        agencias: data.agencias,
-      }, { eventID: eventId });
-    } else {
-      fbq('track', 'Lead', {
-        content_name: 'demo_karbot',
-        content_category: 'automotive_saas',
-        content_ids: [`karbot_demo_${data.rol}`],
-        currency: 'MXN',
-        value,
-        lead_tier: tier,
-        agencias: data.agencias,
-        rol: data.rol,
-        form_type: 'landing_calendar',
-      }, { eventID: eventId });
-    }
   }
 
-  // Track custom (GTM dataLayer + Clarity tag) con payload full
+  // Track custom (GTM dataLayer + Clarity tag) con payload full · marca la INTENCIÓN de agendar
+  // Este es custom event · NO es el standard 'Lead' de Meta. Sirve para leer funnel intermedio.
   track('form_submit_demo', enrichedPayload);
 
   // Inyectar enrichments al body que se envía al Worker (para CAPI server-side + D1 attribution log)
@@ -3162,28 +3135,63 @@ async function submitForm(e) {
       transaction_id: `karbot_book_${booked.leadId}`,
     };
 
-    // GA4 event · schedule (recommended) + purchase-like value tracking
-    // SMOKE GUARD · en smokes disparamos solo custom (demo_booked) NO standard 'schedule'.
+    // ============ CONVERSIONES · post-book success ============
+    // Semántica canónica: prospecto calificado = cita agendada (D1 insert + intento de Calendar OK).
+    // El evento Meta 'Lead' es el objetivo primary de optimización de la campaña — dispara SOLO
+    // aquí (no en form submit), para que Meta aprenda de cada perfil que agendó, no del que solo llenó.
+    // Mismo eventId que usa el CAPI server-side del Worker → dedup automático (no doble conteo).
+
+    // GA4 · schedule (recommended) + generate_lead (recommended · primary conversion)
+    // SMOKE GUARD · en smokes disparamos solo custom para no contaminar reporting Ads Manager / GA4.
     if (typeof gtag === 'function') {
-      if (!isSmoke) gtag('event', 'schedule', bookedPayload);
-      gtag('event', 'demo_booked', {...bookedPayload, is_smoke: isSmoke}); // custom event para GA4 dashboards
+      if (!isSmoke) {
+        gtag('event', 'generate_lead', {
+          ...bookedPayload,
+          transaction_id: eventId,
+        });
+        gtag('event', 'schedule', bookedPayload);
+      } else {
+        gtag('event', 'smoke_lead_debug', {...bookedPayload, is_smoke: true});
+      }
+      gtag('event', 'demo_booked', {...bookedPayload, is_smoke: isSmoke}); // custom event · dashboards GA4
     }
 
-    // Meta Pixel · Schedule (standard event · CTR conversion) — solo si NO es smoke
+    // Meta Pixel · Lead (PRIMARY conversion · optimization event) + Schedule (companion)
     if (typeof fbq === 'function') {
       if (isSmoke) {
+        fbq('trackCustom', 'SmokeLeadDebug', {
+          content_name: 'demo_karbot_smoke',
+          currency: 'MXN',
+          value,
+          lead_tier: tier,
+          rol: data.rol,
+          agencias: data.agencias,
+        }, { eventID: eventId });
         fbq('trackCustom', 'SmokeScheduleDebug', {
           content_name: 'demo_karbot_smoke',
           currency: 'MXN',
-          value: value,
+          value,
           lead_tier: tier,
         }, { eventID: `karbot_smoke_book_${booked.leadId}` });
       } else {
+        // Lead = objetivo primary del pixel · lo que optimiza la campaña Andromeda
+        fbq('track', 'Lead', {
+          content_name: 'demo_karbot',
+          content_category: 'automotive_saas',
+          content_ids: [`karbot_demo_${data.rol}`],
+          currency: 'MXN',
+          value,
+          lead_tier: tier,
+          agencias: data.agencias,
+          rol: data.rol,
+          form_type: 'landing_calendar',
+          booking_method: bookedPayload.booking_method,
+        }, { eventID: eventId });
         fbq('track', 'Schedule', {
           content_name: 'demo_karbot',
           content_category: 'automotive_saas',
           currency: 'MXN',
-          value: value,
+          value,
           lead_tier: tier,
           booking_method: bookedPayload.booking_method,
         }, { eventID: `karbot_book_${booked.leadId}` });
