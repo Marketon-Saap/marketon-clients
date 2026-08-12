@@ -67,7 +67,35 @@
       "applicationCategory": "BusinessApplication",
       "description": "Plataforma comercial que gestiona ventas por WhatsApp para grupos automotrices en México. Bot con IA que califica leads y agenda pruebas de manejo.",
       "url": "https://landing.karbot.mx/",
-      "publisher": { "@id": "https://karbot.mx/#org" }
+      "publisher": { "@id": "https://karbot.mx/#org" },
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "Karbot",
+          "price": "5000",
+          "priceCurrency": "MXN",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "5000",
+            "priceCurrency": "MXN",
+            "unitText": "MONTH",
+            "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitText": "agency" }
+          }
+        },
+        {
+          "@type": "Offer",
+          "name": "Karbot IA",
+          "price": "7000",
+          "priceCurrency": "MXN",
+          "priceSpecification": {
+            "@type": "UnitPriceSpecification",
+            "price": "7000",
+            "priceCurrency": "MXN",
+            "unitText": "MONTH",
+            "referenceQuantity": { "@type": "QuantitativeValue", "value": "1", "unitText": "agency" }
+          }
+        }
+      ]
     },
     {
       "@type": "FAQPage",
@@ -1835,17 +1863,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </section>
 
-<!-- ========== PLANES · alineado con karbot.mx/pricing ========== -->
+<!-- ========== PLANES · nombres oficiales karbot.mx + pricing confirmado ========== -->
 <section class="section section-alt" id="planes">
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">Planes</div>
-      <h2 class="section-title">Conoce <span class="accent">nuestros planes</span></h2>
-      <p class="section-sub">Tenemos las mejores herramientas adecuadas a tu negocio. Usuarios ilimitados en ambos planes.</p>
+      <h2 class="section-title">Precio <span class="accent">por agencia · sin cobrar por asesor</span></h2>
+      <p class="section-sub">Usuarios ilimitados incluidos. 1,000 mensajes de salida mensuales incluidos. Sin cargos ocultos.</p>
     </div>
     <div class="plans-grid">
       <div class="plan-card">
         <div class="plan-name">Karbot</div>
+        <div class="plan-price"><span class="cur">$</span>5,000 <span class="per">MXN/agencia/mes</span></div>
+        <div class="plan-setup">+ $5,000 MXN setup único · descuentos por volumen desde 3 agencias</div>
         <ul class="plan-features">
           <li><strong>¡Usuarios ilimitados!</strong></li>
           <li>1,000 mensajes de salida</li>
@@ -1858,6 +1888,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="plan-card featured">
         <div class="plan-badge">Recomendado</div>
         <div class="plan-name">Karbot IA</div>
+        <div class="plan-price"><span class="cur">$</span>7,000 <span class="per">MXN/agencia/mes</span></div>
+        <div class="plan-setup">+ $7,000 MXN setup único · descuentos por volumen desde 3 agencias</div>
         <ul class="plan-features">
           <li><strong>Todo lo de Karbot, más:</strong></li>
           <li>IA conversacional</li>
@@ -1866,12 +1898,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <li>Chatbot conversacional IA</li>
           <li>Agente IA</li>
         </ul>
+        <p class="plan-note">Descuentos por volumen: 3-5 agencias 5% · 6-10 agencias 8% · 11+ agencias 10%</p>
       </div>
     </div>
     <div class="section-cta">
-      <a class="section-cta__link section-cta__link--primary" href="#contacto" data-track="planes_cta_click">Agenda demo · te compartimos pricing <span class="arr" aria-hidden="true">→</span></a>
+      <a class="section-cta__link section-cta__link--primary" href="#contacto" data-track="planes_cta_click">Agenda demo · elige tu plan <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Necesitas más mensajes de salida? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="planes_enterprise_click">Contáctanos</a>.</p>
+    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Grupo con 10+ marcas o necesitas más mensajes? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="planes_enterprise_click">Pídenos plan enterprise</a>.</p>
   </div>
 </section>
 
