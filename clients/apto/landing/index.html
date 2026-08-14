@@ -300,7 +300,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .hero__eyebrow { color: rgba(255,255,255,.7); font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500; font-family: var(--font-heading); margin-bottom: 20px; }
     @media (max-width: 767px) { .hero__eyebrow { font-size: 12.5px; margin-bottom: 12px; } }
     .hero__title { color: var(--paper); margin-bottom: 28px; }
-    @media (max-width: 767px) { .hero__title { margin-bottom: 20px; font-size: clamp(1.75rem, 8.5vw, 2.5rem) !important; line-height: 1.12 !important; } }
+    @media (max-width: 767px) { .hero__title { margin-bottom: 20px; font-size: clamp(1.5rem, 7.2vw, 2.125rem) !important; line-height: 1.08 !important; letter-spacing: -0.01em; } }
     .hero__sub { color: rgba(255,255,255,.82); font-size: clamp(1.0625rem, 1.6vw, 1.25rem); line-height: 1.55; max-width: 640px; margin-bottom: 40px; font-family: var(--font-body); }
     @media (max-width: 767px) { .hero__sub { font-size: 15.5px; margin-bottom: 24px; } }
     .hero__cta-group { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
@@ -1374,6 +1374,82 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       padding: 0 26px 22px; color: var(--ink-muted);
     }
 
+    /* Producto expandable · Wave 2 · atacar 16K dead clicks en labels */
+    .producto__more {
+      margin-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.10);
+      padding-top: 12px;
+    }
+    .producto__more summary {
+      cursor: pointer; list-style: none;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+      color: rgba(255,255,255,.72); font-family: var(--font-heading);
+      text-transform: uppercase; padding: 6px 0;
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 32px; transition: color 150ms ease;
+    }
+    .producto__more summary:hover { color: var(--paper); }
+    .producto__more summary::-webkit-details-marker { display: none; }
+    .producto__more summary::after {
+      content: '+'; font-size: 18px; font-weight: 400;
+      line-height: 1; transition: transform 200ms ease;
+    }
+    .producto__more[open] summary::after { transform: rotate(45deg); }
+    .producto__more[open] summary { color: var(--paper); }
+    .producto__examples {
+      list-style: none; padding: 12px 0 4px; margin: 0;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .producto__examples li {
+      color: rgba(255,255,255,.85); font-size: 14px;
+      line-height: 1.5; padding-left: 18px; position: relative;
+    }
+    .producto__examples li::before {
+      content: '→'; position: absolute; left: 0; top: 0;
+      color: var(--blue-cta); font-weight: 700;
+    }
+
+    /* No-somos accordions · Wave 2 · AI insight explícito quiere expansión */
+    .no-somos__item {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+    .no-somos__item summary {
+      padding: 16px 20px 16px 44px;
+      cursor: pointer; list-style: none;
+      font-size: 15.5px; line-height: 1.5;
+      color: var(--ink); position: relative;
+      display: flex; align-items: flex-start;
+      min-height: 48px;
+    }
+    @media (max-width: 767px) { .no-somos__item summary { font-size: 14.5px; padding: 14px 16px 14px 40px; } }
+    .no-somos__item summary::-webkit-details-marker { display: none; }
+    .no-somos__item summary::before {
+      content: '✕'; position: absolute;
+      left: 18px; top: 18px;
+      color: var(--error); font-weight: 600;
+      font-size: 13px; opacity: 0.75;
+    }
+    .no-somos__item summary::after {
+      content: '+'; margin-left: auto; padding-left: 12px;
+      font-size: 22px; font-weight: 300; line-height: 1;
+      color: var(--ink-muted); transition: transform 200ms ease;
+      flex-shrink: 0;
+    }
+    .no-somos__item[open] summary::after { transform: rotate(45deg); color: var(--blue-cta); }
+    .no-somos__item summary strong { color: var(--ink); font-weight: 700; margin-right: 6px; }
+    .no-somos__body {
+      padding: 4px 20px 20px 44px;
+      color: var(--ink-muted); font-size: 14.5px;
+      line-height: 1.55;
+      border-top: 1px solid var(--line);
+      background: var(--paper-cream);
+    }
+    @media (max-width: 767px) { .no-somos__body { padding: 8px 16px 16px 40px; } }
+
     /* Footer */
     .footer {
       background: var(--navy-deep); color: rgba(255,255,255,.7);
@@ -1626,26 +1702,66 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div class="producto__icon-wrap"><img src="./assets/icons/servicio-02.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">Productos digitales completos</div>
           <p class="producto__desc">Del prototipado al testing: apps, plataformas B2B y experiencias que integran objetivos de negocio, viabilidad operativa y usuario real. <strong>No hacemos sitios corporativos genéricos.</strong></p>
+          <details class="producto__more">
+            <summary data-track="producto_expand" data-producto="digitales-completos">Ver ejemplos concretos</summary>
+            <ul class="producto__examples">
+              <li>Prototipo funcional en 4 semanas, testing con usuarios reales antes de construcción</li>
+              <li>Handoff a producción con documentación operativa · el equipo del cliente puede mantenerlo</li>
+              <li>Plataformas B2B con lógica densa (catálogo cruzado, inventario multi-almacén)</li>
+            </ul>
+          </details>
         </article>
         <article class="producto">
           <div class="producto__icon-wrap"><img src="./assets/icons/servicio-06.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">Sistemas internos de operación</div>
           <p class="producto__desc">ERPs, dashboards, data warehouses e interfaces internas construidas para tu operación real — no para vender licencias ni cobrar por hora.</p>
+          <details class="producto__more">
+            <summary data-track="producto_expand" data-producto="sistemas-internos">Ver ejemplos concretos</summary>
+            <ul class="producto__examples">
+              <li>Auditoría de stack + integración con lo que ya tienes (no migración forzada)</li>
+              <li>UI diseñada para el equipo que lo usa día a día, no para el que compra</li>
+              <li>Data warehouse con reconciliación multi-fuente y alertas por umbral</li>
+            </ul>
+          </details>
         </article>
         <article class="producto">
           <div class="producto__icon-wrap"><img src="./assets/icons/browser.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">Ecosistemas digitales omnicanal</div>
           <p class="producto__desc">Cuando canales, procesos, equipos y tecnología deben operar coordinados. Reducimos fricción y alineamos operación con negocio · el patrón de KIOSKO POS +900 tiendas y Grupo San Carlos.</p>
+          <details class="producto__more">
+            <summary data-track="producto_expand" data-producto="ecosistemas-omnicanal">Ver ejemplos concretos</summary>
+            <ul class="producto__examples">
+              <li>Mapa de canales + identificación de puntos críticos compartidos (caja, devolución, atención)</li>
+              <li>Backend único que sirve web, mobile, POS y app sin duplicar lógica</li>
+              <li>Casos: KIOSKO 900+ tiendas · Grupo San Carlos multi-marca · Coppel líneas cruzadas</li>
+            </ul>
+          </details>
         </article>
         <article class="producto">
           <div class="producto__icon-wrap"><img src="./assets/icons/ai-chip.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">Agentes AI e integraciones</div>
           <p class="producto__desc">Asistentes, automatizaciones e integraciones sobre los sistemas que ya tienes. Supervisados por personas donde importa.</p>
+          <details class="producto__more">
+            <summary data-track="producto_expand" data-producto="agentes-ai">Ver ejemplos concretos</summary>
+            <ul class="producto__examples">
+              <li>Automatización con criterio: humano-en-el-loop donde la decisión no puede fallar</li>
+              <li>Integración a ERP/CRM existente sin migración ni re-training del equipo</li>
+              <li>Evaluación honesta: dónde suma AI vs dónde suma rediseño de proceso</li>
+            </ul>
+          </details>
         </article>
         <article class="producto">
           <div class="producto__icon-wrap"><img src="./assets/icons/ai-ops.svg" alt="" width="40" height="40"></div>
           <div class="producto__label">Automatización de operación</div>
           <p class="producto__desc">Para equipos que ya digitalizaron y ahora quieren que la operación se ejecute sola donde tiene sentido — sin sustituir el criterio del equipo.</p>
+          <details class="producto__more">
+            <summary data-track="producto_expand" data-producto="automatizacion">Ver ejemplos concretos</summary>
+            <ul class="producto__examples">
+              <li>Diagnóstico de dónde se pierde tiempo real (no percibido, medido)</li>
+              <li>Automatización de flujos repetitivos, nunca de flujos que requieren criterio</li>
+              <li>Métricas antes/después con owner claro por proceso automatizado</li>
+            </ul>
+          </details>
         </article>
       </div>
     </div>
@@ -1812,17 +1928,40 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <h2>Preferimos decir que no antes de perder tu tiempo.</h2>
         <p class="lead">Si buscas alguna de estas cosas, no somos el equipo indicado. Mejor saberlo antes de agendar — te ahorra tiempo, nos ahorra tiempo.</p>
       </header>
-      <ul class="no-somos__list">
-        <li><span><strong>No somos agencia de branding ni de contenido.</strong> No hacemos identidad visual ni campañas de comunicación.</span></li>
-        <li><span><strong>No competimos con Big-Four en despliegues masivos tipo SAP Hana.</strong> Nuestro sweet spot es scope acotado con impacto medible.</span></li>
-        <li><span><strong>No somos consultora slideware.</strong> No entregamos 120 slides sin sistema construido detrás.</span></li>
-        <li><span><strong>No somos estudio de diseño puro estilo IDEO.</strong> No nos quedamos en el concepto ni en el mock-up.</span></li>
-        <li><span><strong>No somos fábrica de software.</strong> No escribimos código sin estrategia y sin criterio de negocio.</span></li>
-        <li><span><strong>No somos consultora "a 15,000 pies".</strong> Nos metemos a las tripas del problema; el framework sin implementación no vale.</span></li>
-        <li><span><strong>No somos consultora AI-first.</strong> AI es una capa útil sobre una operación ya sana — no el punto de partida.</span></li>
-        <li><span><strong>No trabajamos con startups sin fondeo confirmado.</strong> Sólo nivel Series A / Y Combinator o equivalente.</span></li>
-      </ul>
-      <button class="no-somos__toggle" type="button" onclick="this.closest('.no-somos').classList.add('is-expanded'); this.remove();">Ver los 5 puntos restantes ↓</button>
+      <div class="no-somos__list">
+        <details class="no-somos__item">
+          <summary data-track="no_somos_expand" data-item="branding"><strong>No somos agencia de branding ni de contenido.</strong> No hacemos identidad visual ni campañas de comunicación.</summary>
+          <div class="no-somos__body">En su lugar: trabajamos con tu agencia interna o partner de comunicación cuando existe. Nuestro terreno es sistema operativo detrás de la marca, no la marca.</div>
+        </details>
+        <details class="no-somos__item">
+          <summary data-track="no_somos_expand" data-item="bigfour"><strong>No competimos con Big-Four en despliegues masivos tipo SAP Hana.</strong> Nuestro sweet spot es scope acotado con impacto medible.</summary>
+          <div class="no-somos__body">En su lugar: integramos con implementaciones ERP en curso. Nuestro alcance es diseño de experiencia y capa operativa que hace el ERP usable para el equipo.</div>
+        </details>
+        <details class="no-somos__item">
+          <summary data-track="no_somos_expand" data-item="slideware"><strong>No somos consultora slideware.</strong> No entregamos 120 slides sin sistema construido detrás.</summary>
+          <div class="no-somos__body">En su lugar: cada strategic deliverable viene con el artefacto operable — service blueprint funcional, prototipo clicable, backlog priorizado con specs.</div>
+        </details>
+        <details class="no-somos__item">
+          <summary data-track="no_somos_expand" data-item="ideo"><strong>No somos estudio de diseño puro estilo IDEO.</strong> No nos quedamos en el concepto ni en el mock-up.</summary>
+          <div class="no-somos__body">En su lugar: nos quedamos hasta adopción real. Diseño sin implementación es 20% del trabajo — el 80% es que opere el lunes siguiente.</div>
+        </details>
+        <details class="no-somos__item">
+          <summary data-track="no_somos_expand" data-item="fabrica"><strong>No somos fábrica de software.</strong> No escribimos código sin estrategia y sin criterio de negocio.</summary>
+          <div class="no-somos__body">En su lugar: código con criterio de negocio, integrado a contexto operativo específico. El mismo equipo que diseña construye — sin pérdida de contexto entre fases.</div>
+        </details>
+        <details class="no-somos__item">
+          <summary data-track="no_somos_expand" data-item="15000pies"><strong>No somos consultora "a 15,000 pies".</strong> Nos metemos a las tripas del problema; el framework sin implementación no vale.</summary>
+          <div class="no-somos__body">En su lugar: team senior embedded con quien opera. Cada semana con la operación real — no visitas de checkpoint quincenales.</div>
+        </details>
+        <details class="no-somos__item">
+          <summary data-track="no_somos_expand" data-item="ai-first"><strong>No somos consultora AI-first.</strong> AI es una capa útil sobre una operación ya sana — no el punto de partida.</summary>
+          <div class="no-somos__body">En su lugar: aplicamos AI donde suma medible. Empezamos por sanear operación y datos; después la AI amplifica lo que ya funciona en vez de esconder lo que no.</div>
+        </details>
+        <details class="no-somos__item">
+          <summary data-track="no_somos_expand" data-item="startups"><strong>No trabajamos con startups sin fondeo confirmado.</strong> Sólo nivel Series A / Y Combinator o equivalente.</summary>
+          <div class="no-somos__body">En su lugar: startups con PMF validado que buscan escalar producto — no construir MVP. Track record de rondas cerradas + métricas operativas reales ayuda.</div>
+        </details>
+      </div>
 
       <div class="section-cta">
         <a class="section-cta__link" href="#cta-form" data-track="no_somos_cta_click">Si sí encajas con lo que hacemos · Agenda descubrimiento <span class="arr" aria-hidden="true">→</span></a>
