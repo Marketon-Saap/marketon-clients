@@ -382,17 +382,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       isolation: isolate;
     }
     @media (max-width: 767px) { .pov-quote { padding: 48px 0; } }
-    .pov-quote__video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.22;
-      z-index: 0;
-      pointer-events: none;
-      filter: saturate(0.85);
-    }
     .pov-quote__overlay {
       position: absolute;
       inset: 0;
@@ -886,10 +875,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
     .casos-secundarios {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
     }
     @media (max-width: 900px) { .casos-secundarios { grid-template-columns: 1fr; } }
+
+    /* Wave 3 · card variant con imagen real de apto.mx en top */
+    .card--with-image { padding: 0 !important; overflow: hidden; display: flex; flex-direction: column; }
+    .card--with-image .card__image-wrap {
+      width: 100%;
+      aspect-ratio: 16/10;
+      overflow: hidden;
+      background: var(--paper-cream);
+    }
+    .card--with-image .card__image-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 400ms ease;
+    }
+    .card--with-image:hover .card__image-wrap img { transform: scale(1.03); }
+    .card--with-image .card__body-wrap { padding: 24px 26px 26px; }
+    @media (max-width: 767px) {
+      .card--with-image .card__body-wrap { padding: 18px 20px 22px; }
+      .card--with-image .card__image-wrap { aspect-ratio: 16/9; }
+    }
 
     /* Método · 2 fases (Discovery + Delivery), cada fase con 2 pasos + connector */
     .metodo {
@@ -1538,14 +1548,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </div>
         </div>
         <div class="hero__visual" aria-hidden="true">
-          <video muted loop playsinline autoplay
-                 poster="./assets/hero-abstract-to-concrete.jpg"
-                 preload="none"
-                 id="hero-video">
-            <source src="https://apto.b-cdn.net/slide-2-vp9-chrome.webm" type="video/webm">
-            <source src="https://apto.b-cdn.net/slide-2-hevc-safari.mp4" type="video/mp4; codecs=hvc1">
-          </video>
-          <img class="hero__visual-fallback" src="./assets/hero-abstract-to-concrete.jpg" alt="De lo abstracto a lo concreto — la metáfora visual del approach APTO" fetchpriority="high" width="1920" height="1080" decoding="async">
+          <img src="./assets/hero-abstract-to-concrete.jpg" alt="De lo abstracto a lo concreto — la metáfora visual del approach APTO" fetchpriority="high" width="1920" height="1080" decoding="async">
         </div>
       </div>
     </div>
@@ -1567,12 +1570,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </div>
   </section>
 
-  <!-- POV distintivo · pull-quote canónico del plan §2 · con video oficial APTO slide-3 -->
+  <!-- POV distintivo · pull-quote canónico del plan §2 · full static (video killed Wave 3) -->
   <section class="pov-quote" aria-label="Point of view APTO">
-    <video class="pov-quote__video" muted loop playsinline autoplay preload="metadata" aria-hidden="true">
-      <source src="https://apto.b-cdn.net/slide%203-vp9-chrome.webm" type="video/webm">
-      <source src="https://apto.b-cdn.net/slide%203-hevc-safari.mp4" type="video/mp4; codecs=hvc1">
-    </video>
     <div class="pov-quote__overlay" aria-hidden="true"></div>
     <div class="container">
       <blockquote class="pov-quote__text">
@@ -1786,21 +1785,41 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <a href="#cta-form" class="caso__link" data-track="ver_mas_casos">¿Un reto similar? Agenda una sesión →</a>
         </div>
         <figure class="caso__visual">
-          <img src="./assets/case-coppel-systems.jpg" alt="Diagrama sistémico de nodos interconectados representando el ecosistema de servicio no-lineal de Coppel" loading="lazy">
-          <figcaption class="caso__figcaption">Diagrama sistémico Coppel · ecosistema de servicio no-lineal</figcaption>
+          <img src="https://apto.mx/wp-content/uploads/2026/01/Coppel-CPF-Hero-image-web-apto.webp" alt="Coppel Club de Protección Familiar — plataforma multi-producto diseñada y construida por APTO" loading="lazy" width="800" height="800">
+          <figcaption class="caso__figcaption">Coppel Club de Protección · ecosistema multi-producto</figcaption>
         </figure>
       </article>
 
       <div class="casos-secundarios">
-        <article class="card">
-          <p class="caso__cliente">APYMSA</p>
-          <h3 class="card__title">Plataforma B2B para catálogo corporativo de autopartes con lógica densa</h3>
-          <p class="card__body">Distribución regional, inventario multi-almacén y catálogo con cuatro variantes por parte cruzadas por modelo, año y códigos. Diseñamos y construimos la plataforma que orquesta la operación en 15 sucursales.</p>
+        <article class="card card--with-image">
+          <div class="card__image-wrap">
+            <img src="https://apto.mx/wp-content/uploads/2024/09/slide_apymsa-compressed.jpg" alt="APYMSA — plataforma B2B de catálogo corporativo diseñada y construida por APTO" loading="lazy" width="800" height="500">
+          </div>
+          <div class="card__body-wrap">
+            <p class="caso__cliente">APYMSA</p>
+            <h3 class="card__title">Plataforma B2B para catálogo corporativo de autopartes con lógica densa</h3>
+            <p class="card__body">Distribución regional, inventario multi-almacén y catálogo con cuatro variantes por parte cruzadas por modelo, año y códigos. Diseñamos y construimos la plataforma que orquesta la operación en 15 sucursales.</p>
+          </div>
         </article>
-        <article class="card">
-          <p class="caso__cliente">BayWa r.e.</p>
-          <h3 class="card__title">Cadencia y documentación de producto que el equipo técnico puede construir sin interpretar</h3>
-          <p class="card__body">Modelo de trabajo con documentación completa — requerimientos, especificaciones y criterios de aceptación — para que construcción no tenga que adivinar. Se reduce el retrabajo por ambigüedad a mínimos.</p>
+        <article class="card card--with-image">
+          <div class="card__image-wrap">
+            <img src="https://apto.mx/wp-content/uploads/2024/08/baywa-compressed.jpg" alt="BayWa r.e. — modelo de documentación y cadencia de producto diseñado por APTO" loading="lazy" width="800" height="500">
+          </div>
+          <div class="card__body-wrap">
+            <p class="caso__cliente">BayWa r.e.</p>
+            <h3 class="card__title">Cadencia y documentación de producto que el equipo técnico puede construir sin interpretar</h3>
+            <p class="card__body">Modelo de trabajo con documentación completa — requerimientos, especificaciones y criterios de aceptación — para que construcción no tenga que adivinar. Se reduce el retrabajo por ambigüedad a mínimos.</p>
+          </div>
+        </article>
+        <article class="card card--with-image">
+          <div class="card__image-wrap">
+            <img src="https://apto.mx/wp-content/uploads/2024/08/fanosa-compressed.jpg" alt="Fanosa — solución operativa diseñada por APTO" loading="lazy" width="800" height="500">
+          </div>
+          <div class="card__body-wrap">
+            <p class="caso__cliente">Fanosa</p>
+            <h3 class="card__title">Reordenar la comunicación del portafolio para audiencias técnicas especializadas</h3>
+            <p class="card__body">Reorganización del portafolio multi-línea para que ingenieros y compradores encuentren la solución específica sin navegar el catálogo completo. Cada división habla el idioma de su especialidad.</p>
+          </div>
         </article>
       </div>
 
