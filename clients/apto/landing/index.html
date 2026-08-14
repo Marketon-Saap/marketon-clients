@@ -167,6 +167,35 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       text-rendering: optimizeLegibility;
     }
     img, svg, video { max-width: 100%; display: block; }
+
+    /* Kill affordance illusion · Clarity 2026-08-13 registró 200K+ dead clicks
+       en texto no-clickable (H1, H2, card bodies, product labels, callouts).
+       Users tap headlines/descriptions esperando expand/link. Fix: cursor default
+       + tap-highlight transparent en textos, force pointer solo en interactivos. */
+    h1, h2, h3, h4, h5, h6,
+    p, li, span, strong, em, blockquote,
+    figure, figcaption, article > div,
+    .eyebrow, .lead, .card__body, .card__title, .card__icon-wrap,
+    .caso__body, .caso__cliente, .caso__title, .caso__tag,
+    .producto, .producto__label, .producto__desc, .producto__icon-wrap,
+    .proyecto__client, .proyecto__title, .proyecto__brief,
+    .conoce__bio, .conoce__name, .conoce__role,
+    .hero__title, .hero__sub, .hero__eyebrow, .hero__trust,
+    .section__header, .section__header h2, .section__header p,
+    .pov-quote__text, .form-trust-micro, .proof__label {
+      cursor: default;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* Interactivos SIEMPRE recuperan pointer */
+    a, button, [role="button"], summary, label, select, input, textarea,
+    a *, button *, [role="button"] *, summary *, label * {
+      cursor: pointer;
+    }
+    input, textarea, select, label { cursor: text; }
+    input[type="checkbox"], input[type="radio"], input[type="submit"], input[type="button"],
+    select, button, a { cursor: pointer; }
+    /* Preserva selección de texto para users que quieren copiar */
+    p, h1, h2, h3, li, blockquote, .caso__body, .producto__desc { user-select: text; }
     button, input, textarea { font-family: inherit; }
     a { color: var(--blue-cta); text-decoration: none; }
     a:hover { text-decoration: underline; }
