@@ -304,6 +304,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       box-shadow: 0 20px 60px rgba(0,0,0,.4);
     }
     .hero__visual video, .hero__visual img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero__visual .hero__visual-fallback { display: none; }
+    @media (max-width: 767px) {
+      .hero__visual video { display: none; }
+      .hero__visual .hero__visual-fallback { display: block; }
+    }
 
     /* Proof marquee */
     .proof { background: var(--paper-cream); padding: 40px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -517,7 +522,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       font-size: 15.5px;
       color: var(--ink);
       line-height: 1.5;
+      cursor: default;
+      user-select: text;
     }
+    .no-somos__list li:hover { background: transparent; }
+    .no-somos__list li strong,
+    .no-somos__list li span { pointer-events: none; }
     @media (max-width: 767px) {
       .no-somos__list li { font-size: 14.5px; padding: 12px 0; }
       /* Colapsar sección qué NO somos en mobile - solo mostrar 3 items + toggle */
@@ -822,13 +832,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       color: var(--ink); font-weight: 500;
       margin-bottom: 24px;
     }
+    .caso__callout-link {
+      color: var(--blue-cta); font-weight: 600;
+      text-decoration: underline; text-underline-offset: 3px;
+      white-space: nowrap;
+    }
+    .caso__callout-link:hover { text-decoration: none; }
     .caso__link { font-weight: 600; color: var(--blue-cta); font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.06em; font-size: 13px; display: inline-flex; align-items: center; min-height: 44px; padding: 10px 0; }
     .caso__visual {
       border-radius: 12px; overflow: hidden;
       background: var(--paper-cream);
       aspect-ratio: 1/1;
+      margin: 0; padding: 0;
+      position: relative;
     }
-    .caso__visual img { width: 100%; height: 100%; object-fit: cover; }
+    .caso__visual img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: default; }
+    .caso__figcaption {
+      position: absolute; left: 12px; bottom: 12px;
+      background: rgba(15, 23, 42, 0.72);
+      color: var(--paper); padding: 6px 12px;
+      font-size: 12px; border-radius: 4px;
+      font-weight: 500; letter-spacing: 0.02em;
+      pointer-events: none;
+    }
     .casos-secundarios {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -1165,7 +1191,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 0.06em;
     }
     .form-field label .req { color: var(--error); }
-    .form-field label .req-optional {
+    .form-field label .req-optional,
+    .form-field label .form-field__opt {
       color: var(--ink-muted); font-weight: 400; text-transform: none;
       letter-spacing: 0; font-size: 12px; margin-left: 4px;
     }
@@ -1401,20 +1428,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <a href="#cta-form" class="btn" data-track="hero_cta_click">
               Agenda tu sesión de descubrimiento <span class="btn__arrow">→</span>
             </a>
-            <a href="#casos" class="link-secondary" data-track="hero_secondary_click">Ver casos de éxito ↓</a>
+            <a href="#casos" class="link-secondary" data-track="hero_secondary_click">Ver cómo lo hicimos con Coppel ↓</a>
             <p class="hero__trust">Respuesta en &lt;24h · Directo con socio senior · 10 años con empresas grandes en México</p>
           </div>
         </div>
         <div class="hero__visual" aria-hidden="true">
           <video muted loop playsinline autoplay
                  poster="./assets/hero-abstract-to-concrete.jpg"
-                 preload="metadata"
-                 fetchpriority="high"
+                 preload="none"
                  id="hero-video">
             <source src="https://apto.b-cdn.net/slide-2-vp9-chrome.webm" type="video/webm">
             <source src="https://apto.b-cdn.net/slide-2-hevc-safari.mp4" type="video/mp4; codecs=hvc1">
-            <img src="./assets/hero-abstract-to-concrete.jpg" alt="De lo abstracto a lo concreto — la metáfora visual del approach APTO" fetchpriority="high" width="1920" height="1080" decoding="async">
           </video>
+          <img class="hero__visual-fallback" src="./assets/hero-abstract-to-concrete.jpg" alt="De lo abstracto a lo concreto — la metáfora visual del approach APTO" fetchpriority="high" width="1920" height="1080" decoding="async">
         </div>
       </div>
     </div>
@@ -1611,12 +1637,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <p class="caso__cliente">Coppel Systems Dynamics</p>
           <h3 class="caso__title">Un mapa no-lineal para un ecosistema de miles de puntos de contacto.</h3>
           <p class="caso__body">Coppel no es una empresa de un solo producto. Diseñar recorridos individuales por línea (celulares vs calcetines) genera retrabajo porque comparten puntos críticos como la caja o la devolución. Aplicamos pensamiento sistémico — imaginar el ecosistema de servicio como una ciudad, no como un flujo lineal — y desarrollamos un mapa que sirve como base común para todos los productos.</p>
-          <div class="caso__callout">+25% eficiencia en definición de nuevos servicios · metodología convertida en whitepaper reutilizable para toda la organización</div>
-          <a href="#casos" class="caso__link" data-track="ver_mas_casos">Ver más casos de éxito ↓</a>
+          <div class="caso__callout">+25% eficiencia en definición de nuevos servicios · metodología documentada — <a href="#cta-form" data-track="whitepaper_cta_click" class="caso__callout-link">consulta bajo NDA →</a></div>
+          <a href="#cta-form" class="caso__link" data-track="ver_mas_casos">¿Un reto similar? Agenda una sesión →</a>
         </div>
-        <div class="caso__visual">
+        <figure class="caso__visual">
           <img src="./assets/case-coppel-systems.jpg" alt="Diagrama sistémico de nodos interconectados representando el ecosistema de servicio no-lineal de Coppel" loading="lazy">
-        </div>
+          <figcaption class="caso__figcaption">Diagrama sistémico Coppel · ecosistema de servicio no-lineal</figcaption>
+        </figure>
       </article>
 
       <div class="casos-secundarios">
@@ -1946,8 +1973,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <span class="form-field__error" id="err-company" aria-live="polite"></span>
             </div>
             <div class="form-field">
-              <label for="f-jobtitle">Cargo <span class="req">*</span></label>
-              <input type="text" id="f-jobtitle" name="jobtitle" required minlength="2" autocomplete="organization-title" placeholder="Tu rol o cargo" aria-describedby="err-jobtitle">
+              <label for="f-jobtitle">Cargo <span class="form-field__opt">(opcional)</span></label>
+              <input type="text" id="f-jobtitle" name="jobtitle" minlength="2" autocomplete="organization-title" placeholder="Tu rol o cargo" aria-describedby="err-jobtitle">
               <span class="form-field__error" id="err-jobtitle" aria-live="polite"></span>
             </div>
             <div class="form-field">
@@ -1970,8 +1997,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <span class="form-field__error" id="err-phone_number" aria-live="polite"></span>
             </div>
             <div class="form-field">
-              <label for="f-company_size">Tamaño de la empresa <span class="req">*</span></label>
-              <select id="f-company_size" name="company_size" required aria-describedby="err-company_size">
+              <label for="f-company_size">Tamaño de la empresa <span class="form-field__opt">(opcional)</span></label>
+              <select id="f-company_size" name="company_size" aria-describedby="err-company_size">
                 <option value="">Selecciona…</option>
                 <option value="1-49">Menos de 50 colaboradores</option>
                 <option value="50-249">50–249 colaboradores</option>
@@ -1981,8 +2008,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <span class="form-field__error" id="err-company_size" aria-live="polite"></span>
             </div>
             <div class="form-field">
-              <label for="f-industry">Industria <span class="req">*</span></label>
-              <select id="f-industry" name="industry" required aria-describedby="err-industry">
+              <label for="f-industry">Industria <span class="form-field__opt">(opcional)</span></label>
+              <select id="f-industry" name="industry" aria-describedby="err-industry">
                 <option value="">Selecciona…</option>
                 <option value="Retail">Retail / Comercio</option>
                 <option value="Manufacturing">Manufactura / Industrial</option>
@@ -1998,8 +2025,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <span class="form-field__error" id="err-industry" aria-live="polite"></span>
             </div>
             <div class="form-field">
-              <label for="f-message">Cuéntanos brevemente, ¿qué problema necesitas resolver? <span class="req">*</span></label>
-              <textarea id="f-message" name="message" required minlength="10" maxlength="500" rows="4" placeholder="Ej: Necesitamos dinamizar nuestro modelo comercial." aria-describedby="err-message"></textarea>
+              <label for="f-message">Cuéntanos brevemente, ¿qué problema necesitas resolver? <span class="form-field__opt">(opcional)</span></label>
+              <textarea id="f-message" name="message" minlength="10" maxlength="500" rows="4" placeholder="Ej: Necesitamos dinamizar nuestro modelo comercial." aria-describedby="err-message"></textarea>
               <span class="form-field__error" id="err-message" aria-live="polite"></span>
             </div>
             <div class="form-field form-field--checkbox">
