@@ -2426,12 +2426,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             }
           }
         });
-        // Deep-link on load · si Meta ad manda URL con hash, scrollea después de que layout está listo
+        // Force top on load · IG WebView + otros in-app browsers a veces auto-scrollean
+        // al hash o restauran posición. Users deben aterrizar en el hero, no en el form.
+        // Kill de cualquier scroll auto: strip hash + force scrollTo(0,0) antes y después
+        // del load event. Si Meta ad manda hash en URL, lo removemos.
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
         if (window.location.hash && window.location.hash.length > 1) {
-          window.addEventListener('load', function(){
-            setTimeout(function(){ scrollToId(window.location.hash.slice(1)); }, 300);
-          });
+          try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch(e){}
         }
+        window.scrollTo(0, 0);
+        window.addEventListener('DOMContentLoaded', function(){ window.scrollTo(0, 0); });
+        window.addEventListener('load', function(){
+          window.scrollTo(0, 0);
+          // Re-force top después de que fonts + imágenes late-load pueden shift layout
+          setTimeout(function(){ if (window.scrollY < 200) window.scrollTo(0, 0); }, 400);
+        });
       })();
 
       // Nav smart-hide mobile · hide on scroll down + show on scroll up
