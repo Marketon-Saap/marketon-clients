@@ -211,7 +211,7 @@ src="https://www.facebook.com/tr?id=1213198990249979&ev=PageView&noscript=1"/></
   --violet-bg-2: #FBF9FF;
   --white: #FFF;
 
-  --grad-hero: linear-gradient(90deg, #4246F8 0%, #7348FF 35%, #AC4BFF 65%, #FF887D 100%);
+  --grad-hero: linear-gradient(90deg, #4246F8 0%, #7348FF 100%);
   --grad-cta: linear-gradient(90deg, #4246F8 0%, #AC4BFF 100%);
   --grad-logo: linear-gradient(90deg, #4538FF 0%, #7348FF 100%);
 
@@ -1342,6 +1342,39 @@ body.cc-modal-open {
 }
 .cap-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--v-200); }
 .cap-icon { font-size: 26px; margin-bottom: 12px; display: block; line-height: 1; }
+.cap-icon svg { width: 26px; height: 26px; color: var(--p-500); stroke-width: 1.6; }
+
+/* ===== 6 DIFERENCIADORES ("Con Karbot todo es más fácil") ===== */
+.diff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.diff-item {
+  padding: 24px 22px;
+  background: var(--white);
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  transition: transform .3s, box-shadow .3s, border-color .3s;
+}
+.diff-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--v-200); }
+.diff-icon {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--v-50);
+  border-radius: 10px;
+  color: var(--p-500);
+  margin-bottom: 14px;
+}
+.diff-icon svg { width: 22px; height: 22px; }
+.diff-title { font-size: 16px; font-weight: 700; color: var(--slate-900); margin-bottom: 6px; letter-spacing: -0.01em; }
+.diff-desc { font-size: 14px; color: var(--slate-600); line-height: 1.5; }
+@media (max-width: 900px) { .diff-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .diff-grid { grid-template-columns: 1fr; gap: 12px; } .diff-item { padding: 18px 18px; } }
+
+/* (Footer contact block ya existía en el CSS del footer principal · no duplicar) */
 .cap-title { font-size: 17px; font-weight: 700; color: var(--slate-950); margin-bottom: 8px; line-height: 1.3; }
 .cap-desc { font-size: 14.5px; color: var(--slate-600); line-height: 1.55; }
 
@@ -1658,20 +1691,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </header>
 
-<!-- ========== HERO ========== -->
+<!-- ========== HERO · slogan oficial + visual anchor ========== -->
 <section class="hero" id="top">
   <div class="container hero-grid">
     <div>
       <span class="hero-eyebrow">WhatsApp para grupos automotrices</span>
-      <h1 class="hero-title">Vende y retén más por WhatsApp <span class="accent">— sin que te bloqueen la línea</span></h1>
-      <p class="hero-sub">Karbot atiende a tu cliente antes de que llegue al piso, durante la venta, cuando entra al taller y cuando toca su próximo mantenimiento. Todo por WhatsApp, en un solo tablero. La base no se va cuando renuncia alguien de tu equipo.</p>
+      <h1 class="hero-title">Envía. Contesta. <span class="accent">Convierte.</span></h1>
+      <p class="hero-sub">Automatiza la atención al cliente, explota tu base de datos y vende más por WhatsApp — <strong>sin quemar tu línea comercial</strong>.</p>
       <div class="hero-ctas">
-        <a href="#contacto" class="btn-primary" onclick="track('hero_cta_demo')">Agenda tu demo →</a>
-        <a href="#solucion" class="btn-secondary" onclick="track('hero_cta_learn')">Cómo funciona</a>
+        <a href="#contacto" class="btn-primary" onclick="track('hero_cta_demo')">Ver Karbot en tu agencia →</a>
+        <a href="#problema" class="btn-secondary" onclick="track('hero_cta_learn')">Cómo funciona</a>
       </div>
     </div>
     <div class="hero-visual">
-      <img src="assets/images/chat_ia_agent.png" alt="Karbot chat con IA en acción" loading="eager">
+      <img src="assets/images/chat_ia_agent.png" alt="Chat de WhatsApp de una agencia automotriz con Karbot contestando 24/7 y agendando pruebas de manejo" loading="eager">
     </div>
   </div>
 </section>
@@ -1679,7 +1712,52 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ========== TRUST BAR ========== -->
 <section class="trust">
   <div class="container">
-    <p class="trust-label">Más de 200 empresas ya confían en Karbot</p>
+    <p class="trust-label"><strong>+200 empresas</strong> ya confían en Karbot</p>
+  </div>
+</section>
+
+<!-- ========== 6 DIFERENCIADORES · "Con Karbot todo es más fácil" (karbot.mx oficial) ========== -->
+<section class="section" id="diferenciadores">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">Por qué Karbot</div>
+      <h2 class="section-title">Con Karbot <span class="accent">todo es más fácil</span></h2>
+    </div>
+    <div class="diff-grid">
+      <div class="diff-item">
+        <div class="diff-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/></svg></div>
+        <h3 class="diff-title">WhatsApp certificado</h3>
+        <p class="diff-desc">Evita bloqueos en tu línea y evita convertirte en spam.</p>
+      </div>
+      <div class="diff-item">
+        <div class="diff-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M4 20c0-2.8 2.2-5 5-5s5 2.2 5 5"/><path d="M14 20c0-2.2 1.8-4 4-4s4 1.8 4 4"/></svg></div>
+        <h3 class="diff-title">Usuarios ilimitados</h3>
+        <p class="diff-desc">Sólo necesitas una licencia mensual para todos tus asesores.</p>
+      </div>
+      <div class="diff-item">
+        <div class="diff-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l3 3-3 3M18 21l-3-3 3-3M3 12h18"/></svg></div>
+        <h3 class="diff-title">Integración fluida</h3>
+        <p class="diff-desc">Se conecta con tu CRM, DMS y otros sistemas de gestión.</p>
+      </div>
+      <div class="diff-item">
+        <div class="diff-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-2 8 9-12h-7z"/></svg></div>
+        <h3 class="diff-title">Implementación ágil</h3>
+        <p class="diff-desc">Comienza a operar en 2 días, te entregamos todo conectado.</p>
+      </div>
+      <div class="diff-item">
+        <div class="diff-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3 class="diff-title">Entendemos tu negocio</h3>
+        <p class="diff-desc">Nos adaptamos a las necesidades y a la operación de tu grupo automotriz.</p>
+      </div>
+      <div class="diff-item">
+        <div class="diff-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a3 3 0 00-3-3H9a3 3 0 00-3 3v3a3 3 0 003 3h1l3 3v-3h2a3 3 0 003-3V8z"/></svg></div>
+        <h3 class="diff-title">Soporte y atención</h3>
+        <p class="diff-desc">Capacitamos a tu equipo y estamos cuando lo necesites.</p>
+      </div>
+    </div>
+    <div class="section-cta">
+      <a class="section-cta__link" href="#contacto" data-track="diferenciadores_cta_click">Ver Karbot con un caso como el tuyo <span class="arr" aria-hidden="true">→</span></a>
+    </div>
   </div>
 </section>
 
@@ -1692,17 +1770,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div class="problem-grid">
       <div class="problem-card">
-        <div class="problem-icon">🚫</div>
+        <div class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg></div>
         <h3 class="problem-title">Meta te bloquea la línea</h3>
         <p class="problem-desc">Tus asesores mandan promociones sin control y Meta les bloquea la línea. El cliente estaba listo para comprar y ahora no hay por dónde contactarlo.</p>
       </div>
       <div class="problem-card">
-        <div class="problem-icon">🌙</div>
+        <div class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></div>
         <h3 class="problem-title">Nadie contesta fuera de horario</h3>
         <p class="problem-desc">El cliente decide compra en la noche y en el fin de semana. Tu equipo contesta en oficina. Cuando escribes al día siguiente, ya cerró con otro grupo.</p>
       </div>
       <div class="problem-card">
-        <div class="problem-icon">💾</div>
+        <div class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M17 11l5-5M22 11l-5-5"/></svg></div>
         <h3 class="problem-title">El asesor se lleva la base</h3>
         <p class="problem-desc">Cuando un vendedor renuncia se lleva los contactos, las conversaciones y a veces hasta clientes activos. Nadie tiene forma de auditar quién habló con quién ni cuándo.</p>
       </div>
@@ -1746,22 +1824,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </h2>
     <div class="cap-grid">
       <div class="cap-item">
-        <span class="cap-icon" aria-hidden="true">🎯</span>
+        <span class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
         <div class="cap-title">Cuando llega un lead nuevo</div>
         <div class="cap-desc">Karbot contesta 24/7 al que entra por WhatsApp, tus campañas de Meta Ads o el formulario del sitio. Le pregunta qué modelo, presupuesto y si necesita financiamiento. Agenda la prueba de manejo directo en el calendario del asesor.</div>
       </div>
       <div class="cap-item">
-        <span class="cap-icon" aria-hidden="true">🚗</span>
+        <span class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16l-4-4h6l4 4M6 20h12M6 16h.01M18 16h.01"/><rect x="4" y="12" width="16" height="6" rx="2"/><path d="M6 12l2-5c.3-.7 1-1 1.7-1h4.6c.7 0 1.4.3 1.7 1l2 5"/></svg></span>
         <div class="cap-title">En el piso de venta</div>
         <div class="cap-desc">Asignación automática al asesor que le toque, según tus reglas. Llega el lead ya perfilado y con todo el historial de la conversación. Alertas cuando alguien ignora un lead. Pipeline con visibilidad completa del piso.</div>
       </div>
       <div class="cap-item">
-        <span class="cap-icon" aria-hidden="true">🔧</span>
+        <span class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></span>
         <div class="cap-title">Cuando entra al taller</div>
         <div class="cap-desc">Confirmación automática de las citas de servicio. Recordatorios el día previo. Encuestas al cierre de cada servicio: si un cliente contesta molesto, tu supervisor recibe alerta al momento para llamarle antes de que se enfríe.</div>
       </div>
       <div class="cap-item">
-        <span class="cap-icon" aria-hidden="true">🔁</span>
+        <span class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg></span>
         <div class="cap-title">Después de que ya te compró</div>
         <div class="cap-desc">Campañas a tu base de datos con plantillas certificadas: recordatorios del próximo mantenimiento, reactivación de clientes que no vienen hace meses, promociones para la recompra del siguiente auto. Envíos masivos que no queman la línea.</div>
       </div>
@@ -1781,22 +1859,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </h2>
     <div class="cap-grid">
       <div class="cap-item">
-        <span class="cap-icon" aria-hidden="true">📥</span>
+        <span class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg></span>
         <div class="cap-title">Todos los canales, una sola bandeja</div>
         <div class="cap-desc">WhatsApp, Facebook, Instagram, TikTok, campañas de Meta Ads y formularios del sitio caen al mismo lugar. Cada asesor sabe por dónde llegó el cliente y qué anuncio vio antes de escribir.</div>
       </div>
       <div class="cap-item">
-        <span class="cap-icon" aria-hidden="true">🤖</span>
+        <span class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M12 3v4M8 12h.01M16 12h.01M9 17h6"/></svg></span>
         <div class="cap-title">Bot con IA o con respuestas armadas</div>
         <div class="cap-desc">Las preguntas de siempre (horarios, ubicación, precios) se contestan con guiones que tú apruebas. Las conversaciones difíciles las toma la IA. Y cuando el cliente lo pide, entra un asesor sin que se pierda el hilo.</div>
       </div>
       <div class="cap-item">
-        <span class="cap-icon" aria-hidden="true">🏢</span>
+        <span class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M9 16h.01M15 16h.01"/></svg></span>
         <div class="cap-title">Varias agencias, un solo sistema</div>
         <div class="cap-desc">Configuración por agencia y por marca: asesores separados, reglas propias, flujos distintos. Y una vista del grupo entero para el corporativo. Ideal para grupos con varias agencias que operan juntas sin mezclar carteras.</div>
       </div>
       <div class="cap-item">
-        <span class="cap-icon" aria-hidden="true">📊</span>
+        <span class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 4 4 5-6"/></svg></span>
         <div class="cap-title">Números en vivo del piso y del taller</div>
         <div class="cap-desc">Reportes en tiempo real: tiempo de respuesta por asesor, conversaciones ignoradas, cierres, impacto de cada campaña. Descarga tu base cuando la necesites. Comparas asesores, agencias y meses sin abrir un Excel.</div>
       </div>
@@ -2120,7 +2198,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="assets/logos/karbot_logo.svg" alt="Karbot">
-        <p>La plataforma comercial que atiende, perfila y agenda por WhatsApp 24/7 para grupos automotrices en México.</p>
+        <p>La plataforma comercial que atiende a tu cliente automotriz por WhatsApp — antes de la venta, durante el piso, en el taller y en cada campaña de recompra.</p>
         <div class="footer-contact">
           <a href="tel:+523323043069">(33) 2304 3069</a><br>
           <a href="mailto:soporte@karbot.mx">soporte@karbot.mx</a>
@@ -2222,6 +2300,7 @@ const META_STD_EVENT_MAP = {
   'cap_cta_demo': 'Contact',
   'plataforma_cta_demo': 'Contact',
   'plataforma_cta_click': 'Contact',
+  'diferenciadores_cta_click': 'Contact',
   'problema_cta_click': 'Contact',
   'pasos_cta_click': 'Contact',
   'caso_cta_click': 'Contact',
