@@ -447,18 +447,8 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   max-width: none;
   animation: none !important;
 }
-/* Cuando el form está DENTRO del modal, oculta la sección inline vacía */
-body.demo-modal-open .cta-final .form-card-placeholder { display: block; }
+/* v12: form ya no se mueve — vive permanente dentro del dialog. Solo esconder sticky pill al abrir modal. */
 body.demo-modal-open .sticky-cta-mobile { transform: translateY(160%); opacity: 0; pointer-events: none; }
-.cta-final .form-card-placeholder {
-  display: none;
-  padding: 60px 24px;
-  text-align: center;
-  color: var(--slate-500);
-  border: 2px dashed var(--slate-200);
-  border-radius: 16px;
-  font-size: 14px;
-}
 @media (max-width: 640px) {
   .demo-modal {
     max-width: 100vw; width: 100vw;
@@ -935,26 +925,31 @@ body.sticky-hidden .sticky-cta-mobile { transform: translateY(160%); opacity: 0;
   padding: 100px 0;
   background: linear-gradient(180deg, var(--white) 0%, var(--violet-bg) 100%);
 }
-.cta-final-grid {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 60px;
-  max-width: 1100px;
-  margin: 0 auto;
-  align-items: center;
+/* v12: cta-final ahora es single-column centrado con CTA prominente que abre el modal (no form inline) */
+.cta-final-close {
+  max-width: 720px; margin: 0 auto;
+  text-align: center;
 }
-.cta-final-content h2 {
-  font-size: clamp(32px, 4.5vw, 44px);
+.cta-final-close .section-eyebrow { display: inline-block; margin: 0 auto 14px; }
+.cta-final-close h2 {
+  font-size: clamp(30px, 4vw, 42px);
   font-weight: 700; line-height: 1.15; letter-spacing: -0.02em;
-  color: var(--slate-950); margin-bottom: 20px;
+  color: var(--slate-950); margin-bottom: 18px;
 }
-.cta-final-content h2 .accent {
+.cta-final-close h2 .accent {
   background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 }
-.cta-final-content p { font-size: 17px; color: var(--slate-600); margin-bottom: 24px; }
-.cta-benefits { list-style: none; }
+.cta-final-lead {
+  font-size: 17px; color: var(--slate-600); margin-bottom: 26px;
+  max-width: 620px; margin-left: auto; margin-right: auto;
+}
+.cta-benefits {
+  list-style: none;
+  display: inline-block; text-align: left;
+  margin: 0 auto 34px;
+}
 .cta-benefits li {
-  padding: 8px 0 8px 32px;
+  padding: 6px 0 6px 28px;
   position: relative;
   font-size: 15px;
   color: var(--slate-950);
@@ -962,6 +957,21 @@ body.sticky-hidden .sticky-cta-mobile { transform: translateY(160%); opacity: 0;
 .cta-benefits li::before {
   content: "→";
   position: absolute; left: 0; color: var(--p-500); font-weight: 700;
+}
+.cta-final-actions { text-align: center; }
+.btn-primary.btn-xl {
+  padding: 18px 40px; font-size: 17px; min-height: 60px;
+  box-shadow: 0 12px 28px rgba(115,72,255,0.28), 0 4px 12px rgba(115,72,255,0.18);
+}
+.btn-primary.btn-xl:hover { box-shadow: 0 16px 34px rgba(115,72,255,0.38), 0 6px 14px rgba(115,72,255,0.24); }
+.cta-final-hint {
+  margin-top: 14px; font-size: 13.5px; color: var(--slate-500);
+  line-height: 1.5;
+}
+@media (max-width: 640px) {
+  .cta-final-close h2 { font-size: 26px; }
+  .btn-primary.btn-xl { width: 100%; padding: 16px 24px; font-size: 15.5px; }
+  .cta-benefits { margin-bottom: 28px; }
 }
 
 .form-card {
@@ -1393,10 +1403,6 @@ body.cc-modal-open {
   box-shadow: var(--shadow-md);
 }
 .success-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
-
-@media (max-width: 900px) {
-  .cta-final-grid { grid-template-columns: 1fr; gap: 40px; }
-}
 
 /* ===== FOOTER ===== */
 .footer {
@@ -2426,132 +2432,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ========== CTA FINAL + FORMULARIO ========== -->
 <section class="cta-final" id="contacto">
   <div class="container">
-    <div class="cta-final-grid">
-      <div class="cta-final-content">
-        <div class="section-eyebrow" style="margin-bottom:12px;">Siguiente paso</div>
-        <h2>Agenda una <span class="accent">demo de 30 minutos</span> con nuestro equipo</h2>
-        <p>Te enseñamos Karbot funcionando con un grupo parecido al tuyo. Vemos si tiene sentido para tu operación. Sin cotización a ciegas y sin compromiso.</p>
-        <ul class="cta-benefits">
-          <li>Sesión con caso automotriz real, no ejemplos genéricos</li>
-          <li>La IA hablando de coches, precios y financiamiento</li>
-          <li>Propuesta comercial ajustada al número de agencias que tienes</li>
-          <li>Sin pitch corporativo y sin PowerPoint largo</li>
-        </ul>
+    <div class="cta-final-close">
+      <div class="section-eyebrow">Siguiente paso</div>
+      <h2>Agenda una <span class="accent">demo de 30 minutos</span> con nuestro equipo</h2>
+      <p class="cta-final-lead">Te enseñamos Karbot funcionando con un grupo parecido al tuyo. Vemos si tiene sentido para tu operación. Sin cotización a ciegas y sin compromiso.</p>
+      <ul class="cta-benefits">
+        <li>Sesión con caso automotriz real, no ejemplos genéricos</li>
+        <li>La IA hablando de coches, precios y financiamiento</li>
+        <li>Propuesta comercial ajustada al número de agencias que tienes</li>
+        <li>Sin pitch corporativo y sin PowerPoint largo</li>
+      </ul>
+      <div class="cta-final-actions">
+        <a href="#contacto" class="btn-primary btn-xl" data-track="cta_final_click">Ver disponibilidad · agendar demo →</a>
+        <p class="cta-final-hint">Elige día y hora en el calendario · confirmación inmediata con Isabel</p>
       </div>
-      <form class="form-card" id="demoForm" onsubmit="return submitForm(event)">
-        <div id="formBody">
-          <div class="form-title">Agenda tu demo · 30 minutos</div>
-          <div class="form-sub">Videollamada con Isabel de nuestro equipo comercial. Sin pitch largo.</div>
-
-          <!-- STEP 1 · Calendar picker -->
-          <div class="form-step"><span class="form-step-num">1</span> Elige el día</div>
-          <div class="picker">
-            <div class="picker-header">
-              <button type="button" id="prevMonth" class="picker-nav" aria-label="Mes anterior">‹</button>
-              <div class="picker-month" id="pickerMonth">—</div>
-              <button type="button" id="nextMonth" class="picker-nav" aria-label="Mes siguiente">›</button>
-            </div>
-            <div class="picker-dow">
-              <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
-            </div>
-            <div class="picker-grid" id="pickerGrid">
-              <div class="picker-loading">Cargando disponibilidad…</div>
-            </div>
-            <div class="sr-only" role="status" id="calStatus" aria-live="polite"></div>
-            <div class="picker-hint" id="pickerHint">Días con disponibilidad en color</div>
-          </div>
-
-          <!-- STEP 2 · Time slots (revealed after date pick) -->
-          <div id="timesWrap" hidden>
-            <div class="form-step"><span class="form-step-num">2</span> Elige la hora</div>
-            <div class="times">
-              <div class="times-label">Horarios · <strong id="timesDayLabel"></strong></div>
-              <div class="times-grid" id="timesGrid" role="group" aria-label="Horarios disponibles"></div>
-            </div>
-            <div class="sr-only" role="status" id="timesStatus" aria-live="polite"></div>
-          </div>
-
-          <!-- STEP 3 · Perfil -->
-          <div class="form-step"><span class="form-step-num">3</span> Tus datos</div>
-          <div class="form-field">
-            <label for="nombre">Nombre completo <span class="req">*</span></label>
-            <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="Juan Pérez García" inputmode="text" autocapitalize="characters" spellcheck="false" pattern="[A-ZÁÉÍÓÚÑÜ '\.\-]{3,60}" title="Nombre completo, 3-60 caracteres" maxlength="60" aria-describedby="hint-nombre">
-            <div class="form-hint" id="hint-nombre">Se convierte a mayúsculas automáticamente</div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="empresa">Grupo o agencia <span class="req">*</span></label>
-              <input type="text" id="empresa" name="empresa" required autocomplete="organization" placeholder="Grupo XYZ" maxlength="80">
-            </div>
-            <div class="form-field">
-              <label for="rol">Tu rol <span class="req">*</span></label>
-              <select id="rol" name="rol" required>
-                <option value="">Selecciona</option>
-                <option value="director_grupo">Director de grupo</option>
-                <option value="director_marca">Director de marca</option>
-                <option value="director_agencia">Director / gerente agencia</option>
-                <option value="marketing">Marketing</option>
-                <option value="finanzas">Finanzas / sistemas</option>
-                <option value="otro">Otro</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="email">Email de trabajo <span class="req">*</span></label>
-              <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Email válido (debe contener @, sin caracteres especiales)" maxlength="120">
-            </div>
-            <div class="form-field">
-              <label for="agencias">Agencias <span class="req">*</span></label>
-              <select id="agencias" name="agencias" required>
-                <option value="">Selecciona</option>
-                <option value="1">1</option>
-                <option value="2-5">2 a 5</option>
-                <option value="6-10">6 a 10</option>
-                <option value="11+">11+</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-field" role="group" aria-labelledby="phoneLabel" aria-describedby="hint-phone">
-            <span class="form-field-label" id="phoneLabel">WhatsApp <span class="req">*</span></span>
-            <div class="phone-input">
-              <button type="button" id="phoneCCBtn" class="phone-cc-btn" aria-haspopup="dialog" aria-expanded="false" aria-label="Código de país, actualmente México +52">
-                <span class="phone-cc-flag" id="phoneCCFlag" aria-hidden="true">🇲🇽</span>
-                <span class="phone-cc-dial" id="phoneCCDial">+52</span>
-                <svg class="phone-cc-caret" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                  <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
-              <span class="phone-divider" aria-hidden="true"></span>
-              <input type="hidden" id="phoneCC" name="phoneCC" value="+52" required>
-              <input type="tel" id="phone" name="phone" required autocomplete="tel-national" inputmode="numeric" placeholder="33 1234 5678" pattern="[0-9]{7,15}" maxlength="15" title="Número de teléfono" class="phone-num" aria-label="Número de teléfono (sin código de país)">
-            </div>
-            <div class="form-hint" id="hint-phone">10 dígitos para México · sin espacios ni código de país</div>
-          </div>
-
-          <div class="form-field form-consent">
-            <label class="consent-label">
-              <input type="checkbox" id="privacy" name="privacy" required>
-              <span>He leído y acepto el <a href="https://karbot.mx/aviso-privacidad" target="_blank" rel="noopener" data-track="privacy_link_click">Aviso de privacidad</a> de Karbot. <span class="req">*</span></span>
-            </label>
-          </div>
-
-          <input type="hidden" id="slotStart" name="slotStart">
-          <input type="hidden" id="slotEnd" name="slotEnd">
-
-          <button type="submit" class="form-submit" id="submitBtn" disabled>Elige día y hora para continuar</button>
-          <p class="form-note">Recibirás invite con link de Google Meet en tu correo. No compartimos tus datos.</p>
-        </div>
-
-        <!-- Success state (revealed after successful book) -->
-        <div class="success" id="successCard" hidden>
-          <div class="success-icon">✓</div>
-          <div class="success-title" id="successTitle">Demo confirmada</div>
-          <div class="success-when" id="successWhen"></div>
-          <div class="success-note" id="successNote">Te llegó el invite a tu correo con el link de Google Meet.</div>
-          <a href="#" id="successCal" class="success-btn" target="_blank" rel="noopener" hidden>Ver en Google Calendar →</a>
-        </div>
-      </form>
     </div>
   </div>
 </section>
@@ -2631,7 +2525,120 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <button type="button" class="demo-modal-close" data-track="demo_modal_close_btn" aria-label="Cerrar formulario de agenda">✕</button>
     <div class="demo-modal-body" id="demoModalBody">
       <span id="demoModalTitle" class="sr-only">Agenda tu demo Karbot</span>
-      <!-- El form-card se inyecta aquí al abrir el modal (se preserva integridad de handlers/state) -->
+            <form class="form-card" id="demoForm" onsubmit="return submitForm(event)">
+              <div id="formBody">
+                <div class="form-title">Agenda tu demo · 30 minutos</div>
+                <div class="form-sub">Videollamada con Isabel de nuestro equipo comercial. Sin pitch largo.</div>
+      
+                <!-- STEP 1 · Calendar picker -->
+                <div class="form-step"><span class="form-step-num">1</span> Elige el día</div>
+                <div class="picker">
+                  <div class="picker-header">
+                    <button type="button" id="prevMonth" class="picker-nav" aria-label="Mes anterior">‹</button>
+                    <div class="picker-month" id="pickerMonth">—</div>
+                    <button type="button" id="nextMonth" class="picker-nav" aria-label="Mes siguiente">›</button>
+                  </div>
+                  <div class="picker-dow">
+                    <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span>
+                  </div>
+                  <div class="picker-grid" id="pickerGrid">
+                    <div class="picker-loading">Cargando disponibilidad…</div>
+                  </div>
+                  <div class="sr-only" role="status" id="calStatus" aria-live="polite"></div>
+                  <div class="picker-hint" id="pickerHint">Días con disponibilidad en color</div>
+                </div>
+      
+                <!-- STEP 2 · Time slots (revealed after date pick) -->
+                <div id="timesWrap" hidden>
+                  <div class="form-step"><span class="form-step-num">2</span> Elige la hora</div>
+                  <div class="times">
+                    <div class="times-label">Horarios · <strong id="timesDayLabel"></strong></div>
+                    <div class="times-grid" id="timesGrid" role="group" aria-label="Horarios disponibles"></div>
+                  </div>
+                  <div class="sr-only" role="status" id="timesStatus" aria-live="polite"></div>
+                </div>
+      
+                <!-- STEP 3 · Perfil -->
+                <div class="form-step"><span class="form-step-num">3</span> Tus datos</div>
+                <div class="form-field">
+                  <label for="nombre">Nombre completo <span class="req">*</span></label>
+                  <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="Juan Pérez García" inputmode="text" autocapitalize="characters" spellcheck="false" pattern="[A-ZÁÉÍÓÚÑÜ '\.\-]{3,60}" title="Nombre completo, 3-60 caracteres" maxlength="60" aria-describedby="hint-nombre">
+                  <div class="form-hint" id="hint-nombre">Se convierte a mayúsculas automáticamente</div>
+                </div>
+                <div class="form-row">
+                  <div class="form-field">
+                    <label for="empresa">Grupo o agencia <span class="req">*</span></label>
+                    <input type="text" id="empresa" name="empresa" required autocomplete="organization" placeholder="Grupo XYZ" maxlength="80">
+                  </div>
+                  <div class="form-field">
+                    <label for="rol">Tu rol <span class="req">*</span></label>
+                    <select id="rol" name="rol" required>
+                      <option value="">Selecciona</option>
+                      <option value="director_grupo">Director de grupo</option>
+                      <option value="director_marca">Director de marca</option>
+                      <option value="director_agencia">Director / gerente agencia</option>
+                      <option value="marketing">Marketing</option>
+                      <option value="finanzas">Finanzas / sistemas</option>
+                      <option value="otro">Otro</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-field">
+                    <label for="email">Email de trabajo <span class="req">*</span></label>
+                    <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Email válido (debe contener @, sin caracteres especiales)" maxlength="120">
+                  </div>
+                  <div class="form-field">
+                    <label for="agencias">Agencias <span class="req">*</span></label>
+                    <select id="agencias" name="agencias" required>
+                      <option value="">Selecciona</option>
+                      <option value="1">1</option>
+                      <option value="2-5">2 a 5</option>
+                      <option value="6-10">6 a 10</option>
+                      <option value="11+">11+</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-field" role="group" aria-labelledby="phoneLabel" aria-describedby="hint-phone">
+                  <span class="form-field-label" id="phoneLabel">WhatsApp <span class="req">*</span></span>
+                  <div class="phone-input">
+                    <button type="button" id="phoneCCBtn" class="phone-cc-btn" aria-haspopup="dialog" aria-expanded="false" aria-label="Código de país, actualmente México +52">
+                      <span class="phone-cc-flag" id="phoneCCFlag" aria-hidden="true">🇲🇽</span>
+                      <span class="phone-cc-dial" id="phoneCCDial">+52</span>
+                      <svg class="phone-cc-caret" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <span class="phone-divider" aria-hidden="true"></span>
+                    <input type="hidden" id="phoneCC" name="phoneCC" value="+52" required>
+                    <input type="tel" id="phone" name="phone" required autocomplete="tel-national" inputmode="numeric" placeholder="33 1234 5678" pattern="[0-9]{7,15}" maxlength="15" title="Número de teléfono" class="phone-num" aria-label="Número de teléfono (sin código de país)">
+                  </div>
+                  <div class="form-hint" id="hint-phone">10 dígitos para México · sin espacios ni código de país</div>
+                </div>
+      
+                <div class="form-field form-consent">
+                  <label class="consent-label">
+                    <input type="checkbox" id="privacy" name="privacy" required>
+                    <span>He leído y acepto el <a href="https://karbot.mx/aviso-privacidad" target="_blank" rel="noopener" data-track="privacy_link_click">Aviso de privacidad</a> de Karbot. <span class="req">*</span></span>
+                  </label>
+                </div>
+      
+                <input type="hidden" id="slotStart" name="slotStart">
+                <input type="hidden" id="slotEnd" name="slotEnd">
+      
+                <button type="submit" class="form-submit" id="submitBtn" disabled>Elige día y hora para continuar</button>
+                <p class="form-note">Recibirás invite con link de Google Meet en tu correo. No compartimos tus datos.</p>
+              </div>
+      
+              <!-- Success state (revealed after successful book) -->
+              <div class="success" id="successCard" hidden>
+                <div class="success-icon">✓</div>
+                <div class="success-title" id="successTitle">Demo confirmada</div>
+                <div class="success-when" id="successWhen"></div>
+                <div class="success-note" id="successNote">Te llegó el invite a tu correo con el link de Google Meet.</div>
+                <a href="#" id="successCal" class="success-btn" target="_blank" rel="noopener" hidden>Ver en Google Calendar →</a>
+              </div>
+            </form>
     </div>
   </div>
 </dialog>
@@ -2766,17 +2773,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ============ Demo modal (patrón weecom · form vive en modal, no en scroll) ============
+// ============ Demo modal (patrón weecom · form vive PERMANENTE en el dialog) ============
+// v12+: el form vive dentro del <dialog> desde el HTML. Cero DOM move. Cero duplicación.
 (function initDemoModal(){
   const modal = document.getElementById('demoModal');
-  const modalBody = document.getElementById('demoModalBody');
   const closeBtn = modal?.querySelector('.demo-modal-close');
-  const formCard = document.getElementById('demoForm');
-  const originalParent = formCard?.parentNode;
-  const originalNextSibling = formCard?.nextSibling;
-  if (!modal || !modalBody || !formCard) return;
-
-  // Feature detect <dialog> API
+  if (!modal) return;
   if (typeof modal.showModal !== 'function') return;
 
   let currentSource = null;
@@ -2784,27 +2786,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function openDemoModal(source) {
     if (modal.open) return;
     currentSource = source || 'unknown';
-    // Mover el form-card al modal (preserva integridad del calendar picker, handlers, state)
-    modalBody.appendChild(formCard);
     document.documentElement.classList.add('demo-modal-locked');
     document.body.classList.add('demo-modal-locked', 'demo-modal-open');
     modal.showModal();
-    // Track apertura como Contact intent (mismo Std event que un CTA que lleva al form)
     track('demo_modal_open', { source: currentSource });
-    // Scroll interno del modal al top
     setTimeout(() => { modal.querySelector('.demo-modal-inner')?.scrollTo({top:0}); }, 20);
   }
 
   function closeDemoModal(reason) {
     if (!modal.open) return;
-    // Devolver form-card a su lugar original en cta-final
-    if (originalParent) {
-      if (originalNextSibling && originalNextSibling.parentNode === originalParent) {
-        originalParent.insertBefore(formCard, originalNextSibling);
-      } else {
-        originalParent.appendChild(formCard);
-      }
-    }
     modal.close();
     document.documentElement.classList.remove('demo-modal-locked');
     document.body.classList.remove('demo-modal-locked', 'demo-modal-open');
