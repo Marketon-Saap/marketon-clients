@@ -390,6 +390,87 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   transform: translateY(-2px);
 }
 
+/* ===== DEMO MODAL DIALOG (patrón weecom · abre en lugar de scroll) ===== */
+.demo-modal {
+  border: none; padding: 0;
+  background: transparent;
+  max-width: min(880px, calc(100vw - 24px));
+  width: 100%;
+  max-height: calc(100vh - 24px);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(15,15,35,0.35), 0 12px 24px rgba(15,15,35,0.15);
+  animation: demoModalIn .28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.demo-modal::backdrop {
+  background: rgba(15, 15, 35, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: demoBackdropIn .22s ease-out;
+}
+@keyframes demoModalIn {
+  from { opacity: 0; transform: translateY(20px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes demoBackdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.demo-modal-inner {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  overflow-y: auto;
+  max-height: calc(100vh - 24px);
+  -webkit-overflow-scrolling: touch;
+}
+.demo-modal-close {
+  position: sticky; top: 12px;
+  float: right; margin: 12px 12px 0 0;
+  width: 40px; height: 40px; min-height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: white; color: var(--slate-950);
+  border: 1px solid var(--slate-200); border-radius: 999px;
+  font-size: 18px; font-weight: 700; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  z-index: 10;
+  transition: background .2s, transform .2s;
+}
+.demo-modal-close:hover { background: var(--slate-100); transform: scale(1.05); }
+.demo-modal-body {
+  padding: 24px 28px 28px;
+}
+.demo-modal-body > .form-card {
+  box-shadow: none;
+  padding: 4px 0 0;
+  max-width: none;
+  animation: none !important;
+}
+/* Cuando el form está DENTRO del modal, oculta la sección inline vacía */
+body.demo-modal-open .cta-final .form-card-placeholder { display: block; }
+body.demo-modal-open .sticky-cta-mobile { transform: translateY(160%); opacity: 0; pointer-events: none; }
+.cta-final .form-card-placeholder {
+  display: none;
+  padding: 60px 24px;
+  text-align: center;
+  color: var(--slate-500);
+  border: 2px dashed var(--slate-200);
+  border-radius: 16px;
+  font-size: 14px;
+}
+@media (max-width: 640px) {
+  .demo-modal {
+    max-width: 100vw; width: 100vw;
+    max-height: 100vh; height: 100vh;
+    border-radius: 0;
+    margin: 0;
+  }
+  .demo-modal-inner { border-radius: 0; max-height: 100vh; height: 100vh; }
+  .demo-modal-body { padding: 16px 16px 32px calc(16px + env(safe-area-inset-left)); }
+  .demo-modal-close { margin: 8px 8px 0 0; }
+}
+html.demo-modal-locked, body.demo-modal-locked { overflow: hidden; }
+
 /* ===== STICKY MOBILE CTA (pill contained flotante · estilo weecom) ===== */
 .sticky-cta-mobile {
   position: fixed; left: 12px; right: 12px;
@@ -2541,6 +2622,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- Toast -->
 <div class="toast" id="toast">Abriendo WhatsApp con tu información…</div>
 
+<!-- Demo modal dialog · patrón weecom · el form vive aquí cuando el modal está abierto -->
+<dialog class="demo-modal" id="demoModal" aria-labelledby="demoModalTitle">
+  <div class="demo-modal-inner">
+    <button type="button" class="demo-modal-close" data-track="demo_modal_close_btn" aria-label="Cerrar formulario de agenda">✕</button>
+    <div class="demo-modal-body" id="demoModalBody">
+      <span id="demoModalTitle" class="sr-only">Agenda tu demo Karbot</span>
+      <!-- El form-card se inyecta aquí al abrir el modal (se preserva integridad de handlers/state) -->
+    </div>
+  </div>
+</dialog>
+
 <!-- Sticky mobile CTA · pill contained flotante bottom <900px -->
 <div class="sticky-cta-mobile" role="complementary" aria-label="Agenda tu demo Karbot">
   <span class="smb-label">Karbot para tu agencia</span>
@@ -2593,8 +2685,10 @@ const META_STD_EVENT_MAP = {
   'integraciones_cta_ask': 'Contact',
   'faq_cta_click': 'Contact',
   'sticky_mobile_cta_click': 'Contact',
+  'demo_modal_open': 'Contact',
   // Content consumption (secondary CTA, sim interaction)
   'hero_cta_learn': 'ViewContent',
+  'demo_modal_close_btn': 'ViewContent',
 };
 
 // Instrumentación de eventos custom
@@ -2639,6 +2733,88 @@ document.addEventListener('click', (e) => {
   const label = (el.textContent || '').trim().slice(0, 60);
   track(evt, { label, href: el.getAttribute('href') || null });
 });
+
+// ============ Demo modal (patrón weecom · form vive en modal, no en scroll) ============
+(function initDemoModal(){
+  const modal = document.getElementById('demoModal');
+  const modalBody = document.getElementById('demoModalBody');
+  const closeBtn = modal?.querySelector('.demo-modal-close');
+  const formCard = document.getElementById('demoForm');
+  const originalParent = formCard?.parentNode;
+  const originalNextSibling = formCard?.nextSibling;
+  if (!modal || !modalBody || !formCard) return;
+
+  // Feature detect <dialog> API
+  if (typeof modal.showModal !== 'function') return;
+
+  let currentSource = null;
+
+  function openDemoModal(source) {
+    if (modal.open) return;
+    currentSource = source || 'unknown';
+    // Mover el form-card al modal (preserva integridad del calendar picker, handlers, state)
+    modalBody.appendChild(formCard);
+    document.documentElement.classList.add('demo-modal-locked');
+    document.body.classList.add('demo-modal-locked', 'demo-modal-open');
+    modal.showModal();
+    // Track apertura como Contact intent (mismo Std event que un CTA que lleva al form)
+    track('demo_modal_open', { source: currentSource });
+    // Scroll interno del modal al top
+    setTimeout(() => { modal.querySelector('.demo-modal-inner')?.scrollTo({top:0}); }, 20);
+  }
+
+  function closeDemoModal(reason) {
+    if (!modal.open) return;
+    // Devolver form-card a su lugar original en cta-final
+    if (originalParent) {
+      if (originalNextSibling && originalNextSibling.parentNode === originalParent) {
+        originalParent.insertBefore(formCard, originalNextSibling);
+      } else {
+        originalParent.appendChild(formCard);
+      }
+    }
+    modal.close();
+    document.documentElement.classList.remove('demo-modal-locked');
+    document.body.classList.remove('demo-modal-locked', 'demo-modal-open');
+    track('demo_modal_close', { source: currentSource, reason: reason || 'close_btn' });
+    currentSource = null;
+  }
+
+  // Interceptar clicks en TODOS los CTAs que llevan a #contacto
+  document.addEventListener('click', function(e){
+    const link = e.target.closest('a[href="#contacto"], a[href$="#contacto"]');
+    if (!link) return;
+    // Excepción: link del footer (nav) no abre modal, scroll natural
+    if (link.closest('footer')) return;
+    e.preventDefault();
+    const source = link.getAttribute('data-track') ||
+                   (link.getAttribute('onclick') || '').match(/track\('([^']+)'/)?.[1] ||
+                   link.className || 'link';
+    openDemoModal(source);
+  }, true);
+
+  // Close button
+  closeBtn?.addEventListener('click', () => closeDemoModal('close_btn'));
+
+  // Backdrop click (dialog.showModal + click en el propio dialog element = fuera del contenido)
+  modal.addEventListener('click', function(e){
+    if (e.target === modal) closeDemoModal('backdrop');
+  });
+
+  // ESC key (dialog.close nativo dispara 'close' event)
+  modal.addEventListener('close', function(){
+    if (document.body.classList.contains('demo-modal-open')) {
+      closeDemoModal('esc_or_native');
+    }
+  });
+
+  // NO auto-close al submit: el success card debe verse dentro del modal.
+  // Usuario cierra manualmente (X/backdrop/ESC) cuando confirmó que vio la agenda.
+
+  // Expose helpers globales por si necesitas abrir manualmente
+  window.__karbotOpenDemoModal = openDemoModal;
+  window.__karbotCloseDemoModal = closeDemoModal;
+})();
 
 // ============ Header smart-hide (mobile <900px) ============
 (function initSmartHideNav(){
