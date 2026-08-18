@@ -390,27 +390,71 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   transform: translateY(-2px);
 }
 
-/* ===== STICKY MOBILE CTA (bottom bar) ===== */
+/* ===== STICKY MOBILE CTA (pill contained flotante · estilo weecom) ===== */
 .sticky-cta-mobile {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(255,255,255,.98);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid var(--slate-200);
-  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  position: fixed; left: 12px; right: 12px;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(135deg, var(--slate-950) 0%, #1a1a3e 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 999px;
+  padding: 8px 8px 8px 20px;
   z-index: 90;
-  box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+  box-shadow: 0 10px 32px rgba(15,15,35,0.35), 0 4px 12px rgba(15,15,35,0.20);
   display: none;
+  align-items: center; justify-content: space-between; gap: 12px;
+  transition: transform .3s ease, opacity .3s ease;
 }
-.sticky-cta-mobile .btn-primary {
-  width: 100%; justify-content: center;
-  padding: 14px 24px; min-height: 48px; font-size: 15px;
+.sticky-cta-mobile .smb-label {
+  color: rgba(255,255,255,0.92); font-size: 13.5px; font-weight: 600;
+  letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex: 1; min-width: 0;
 }
+.sticky-cta-mobile .smb-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: white; color: var(--slate-950);
+  padding: 10px 18px; min-height: 40px; border-radius: 999px;
+  font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em;
+  text-decoration: none; white-space: nowrap;
+  transition: transform .2s;
+}
+.sticky-cta-mobile .smb-cta:hover { transform: translateY(-1px); }
+.sticky-cta-mobile .smb-cta svg { width: 14px; height: 14px; }
 @media (max-width: 900px) {
-  .sticky-cta-mobile { display: block; }
-  body { padding-bottom: 84px; }
+  .sticky-cta-mobile { display: flex; }
+  body { padding-bottom: 88px; }
 }
 /* Oculta sticky mobile CTA cuando el usuario está viendo el form (evita duplicidad visual) */
-body.sticky-hidden .sticky-cta-mobile { transform: translateY(120%); transition: transform .3s ease; }
+body.sticky-hidden .sticky-cta-mobile { transform: translateY(160%); opacity: 0; pointer-events: none; }
+
+/* ===== HERO STATS (4 mini-métricas verificables · estilo weecom) ===== */
+.hero-stats {
+  margin: 32px 0 0; padding: 22px 0 0;
+  border-top: 1px solid var(--slate-200);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+}
+.hero-stat { text-align: left; }
+.hero-stat-label {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.3px; color: var(--slate-500); margin-bottom: 6px;
+  line-height: 1.2;
+}
+.hero-stat-value {
+  font-size: 24px; font-weight: 800; color: var(--slate-950);
+  letter-spacing: -0.03em; line-height: 1; margin-bottom: 4px;
+}
+.hero-stat-value .accent {
+  background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero-stat-desc {
+  font-size: 12px; color: var(--slate-600); line-height: 1.35;
+}
+@media (max-width: 900px) {
+  .hero-stats { grid-template-columns: 1fr 1fr; gap: 18px 16px; padding-top: 20px; }
+  .hero-stat-value { font-size: 22px; }
+}
+@media (max-width: 400px) {
+  .hero-stat-value { font-size: 20px; }
+}
 
 /* ===== FORM HIGHLIGHT (glow al llegar via scroll) ===== */
 @keyframes formGlow {
@@ -1835,6 +1879,29 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="#contacto" class="btn-primary" onclick="track('hero_cta_demo')">Ver Karbot en tu agencia →</a>
         <a href="#problema" class="btn-secondary" onclick="track('hero_cta_learn')">Cómo funciona</a>
       </div>
+
+      <ul class="hero-stats" role="list" aria-label="Métricas Karbot">
+        <li class="hero-stat">
+          <div class="hero-stat-label">Empresas</div>
+          <div class="hero-stat-value"><span class="accent">+200</span></div>
+          <div class="hero-stat-desc">confían en Karbot</div>
+        </li>
+        <li class="hero-stat">
+          <div class="hero-stat-label">Implementación</div>
+          <div class="hero-stat-value"><span class="accent">2</span> días</div>
+          <div class="hero-stat-desc">todo conectado</div>
+        </li>
+        <li class="hero-stat">
+          <div class="hero-stat-label">Respuestas</div>
+          <div class="hero-stat-value"><span class="accent">24/7</span></div>
+          <div class="hero-stat-desc">sin líneas caídas</div>
+        </li>
+        <li class="hero-stat">
+          <div class="hero-stat-label">Verificado</div>
+          <div class="hero-stat-value">Meta <span class="accent">BSP</span></div>
+          <div class="hero-stat-desc">palomita azul</div>
+        </li>
+      </ul>
     </div>
     <div class="hero-visual">
       <img src="assets/images/chat_ia_agent.png" alt="Chat de WhatsApp de una agencia automotriz con Karbot contestando 24/7 y agendando pruebas de manejo" loading="eager">
@@ -2474,9 +2541,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- Toast -->
 <div class="toast" id="toast">Abriendo WhatsApp con tu información…</div>
 
-<!-- Sticky mobile CTA · flotante bottom siempre visible <900px -->
-<div class="sticky-cta-mobile" aria-hidden="false">
-  <a href="#contacto" class="btn-primary" data-track="sticky_mobile_cta_click">Agenda tu demo · gratis</a>
+<!-- Sticky mobile CTA · pill contained flotante bottom <900px -->
+<div class="sticky-cta-mobile" role="complementary" aria-label="Agenda tu demo Karbot">
+  <span class="smb-label">Karbot para tu agencia</span>
+  <a href="#contacto" class="smb-cta" data-track="sticky_mobile_cta_click">
+    Agenda demo
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </a>
 </div>
 
 <!-- Country code picker modal (bottom-sheet mobile · centered dialog desktop) -->
