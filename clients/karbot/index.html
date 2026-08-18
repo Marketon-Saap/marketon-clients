@@ -394,9 +394,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .demo-modal {
   border: none; padding: 0;
   background: transparent;
-  max-width: min(880px, calc(100vw - 24px));
-  width: 100%;
+  /* Ancho basado en contenido — evita el bug de width:100% + margin:auto que dejaba el dialog flush-left en Chrome */
+  width: min(880px, calc(100vw - 24px));
   max-height: calc(100vh - 24px);
+  margin: auto;                    /* Centrado explícito · redundancia intencional con inset:0 del UA */
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 24px 64px rgba(15,15,35,0.35), 0 12px 24px rgba(15,15,35,0.15);
