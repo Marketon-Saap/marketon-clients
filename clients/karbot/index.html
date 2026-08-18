@@ -1437,7 +1437,10 @@ body.cc-modal-open {
   color: rgba(255,255,255,.75);
   line-height: 1.9;
 }
-.footer-contact a { color: rgba(255,255,255,.85); }
+.footer-contact a {
+  color: rgba(255,255,255,.85);
+  display: inline-block; padding: 8px 0; min-height: 32px; /* +touch target */
+}
 
 .footer-col h5 {
   font-size: 12px;
@@ -1449,8 +1452,17 @@ body.cc-modal-open {
   font-family: inherit;
 }
 .footer-col ul { list-style: none; padding: 0; }
-.footer-col li { padding: 5px 0; }
-.footer-col a { font-size: 14px; }
+.footer-col li { padding: 0; }
+.footer-col a {
+  font-size: 14px;
+  display: inline-flex; align-items: center;
+  min-height: 44px; padding: 10px 0;         /* WCAG 2.5.5 · touch target */
+  line-height: 1.3;
+}
+@media (max-width: 900px) {
+  .footer-col a { min-height: 48px; padding: 12px 0; }  /* mobile más generoso */
+  .footer-contact a { min-height: 40px; padding: 10px 0; }
+}
 
 .footer-bottom {
   display: flex;
@@ -2243,7 +2255,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="section-cta">
       <a class="section-cta__link" href="#contacto" data-track="integraciones_cta_click">Agenda demo · revisamos tu stack juntos <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Tu CRM en particular? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="integraciones_cta_ask">Pregúntanos por tu integración</a>.</p>
+    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Tu CRM en particular? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline; display:inline-block; padding:10px 4px;" data-track="integraciones_cta_ask">Pregúntanos por tu integración</a>.</p>
   </div>
 </section>
 
@@ -2307,7 +2319,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="section-cta">
       <a class="section-cta__link section-cta__link--primary" href="#contacto" data-track="planes_cta_click">Agenda demo · elige tu plan <span class="arr" aria-hidden="true">→</span></a>
     </div>
-    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Grupo con 10+ marcas o necesitas más mensajes? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline;" data-track="planes_enterprise_click">Pídenos plan enterprise</a>.</p>
+    <p style="text-align:center; margin-top:20px; color:var(--slate-500); font-size:14px;">¿Grupo con 10+ marcas o necesitas más mensajes? <a href="#contacto" style="color:var(--p-500); font-weight:600; text-decoration:underline; display:inline-block; padding:10px 4px;" data-track="planes_enterprise_click">Pídenos plan enterprise</a>.</p>
   </div>
 </section>
 
