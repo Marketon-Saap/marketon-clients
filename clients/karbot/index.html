@@ -2576,13 +2576,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div class="form-step"><span class="form-step-num">3</span> Tus datos</div>
                 <div class="form-field">
                   <label for="nombre">Nombre completo <span class="req">*</span></label>
-                  <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="Juan Pérez García" inputmode="text" autocapitalize="characters" spellcheck="false" pattern="[A-ZÁÉÍÓÚÑÜ '\.\-]{3,60}" title="Nombre completo, 3-60 caracteres" maxlength="60" aria-describedby="hint-nombre">
+                  <input type="text" id="nombre" name="nombre" required autocomplete="name" placeholder="JUAN PEREZ GARCIA" inputmode="text" autocapitalize="characters" spellcheck="false" pattern="[A-Z ]{3,60}" title="Solo letras mayúsculas y espacios · 3 a 60 caracteres" maxlength="60" aria-describedby="hint-nombre">
                   <div class="form-hint" id="hint-nombre">Se convierte a mayúsculas automáticamente</div>
                 </div>
                 <div class="form-row">
                   <div class="form-field">
                     <label for="empresa">Grupo o agencia <span class="req">*</span></label>
-                    <input type="text" id="empresa" name="empresa" required autocomplete="organization" placeholder="Grupo XYZ" maxlength="80">
+                    <input type="text" id="empresa" name="empresa" required autocomplete="organization" placeholder="GRUPO XYZ" autocapitalize="characters" spellcheck="false" pattern="[A-Z0-9 ]{2,80}" title="Solo letras mayúsculas, números y espacios · 2 a 80 caracteres" maxlength="80">
                   </div>
                   <div class="form-field">
                     <label for="rol">Tu rol <span class="req">*</span></label>
@@ -2600,7 +2600,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div class="form-row">
                   <div class="form-field">
                     <label for="email">Email de trabajo <span class="req">*</span></label>
-                    <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}" title="Email válido (debe contener @, sin caracteres especiales)" maxlength="120">
+                    <input type="email" id="email" name="email" required autocomplete="email" placeholder="tu@empresa.com" pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.(com|mx|co|net|org|es|ar|cl|pe|br|info|io|app|biz|edu|gov|com\.mx|com\.co|com\.ar|com\.br)" title="Email válido · debe contener @ y extensión tipo .com / .mx / .co / .net / .org / .es" maxlength="120">
                   </div>
                   <div class="form-field">
                     <label for="agencias">Agencias <span class="req">*</span></label>
@@ -2625,7 +2625,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </button>
                     <span class="phone-divider" aria-hidden="true"></span>
                     <input type="hidden" id="phoneCC" name="phoneCC" value="+52" required>
-                    <input type="tel" id="phone" name="phone" required autocomplete="tel-national" inputmode="numeric" placeholder="33 1234 5678" pattern="[0-9]{7,15}" maxlength="15" title="Número de teléfono" class="phone-num" aria-label="Número de teléfono (sin código de país)">
+                    <input type="tel" id="phone" name="phone" required autocomplete="tel-national" inputmode="numeric" placeholder="33 1234 5678" pattern="[0-9]{10}" maxlength="10" title="10 dígitos exactos, sin espacios ni código de país" class="phone-num" aria-label="Número de teléfono (10 dígitos sin código de país)">
                   </div>
                   <div class="form-hint" id="hint-phone">10 dígitos para México · sin espacios ni código de país</div>
                 </div>
@@ -3170,32 +3170,24 @@ function updateSubmitCTA() {
   const COUNTRIES = [
     {c:'MX', name:'México',              dial:'+52',  flag:'🇲🇽'},
     {c:'US', name:'Estados Unidos',      dial:'+1',   flag:'🇺🇸'},
-    {c:'CA', name:'Canadá',              dial:'+1',   flag:'🇨🇦'},
     {c:'ES', name:'España',              dial:'+34',  flag:'🇪🇸'},
     {c:'AR', name:'Argentina',           dial:'+54',  flag:'🇦🇷'},
     {c:'BR', name:'Brasil',              dial:'+55',  flag:'🇧🇷'},
     {c:'CL', name:'Chile',               dial:'+56',  flag:'🇨🇱'},
     {c:'CO', name:'Colombia',            dial:'+57',  flag:'🇨🇴'},
     {c:'PE', name:'Perú',                dial:'+51',  flag:'🇵🇪'},
-    {c:'VE', name:'Venezuela',           dial:'+58',  flag:'🇻🇪'},
     {c:'EC', name:'Ecuador',             dial:'+593', flag:'🇪🇨'},
-    {c:'BO', name:'Bolivia',             dial:'+591', flag:'🇧🇴'},
     {c:'UY', name:'Uruguay',             dial:'+598', flag:'🇺🇾'},
     {c:'PY', name:'Paraguay',            dial:'+595', flag:'🇵🇾'},
+    {c:'BO', name:'Bolivia',             dial:'+591', flag:'🇧🇴'},
+    {c:'VE', name:'Venezuela',           dial:'+58',  flag:'🇻🇪'},
     {c:'CR', name:'Costa Rica',          dial:'+506', flag:'🇨🇷'},
     {c:'PA', name:'Panamá',              dial:'+507', flag:'🇵🇦'},
     {c:'GT', name:'Guatemala',           dial:'+502', flag:'🇬🇹'},
     {c:'SV', name:'El Salvador',         dial:'+503', flag:'🇸🇻'},
     {c:'HN', name:'Honduras',            dial:'+504', flag:'🇭🇳'},
     {c:'NI', name:'Nicaragua',           dial:'+505', flag:'🇳🇮'},
-    {c:'HT', name:'Haití',               dial:'+509', flag:'🇭🇹'},
-    {c:'CU', name:'Cuba',                dial:'+53',  flag:'🇨🇺'},
     {c:'DO', name:'República Dominicana',dial:'+1809',flag:'🇩🇴'},
-    {c:'PR', name:'Puerto Rico',         dial:'+1787',flag:'🇵🇷'},
-    {c:'GB', name:'Reino Unido',         dial:'+44',  flag:'🇬🇧'},
-    {c:'FR', name:'Francia',             dial:'+33',  flag:'🇫🇷'},
-    {c:'IT', name:'Italia',              dial:'+39',  flag:'🇮🇹'},
-    {c:'DE', name:'Alemania',            dial:'+49',  flag:'🇩🇪'},
   ];
   const normalize = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
   const wire = () => {
@@ -3340,15 +3332,29 @@ function updateSubmitCTA() {
     const rol = document.getElementById('rol');
     const privacy = document.getElementById('privacy');
     if (!nombre || !phone || !privacy) return;
-    // Auto-uppercase preserving apóstrofes, guiones, puntos (nombres reales: D'ANGELO, PEREZ-LOPEZ, JR.)
+    // Nombre: solo letras mayúsculas A-Z sin acentos + espacio · sin caracteres especiales
     nombre.addEventListener('input', () => {
       const cursor = nombre.selectionStart;
-      const cleaned = nombre.value.toUpperCase().replace(/[^A-ZÁÉÍÓÚÑÜ '\.\-]/g, '');
+      // Normaliza acentos ÁÉÍÓÚÑ → AEIOUN antes de rechazar caracteres especiales
+      const stripped = nombre.value.toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+      const cleaned = stripped.replace(/[^A-Z ]/g, '');
       if (nombre.value !== cleaned) {
         nombre.value = cleaned;
         try { nombre.setSelectionRange(cursor, cursor); } catch(e){}
       }
       nombre.setAttribute('aria-invalid', nombre.checkValidity() ? 'false' : 'true');
+      updateSubmitCTA();
+    });
+    // Empresa: solo letras mayúsculas A-Z + números + espacio · sin caracteres especiales
+    empresa.addEventListener('input', () => {
+      const cursor = empresa.selectionStart;
+      const stripped = empresa.value.toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+      const cleaned = stripped.replace(/[^A-Z0-9 ]/g, '');
+      if (empresa.value !== cleaned) {
+        empresa.value = cleaned;
+        try { empresa.setSelectionRange(cursor, cursor); } catch(e){}
+      }
+      empresa.setAttribute('aria-invalid', empresa.checkValidity() ? 'false' : 'true');
       updateSubmitCTA();
     });
     // Phone: solo dígitos + strip country code prefix del autofill (bug #2 CRÍTICO)
@@ -3358,7 +3364,7 @@ function updateSubmitCTA() {
       const ccRaw = (document.getElementById('phoneCC').value || '+52').replace('+','');
       // Si el dial code está al inicio y sobra longitud, stripearlo
       if (d.length > 10 && d.startsWith(ccRaw)) d = d.slice(ccRaw.length);
-      d = d.slice(0, 15); // max E.164
+      d = d.slice(0, 10); // 10 dígitos exactos
       if (phone.value !== d) phone.value = d;
       phone.setAttribute('aria-invalid', phone.checkValidity() ? 'false' : 'true');
       updateSubmitCTA();
