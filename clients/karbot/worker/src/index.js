@@ -323,12 +323,13 @@ async function handleBook(request, env, cors) {
   }
 
   // ---------- 2) Google Calendar event · si hay refresh_token ----------
+  // SMOKE GUARD · no crear evento real en calendar de Isabel para QA runs
   let eventId = null;
   let meetLink = null;
   let htmlLink = null;
-  let calendarError = null;
+  let calendarError = isSmoke ? 'skipped_smoke_run' : null;
 
-  if (!isMock) {
+  if (!isMock && !isSmoke) {
     try {
       const accessToken = await getAccessTokenFor(calendarRefreshToken(env), env);
       const tz = env.TIMEZONE || 'America/Mexico_City';
@@ -421,20 +422,23 @@ async function handleBook(request, env, cors) {
     .catch(() => {}); // no bloquear si falla update
 
   // ---------- 4) Notion sync · Datasource KARBOT · soft-fail ----------
+  // SMOKE GUARD · no contaminar el pipeline Karbot con QA rows
   let notionPageId = null;
-  let notionError = null;
-  try {
-    const result = await createNotionDealPage(env, {
-      leadId, nombre, empresa, email, phone, agencias, rol,
-      phone_country_code, phone_number,
-      privacy_accepted, privacy_accepted_at: privacyAcceptedAtIso, privacy_notice_url: privacyNoticeUrlVal,
-      start, end, isMock, eventId, meetLink, htmlLink, calendarError,
-      country, ip, referrer, enrichment,
-    });
-    notionPageId = result.pageId;
-    notionError = result.error;
-  } catch (err) {
-    notionError = err.message;
+  let notionError = isSmoke ? 'skipped_smoke_run' : null;
+  if (!isSmoke) {
+    try {
+      const result = await createNotionDealPage(env, {
+        leadId, nombre, empresa, email, phone, agencias, rol,
+        phone_country_code, phone_number,
+        privacy_accepted, privacy_accepted_at: privacyAcceptedAtIso, privacy_notice_url: privacyNoticeUrlVal,
+        start, end, isMock, eventId, meetLink, htmlLink, calendarError,
+        country, ip, referrer, enrichment,
+      });
+      notionPageId = result.pageId;
+      notionError = result.error;
+    } catch (err) {
+      notionError = err.message;
+    }
   }
 
   await env.karbot_leads
