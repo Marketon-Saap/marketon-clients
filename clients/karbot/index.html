@@ -505,27 +505,32 @@ body.sticky-hidden .sticky-cta-mobile { transform: translateY(160%); opacity: 0;
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
 }
 .hero-stat { text-align: left; }
+.hero-stats {
+  border: 1px solid var(--slate-200); border-radius: 16px;
+  background: var(--slate-50); padding: 24px 22px;
+}
 .hero-stat-label {
-  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 1.3px; color: var(--slate-500); margin-bottom: 6px;
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.3px; color: var(--slate-500); margin-bottom: 8px;
   line-height: 1.2;
 }
 .hero-stat-value {
-  font-size: 24px; font-weight: 800; color: var(--slate-950);
-  letter-spacing: -0.03em; line-height: 1; margin-bottom: 4px;
+  font-size: 36px; font-weight: 800; color: var(--slate-950);
+  letter-spacing: -0.03em; line-height: 1; margin-bottom: 6px;
 }
 .hero-stat-value .accent {
   background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
 }
 .hero-stat-desc {
-  font-size: 12px; color: var(--slate-600); line-height: 1.35;
+  font-size: 13px; color: var(--slate-600); line-height: 1.35;
 }
 @media (max-width: 900px) {
-  .hero-stats { grid-template-columns: 1fr 1fr; gap: 18px 16px; padding-top: 20px; }
-  .hero-stat-value { font-size: 22px; }
+  .hero-stats { grid-template-columns: 1fr 1fr; gap: 18px 16px; padding: 20px 18px; }
+  .hero-stat-value { font-size: 32px; }
 }
 @media (max-width: 400px) {
-  .hero-stat-value { font-size: 20px; }
+  .hero-stat-value { font-size: 28px; }
+  .hero-stats { padding: 18px 16px; }
 }
 
 /* ===== FORM HIGHLIGHT (glow al llegar via scroll) ===== */
@@ -2081,7 +2086,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="problem-card">
         <div class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></div>
         <h3 class="problem-title">Nadie contesta fuera de horario</h3>
-        <p class="problem-desc">El cliente decide compra en la noche y en el fin de semana. Tu equipo contesta en oficina. Cuando escribes al día siguiente, ya cerró con otro grupo.</p>
+        <p class="problem-desc">El cliente decide de noche y en fin de semana, cuando tu piso de ventas ya cerró. Al día siguiente, cuando tu equipo escribe, ya cerró con otro grupo.</p>
       </div>
       <div class="problem-card">
         <div class="problem-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M17 11l5-5M22 11l-5-5"/></svg></div>
@@ -2104,8 +2109,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <div class="solution-content">
         <div class="section-eyebrow" style="text-align:left; margin-bottom:12px;">Lo que hace Karbot</div>
-        <h3>Una línea comercial que atiende al cliente antes, durante y después de la venta — sin depender del horario del piso</h3>
-        <p style="color:var(--slate-600); font-size:16px; margin-bottom:8px;">Karbot conecta tu WhatsApp oficial con una IA que entiende de coches. Atiende al cliente como lo haría tu mejor asesor: le pregunta lo que necesita saber, agenda pruebas de manejo o citas de servicio, y solo pasa al humano cuando el cliente ya está en modo cerrar.</p>
+        <h3>Una línea comercial que atiende al cliente antes, durante y después de la venta — 24/7, incluso cuando tu agencia ya cerró</h3>
+        <p style="color:var(--slate-600); font-size:16px; margin-bottom:8px;">Karbot conecta tu WhatsApp oficial con una IA experta en autos. Atiende, califica y agenda citas por ti, transfiriendo el contacto a tus vendedores solo cuando el prospecto está listo para cerrar.</p>
         <ul class="solution-list">
           <li><strong>WhatsApp certificado.</strong> Los mensajes salen con la reputación de la plataforma, no con la de tu asesor. Evita bloqueos y evita convertirte en spam.</li>
           <li><strong>IA que califica en lugar del humano.</strong> Le pregunta al cliente qué modelo le interesa, presupuesto, ciudad, urgencia, si necesita financiamiento.</li>
@@ -2142,7 +2147,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="pilar-body">
           <div class="pilar-kicker">Optimiza tu operación y reduce recursos</div>
           <h3 class="pilar-title">Procesos automatizados</h3>
-          <p class="pilar-desc">Asigna leads automáticamente, centraliza todas tus conversaciones en un sólo lugar, y automatiza respuestas y envíos. En tu piso de venta: leads distribuidos por reglas, alertas cuando alguien ignora una conversación y visibilidad completa del pipeline.</p>
+          <p class="pilar-desc">Asigna leads automáticamente, centraliza todas tus conversaciones en un sólo lugar, y automatiza respuestas y envíos. En la operación diaria de tu agencia: leads distribuidos por reglas, alertas cuando alguien ignora una conversación y visibilidad completa del pipeline.</p>
         </div>
       </div>
 
@@ -2284,8 +2289,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">Integraciones</div>
-      <h2 class="section-title">Se conecta con <span class="accent">tu CRM y tu DMS actual</span></h2>
-      <p class="section-sub">Karbot se conecta con tu CRM, DMS u otro sistema de gestión. Los leads y las conversaciones se pasan en ambos sentidos sin trabajo manual. Si tu sistema no está listado, tenemos opciones de conexión que se adaptan.</p>
+      <h2 class="section-title">Se conecta con <span class="accent">tu CRM y tu DMS</span></h2>
+      <p class="section-sub">Karbot se integra con tu CRM, DMS u otro sistema de gestión. Cada lead nuevo que capture Karbot se crea automáticamente en tu sistema, y cada actualización que haga tu equipo (avance en pipeline, estatus, notas) se refleja en Karbot. Sin captura manual duplicada. Si tu sistema no está listado, tenemos opciones de conexión que se adaptan.</p>
     </div>
     <div class="section-cta">
       <a class="section-cta__link" href="#contacto" data-track="integraciones_cta_click">Agenda demo · revisamos tu stack juntos <span class="arr" aria-hidden="true">→</span></a>
@@ -2299,12 +2304,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">Cómo cobramos</div>
-      <h2 class="section-title">Usuarios <span class="accent">ilimitados</span> incluidos</h2>
-      <p class="section-sub">Sólo necesitas una licencia mensual para todos tus usuarios. Sin cobros extra por sumar asesores a tu piso de venta.</p>
+      <h2 class="section-title">Un precio por agencia · <span class="accent">usuarios ilimitados</span></h2>
+      <p class="section-sub">Una licencia mensual fija por agencia. Sin cargo por usuario, sin cobros extra por sumar o rotar asesores.</p>
     </div>
 
     <div class="cost-context">
-      <p>En tu agencia automotriz el equipo comercial rota mucho. Con Karbot, cada movimiento del piso no te sube la factura: los usuarios que sumes están incluidos en tu licencia.</p>
+      <p>El equipo comercial de una agencia rota mucho. Con Karbot, cada movimiento del equipo no te sube la factura: todos los usuarios que sumes están incluidos en tu licencia mensual.</p>
     </div>
 
     <div class="section-cta">
@@ -2318,8 +2323,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container">
     <div class="section-header">
       <div class="section-eyebrow">Planes</div>
-      <h2 class="section-title">Precio <span class="accent">por agencia · sin cobrar por asesor</span></h2>
-      <p class="section-sub">Usuarios ilimitados incluidos. 1,000 mensajes de salida mensuales incluidos. Sin cargos ocultos.</p>
+      <h2 class="section-title">Un precio total <span class="accent">por agencia · sin cargo por usuario</span></h2>
+      <p class="section-sub">Todos tus asesores incluidos. 1,000 mensajes de salida al mes incluidos. Sin cargos ocultos.</p>
     </div>
     <div class="plans-grid">
       <div class="plan-card">
@@ -2485,7 +2490,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="cta-final-lead">Te enseñamos Karbot funcionando con un grupo parecido al tuyo. Vemos si tiene sentido para tu operación. Sin cotización a ciegas y sin compromiso.</p>
       <ul class="cta-benefits">
         <li>Sesión con caso automotriz real, no ejemplos genéricos</li>
-        <li>La IA hablando de coches, precios y financiamiento</li>
+        <li>La IA hablando de autos, precios y financiamiento</li>
         <li>Propuesta comercial ajustada al número de agencias que tienes</li>
         <li>Sin pitch corporativo y sin PowerPoint largo</li>
       </ul>
@@ -2503,7 +2508,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="assets/logos/karbot_logo.svg" alt="Karbot">
-        <p>La plataforma comercial que atiende a tu cliente automotriz por WhatsApp — antes de la venta, durante el piso, en el taller y en cada campaña de recompra.</p>
+        <p>La plataforma comercial que atiende a tu cliente automotriz por WhatsApp — antes de la venta, durante la visita a la agencia, en el taller y en cada campaña de recompra.</p>
         <div class="footer-contact">
           <a href="tel:+523323043069" data-track="footer_contact_click" data-channel="phone">(33) 2304 3069</a><br>
           <a href="mailto:soporte@karbot.mx" data-track="footer_contact_click" data-channel="email">soporte@karbot.mx</a>
