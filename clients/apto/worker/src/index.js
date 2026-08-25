@@ -70,6 +70,9 @@ export default {
       if (url.pathname === '/webhooks/hubspot-lifecycle' && request.method === 'POST') {
         return await handleHubSpotLifecycleWebhook(request, env, cors, ctx);
       }
+      if (url.pathname === '/webhooks/hubspot-form-submission' && request.method === 'POST') {
+        return await handleHubSpotFormSubmissionWebhook(request, env, cors, ctx);
+      }
       if (url.pathname === '/admin/leads' && request.method === 'GET') {
         return await handleAdminLeads(request, env, url, cors);
       }
@@ -115,7 +118,9 @@ async function handleHealth(env, cors) {
       },
       integrations: {
         meta_capi: !!env.META_ACCESS_TOKEN,
-        ga4: !!env.GA4_MEASUREMENT_ID && !!env.GA4_API_SECRET,
+        ga4_landing_stream: !!env.GA4_MEASUREMENT_ID && !!env.GA4_API_SECRET,
+        ga4_main_stream: !!env.GA4_MEASUREMENT_ID_MAIN && !!env.GA4_API_SECRET_MAIN,
+        ga4_any_active: (!!env.GA4_MEASUREMENT_ID && !!env.GA4_API_SECRET) || (!!env.GA4_MEASUREMENT_ID_MAIN && !!env.GA4_API_SECRET_MAIN),
         email_notify: !!env.RESEND_API_KEY,
       },
       d1: {
@@ -341,6 +346,307 @@ async function hmacSha256Base64(secret, message) {
   return btoa(binary);
 }
 
+/* ─── /webhooks/hubspot-form-submission handler ──────────────────────────── */
+// Workaround al paywall de HubSpot Workflows (Marketing Hub Pro requerido).
+// Subscribe en HubSpot Private App → Webhooks a `contact.creation`.
+// Este handler filtra los contacts que llegan del "Formulario Apto WEB"
+// (form 696bbd9e del sitio apto.mx) y crea Deal en pipeline Marketon 922134387.
+// Preserva la regla: leads del sitio apto.mx caen al pipeline de Marketon para
+// que Carlos los pre-califique — igual que los del landing.apto.mx.
+
+const APTO_WEB_FORM_ID = '696bbd9e-ca44-410c-a474-af764b0e643a';
+const APTO_WEB_FORM_NAME_REGEX = /Formulario\s+Apto\s+WEB/i;
+
+async function handleHubSpotFormSubmissionWebhook(request, env, cors, ctx) {
+  const rawBody = await request.text();
+
+  let parsed;
+  try { parsed = JSON.parse(rawBody); } catch { return json({ error: 'invalid_json' }, 400, cors); }
+  const isHubSpotNative = Array.isArray(parsed);
+
+  // Auth: mismo dual mode que lifecycle webhook (HubSpot native HMAC v3 · manual test secret)
+  if (isHubSpotNative) {
+    if (!env.HUBSPOT_CLIENT_SECRET) {
+      return json({ error: 'client_secret_missing', hint: 'set HUBSPOT_CLIENT_SECRET (Private App Autenticación tab)' }, 503, cors);
+    }
+    const signature = request.headers.get('X-HubSpot-Signature-v3');
+    const timestamp = request.headers.get('X-HubSpot-Request-Timestamp');
+    if (!signature || !timestamp) {
+      return json({ error: 'missing_hubspot_signature_headers' }, 401, cors);
+    }
+    if (Math.abs(Date.now() - parseInt(timestamp, 10)) > 5 * 60 * 1000) {
+      return json({ error: 'timestamp_too_old' }, 401, cors);
+    }
+    const requestUrl = new URL(request.url).toString();
+    const sourceString = request.method + requestUrl + rawBody + timestamp;
+    const expected = await hmacSha256Base64(env.HUBSPOT_CLIENT_SECRET, sourceString);
+    if (expected !== signature) {
+      return json({ error: 'invalid_signature' }, 401, cors);
+    }
+  } else {
+    const secret = request.headers.get('X-Marketon-Secret');
+    if (!env.HUBSPOT_WEBHOOK_SECRET) {
+      return json({ error: 'webhook_disabled', hint: 'set HUBSPOT_WEBHOOK_SECRET' }, 503, cors);
+    }
+    if (secret !== env.HUBSPOT_WEBHOOK_SECRET) {
+      return json({ error: 'unauthorized' }, 401, cors);
+    }
+  }
+
+  // Extraer contactIds de events tipo contact.creation
+  let events = [];
+  if (isHubSpotNative) {
+    events = parsed
+      .filter(e => e.subscriptionType === 'contact.creation')
+      .map(e => ({ contactId: String(e.objectId), hubspotEventId: e.eventId }));
+    if (!events.length) {
+      return json({ ok: true, skipped: 'no_contact_creation_events', received: parsed.length }, 200, cors);
+    }
+  } else {
+    const { contactId } = parsed;
+    events = [{ contactId }];
+  }
+
+  const results = await Promise.all(events.map(async (ev) => {
+    try {
+      const result = await processFormSubmissionForDeal(env, ev.contactId, ev.hubspotEventId, rawBody);
+      return { ok: true, ...ev, ...result };
+    } catch (e) {
+      console.error('Form submission event failed:', ev, e.message);
+      // Safety net: registra el fallo en webhook_events aún si processFormSubmissionForDeal lanzó
+      try {
+        await logWebhookEvent(env, {
+          source: 'hubspot_form_submission',
+          hubspot_event_id: ev.hubspotEventId || null,
+          hubspot_contact_id: ev.contactId || null,
+          processed_status: 'failed',
+          processed_reason: e.message,
+          raw_payload: rawBody.slice(0, 8000),
+        });
+      } catch (logErr) {
+        console.error('logWebhookEvent fallback failed:', logErr.message);
+      }
+      return { ok: false, ...ev, error: e.message };
+    }
+  }));
+
+  const succeeded = results.filter(r => r.ok).length;
+  const dealsCreated = results.filter(r => r.deal_created).length;
+  return json({ ok: true, processed: results.length, succeeded, deals_created: dealsCreated, results }, 200, cors);
+}
+
+// Sprint 94b · Insert row en webhook_events (safety net del path apto.mx).
+async function logWebhookEvent(env, evt) {
+  if (!env.APTO_LEADS_DB) return;
+  try {
+    await env.APTO_LEADS_DB
+      .prepare(
+        `INSERT INTO webhook_events (source, hubspot_event_id, hubspot_contact_id, hubspot_deal_id, hubspot_form_name, processed_status, processed_reason, meta_capi_status, meta_capi_event_id, meta_capi_error, ga4_mp_status, ga4_mp_error, raw_payload)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      )
+      .bind(
+        evt.source,
+        evt.hubspot_event_id || null,
+        evt.hubspot_contact_id || null,
+        evt.hubspot_deal_id || null,
+        evt.hubspot_form_name || null,
+        evt.processed_status || 'pending',
+        evt.processed_reason || null,
+        evt.meta_capi_status || 'skipped',
+        evt.meta_capi_event_id || null,
+        evt.meta_capi_error || null,
+        evt.ga4_mp_status || 'skipped',
+        evt.ga4_mp_error || null,
+        evt.raw_payload || null
+      )
+      .run();
+  } catch (e) {
+    console.error('logWebhookEvent D1 insert failed:', e.message);
+  }
+}
+
+async function processFormSubmissionForDeal(env, contactId, hubspotEventId, rawBody) {
+  if (!contactId) throw new Error('missing_contactId');
+  const token = env.HUBSPOT_TOKEN;
+  if (!token) throw new Error('hubspot_token_missing');
+
+  const rawPayloadSnippet = (rawBody || '').slice(0, 8000);
+  const logCtx = { hubspotEventId, contactId };
+
+  // Fetch contact + associated deals + source + enrichment signals (Sprint 94)
+  const propsList = [
+    'firstname', 'lastname', 'email', 'phone', 'mobilephone', 'company', 'jobtitle',
+    'industry', 'company_size', 'message', 'lifecyclestage',
+    'recent_conversion_event_name', 'hs_analytics_source', 'hs_latest_source',
+    'hs_analytics_first_url', 'hs_analytics_source_data_1', 'hs_analytics_source_data_2',
+    'hs_latest_source_data_1', 'hs_latest_source_data_2', 'hs_analytics_first_referrer',
+    'fbp', 'ga4_client_id', 'hs_facebook_click_id', 'hs_google_click_id'
+  ].join(',');
+  const contactRes = await fetch(
+    `${HUBSPOT_API}/crm/v3/objects/contacts/${contactId}?properties=${propsList}&associations=deals`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  if (!contactRes.ok) {
+    const errText = await contactRes.text();
+    throw new Error(`contact_lookup_failed: ${contactRes.status} ${errText}`);
+  }
+  const contact = await contactRes.json();
+  const p = contact.properties || {};
+
+  // Filter: solo procesar contacts del "Formulario Apto WEB" (form del sitio apto.mx)
+  const conversionName = p.recent_conversion_event_name || '';
+  if (!APTO_WEB_FORM_NAME_REGEX.test(conversionName)) {
+    await logWebhookEvent(env, {
+      source: 'hubspot_form_submission',
+      hubspot_event_id: hubspotEventId,
+      hubspot_contact_id: contactId,
+      hubspot_form_name: conversionName || null,
+      processed_status: 'skipped_not_target_form',
+      processed_reason: `recent_conversion_event_name = "${conversionName || '(empty)'}"`,
+      raw_payload: rawPayloadSnippet,
+    });
+    return { skipped: 'not_from_apto_web_form', conversion_event: conversionName || '(empty)' };
+  }
+
+  // Dedup: si el contact ya tiene un Deal en pipeline Marketon, skip
+  const associatedDeals = contact.associations?.deals?.results || [];
+  if (associatedDeals.length > 0) {
+    const dealsInMarketon = await Promise.all(associatedDeals.map(async (d) => {
+      const dr = await fetch(
+        `${HUBSPOT_API}/crm/v3/objects/deals/${d.id}?properties=pipeline`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (!dr.ok) return false;
+      const dj = await dr.json();
+      return dj.properties?.pipeline === env.HUBSPOT_PIPELINE_ID;
+    }));
+    if (dealsInMarketon.some(Boolean)) {
+      await logWebhookEvent(env, {
+        source: 'hubspot_form_submission',
+        hubspot_event_id: hubspotEventId,
+        hubspot_contact_id: contactId,
+        hubspot_form_name: conversionName,
+        processed_status: 'skipped_duplicate',
+        processed_reason: 'already_has_deal_in_marketon_pipeline',
+        raw_payload: rawPayloadSnippet,
+      });
+      return { skipped: 'already_has_deal_in_marketon_pipeline' };
+    }
+  }
+
+  // Construir Deal en pipeline Marketon (misma forma que /submit path)
+  const fullName = [p.firstname, p.lastname].filter(Boolean).join(' ').trim() || p.email;
+  const companyLabel = p.company || 'Sin empresa';
+  const dealNameRaw = `${fullName} · ${companyLabel} (apto.mx)`;
+  const dealName = dealNameRaw.length > 300 ? dealNameRaw.slice(0, 297) + '...' : dealNameRaw;
+
+  const descriptionLines = [
+    `Lead vía Formulario Apto WEB (apto.mx/contacto/) · form ${APTO_WEB_FORM_ID}`,
+    `Fecha ingreso: ${new Date().toISOString()}`,
+  ];
+  if (p.jobtitle) descriptionLines.push(`Puesto: ${p.jobtitle}`);
+  if (p.industry) descriptionLines.push(`Industria: ${p.industry}`);
+  if (p.company_size) descriptionLines.push(`Tamaño empresa: ${p.company_size}`);
+  if (p.phone) descriptionLines.push(`Teléfono: ${p.phone}`);
+  if (p.message) descriptionLines.push(`\nMensaje:\n${p.message}`);
+
+  const dealProps = {
+    pipeline: env.HUBSPOT_PIPELINE_ID,
+    dealstage: env.HUBSPOT_DEAL_STAGE_NEW_LEAD,
+    dealname: dealName,
+    description: descriptionLines.join('\n'),
+  };
+
+  const deal = await createDeal(env, dealProps, contactId);
+
+  // Sprint 94 · Enrichment server-side: Meta CAPI + GA4 MP con landing_source=apto_mx_web.
+  // El webhook llega desde HubSpot (no del browser) → IP/UA reales no están, pero fbp/fbc
+  // llegaron via GTM tag 100 (onBeforeFormSubmit inject). external_id = contactId hasheado
+  // ancla event al mismo Contact que ya está en HubSpot para Meta match quality.
+  const phoneVal = p.mobilephone || p.phone;
+  const eventSourceUrl = p.hs_analytics_first_url || 'https://apto.mx/contacto/';
+  // eventID determinista. El Pixel del navegador (GTM tag 89) calcula exactamente
+  // este mismo id a partir del SHA-256 del email, que es el unico dato que los dos
+  // lados conocen. Antes llevaba timestamp, asi que el Lead del navegador y el del
+  // CAPI nunca se deduplicaban y cada lead de apto.mx se contaba dos veces en Meta.
+  const eventId = p.email
+    ? `apto-main-${(await sha256(String(p.email).trim().toLowerCase())).slice(0, 32)}`
+    : `apto-web-${contactId}-${Math.floor(Date.now() / 1000)}`;
+
+  const enrichmentResult = { meta_capi: null, ga4_mp: null };
+
+  try {
+    if (env.META_ACCESS_TOKEN) {
+      const capiRes = await sendMetaCAPIEvent(env, {
+        eventName: 'Lead',
+        eventId,
+        eventSourceUrl,
+        actionSource: 'website',
+        userData: {
+          email: p.email,
+          phone: phoneVal,
+          firstName: p.firstname,
+          lastName: p.lastname,
+          country: 'MX',
+          externalId: contactId,
+          fbp: p.fbp || undefined,
+          fbc: p.hs_facebook_click_id ? `fb.1.${Date.now()}.${p.hs_facebook_click_id}` : undefined,
+        },
+        customData: {
+          value: 500,
+          currency: 'MXN',
+          content_name: 'Formulario Apto WEB · apto.mx',
+          content_category: 'lead_form',
+          lead_type: 'main_site',
+          landing_source: 'apto_mx_web',
+          form_id: APTO_WEB_FORM_ID,
+          jobtitle: p.jobtitle,
+          industry: p.industry,
+          company_size: p.company_size,
+        },
+      });
+      enrichmentResult.meta_capi = { ok: true, event_id: eventId };
+    }
+  } catch (e) {
+    console.error('Meta CAPI Lead (webhook) failed:', e.message);
+    enrichmentResult.meta_capi = { ok: false, error: e.message };
+  }
+
+  // GA4 generate_lead ya NO se manda desde aqui. Lo emite GTM tag 51 en el submit,
+  // del lado del navegador, donde si hay sesion, source/medium, gclid y dispositivo.
+  // Mandarlo tambien por Measurement Protocol duplicaba el Key Event, y la copia
+  // del servidor entraba sin session_id, asi que se atribuia a (direct).
+  enrichmentResult.ga4_mp = { skipped: 'client_side_gtm' };
+
+  // Sprint 94b · safety-net log del hit exitoso
+  await logWebhookEvent(env, {
+    source: 'hubspot_form_submission',
+    hubspot_event_id: hubspotEventId,
+    hubspot_contact_id: contactId,
+    hubspot_deal_id: deal.id,
+    hubspot_form_name: conversionName,
+    processed_status: 'deal_created',
+    processed_reason: null,
+    meta_capi_status: enrichmentResult.meta_capi?.ok ? 'success' : (enrichmentResult.meta_capi ? 'failed' : 'skipped'),
+    meta_capi_event_id: enrichmentResult.meta_capi?.ok ? eventId : null,
+    meta_capi_error: enrichmentResult.meta_capi?.ok === false ? enrichmentResult.meta_capi.error : null,
+    ga4_mp_status: enrichmentResult.ga4_mp?.skipped
+      ? `skipped_${enrichmentResult.ga4_mp.skipped}`
+      : (enrichmentResult.ga4_mp?.ok ? 'success' : (enrichmentResult.ga4_mp ? 'failed' : 'skipped')),
+    ga4_mp_error: enrichmentResult.ga4_mp?.ok === false ? enrichmentResult.ga4_mp.error : null,
+    raw_payload: rawPayloadSnippet,
+  });
+
+  return {
+    deal_created: true,
+    dealId: deal.id,
+    dealName,
+    contact_email: p.email,
+    enrichment: enrichmentResult,
+    event_id: eventId,
+  };
+}
+
 /* ─── /submit handler ────────────────────────────────────────────────────── */
 
 async function handleSubmit(request, env, cors, ctx) {
@@ -461,19 +767,11 @@ async function runSideEffects(env, contactProps, dealProps, context, request, hu
     updates.meta_capi_error = e.message;
   }
 
-  // GA4
-  try {
-    if (env.GA4_MEASUREMENT_ID && env.GA4_API_SECRET) {
-      await sendGA4GenerateLead(env, contactProps, context);
-      updates.ga4_status = 'success';
-    } else {
-      updates.ga4_status = 'skipped';
-    }
-  } catch (e) {
-    console.error('GA4 failed:', e.message);
-    updates.ga4_status = 'failed';
-    updates.ga4_error = e.message;
-  }
+  // GA4 generate_lead ya NO se manda desde aqui. Lo emite GTM tag 84 en el navegador,
+  // con sesion, source/medium, gclid, fbclid, dispositivo y geo. La copia por
+  // Measurement Protocol duplicaba el Key Event y ademas entraba sin session_id,
+  // asi que la conversion principal se atribuia a (direct).
+  updates.ga4_status = 'skipped_client_side_gtm';
 
   // Resend email (multi-recipient)
   try {
@@ -579,15 +877,29 @@ function validatePayload(body) {
   return errors;
 }
 
+// FIX 2026-08-25 · landing.apto.mx tiene UN SOLO campo de nombre (firstname trae el
+// nombre completo) mientras que HubSpot maneja firstname + lastname por separado.
+// Se parte una sola vez aqui para que contacto, envio de formulario, Meta CAPI y
+// correo usen exactamente el mismo valor y el nombre no salga duplicado en el CRM.
+function partirNombre(body) {
+  const partes = String(body.firstname || '').trim().split(/\s+/).filter(Boolean);
+  const lastFromBody = body.lastname ? String(body.lastname).trim() : '';
+  return {
+    firstname: partes[0] || '',
+    lastname: lastFromBody || partes.slice(1).join(' '),
+  };
+}
+
 function normalizeContactProps(body, env) {
+  const _n = partirNombre(body);
   const props = {
-    firstname: (body.firstname || '').trim(),
+    firstname: _n.firstname,
     email: (body.email || '').trim().toLowerCase(),
     company: (body.company || '').trim(),
     jobtitle: (body.jobtitle || '').trim(),
     lifecyclestage: env.DEFAULT_LIFECYCLE_STAGE || 'lead',
   };
-  if (body.lastname) props.lastname = body.lastname.trim();
+  if (_n.lastname) props.lastname = _n.lastname;
   if (body.phone) props.phone = body.phone.trim();     // Meta CAPI EMQ +3pts
   if (body.industry) props.industry = body.industry.trim();
   if (body.company_size) props.company_size = body.company_size.trim();
@@ -753,9 +1065,45 @@ async function submitToHubSpotFormsAPI(env, body) {
   const formId = env.HUBSPOT_FORM_ID;
   const endpoint = `https://api.hsforms.com/submissions/v3/integration/submit/${portalId}/${formId}`;
 
-  const fields = ['firstname', 'lastname', 'email', 'company', 'jobtitle', 'industry', 'company_size', 'message']
-    .filter((k) => body[k])
-    .map((k) => ({ objectTypeId: '0-1', name: k, value: String(body[k]).trim() }));
+  // Form "Formulario Apto WEB" (696bbd9e) exige TODOS estos required:
+  //   Contact: firstname, lastname, email, mobilephone, jobtitle, message, metodo_de_contacto
+  //   Company: company, cuentanos_sobre_tu_organizacion, url_de_la_empresa
+  // Landing.apto.mx no pide algunos (metodo_de_contacto, url_de_la_empresa) para
+  // reducir fricción — se envían defaults sensatos aquí. `mobilephone` mapea desde `phone`.
+
+  const jobtitleVal = String(body.jobtitle || 'No especificado').trim();
+  const messageVal = String(body.message || 'Solicitud desde landing.apto.mx').trim();
+  const mobilephoneVal = String(body.phone || body.mobilephone || '+520000000000').trim();
+  const orgSizeVal = String(body.company_size || body.industry || 'Sin especificar').trim();
+
+  // FIX 2026-08-25 · landing.apto.mx tiene UN solo campo de nombre (firstname con el
+  // nombre completo). El form 696bbd9e exige `lastname` como required, y el .filter()
+  // de abajo eliminaba el par [lastname, undefined] del payload. Resultado: HubSpot
+  // devolvia 400 REQUIRED_FIELD y NINGUN envio de la landing quedaba registrado en
+  // "Formulario Apto WEB". Como la llamada es non-blocking y solo hace console.error,
+  // fallaba en silencio. Se parte el nombre completo igual que ya lo hace el fallback
+  // del propio index.html de la landing.
+  const _n = partirNombre(body);
+  const firstnameVal = _n.firstname;
+  const lastnameVal = _n.lastname || '-';   // el form 696bbd9e exige lastname no vacio
+
+  const contactFields = [
+    ['firstname', firstnameVal],
+    ['lastname', lastnameVal],
+    ['email', body.email],
+    ['mobilephone', mobilephoneVal],
+    ['jobtitle', jobtitleVal],
+    ['company', body.company],
+    ['message', messageVal],
+    ['metodo_de_contacto', 'Email'],
+  ].filter(([, v]) => v).map(([k, v]) => ({ objectTypeId: '0-1', name: k, value: String(v).trim() }));
+
+  const companyFields = [
+    ['cuentanos_sobre_tu_organizacion', orgSizeVal],
+    ['url_de_la_empresa', body.company_url || `https://${(body.email || '').split('@')[1] || 'sin-web.example'}`],
+  ].filter(([, v]) => v).map(([k, v]) => ({ objectTypeId: '0-2', name: k, value: String(v).trim() }));
+
+  const fields = [...contactFields, ...companyFields];
 
   const context = {};
   if (body.context?.pageUri) context.pageUri = body.context.pageUri;
@@ -767,7 +1115,10 @@ async function submitToHubSpotFormsAPI(env, body) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ fields, context }),
   });
-  if (!res.ok) throw new Error(`Forms API submit failed: ${res.status}`);
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Forms API submit failed: ${res.status} ${errText.slice(0, 300)}`);
+  }
 }
 
 /* ─── Meta CAPI · lifecycle stage → event mapping ────────────────────────── */
@@ -892,11 +1243,13 @@ async function sendMetaCAPILeadEvent(env, contactProps, context, request, hubspo
       value: 500,                       // Baseline Lead value · MQL/SQL/Won lo escalarán
       content_name: 'APTO Landing Madre · Diagnóstico Request',
       content_category: 'B2B Enterprise Consulting',
+      lead_type: 'landing_page',
+      landing_source: 'landing_apto_mx',   // Sprint 95 · homologación cross-origin
+      form_id: env.HUBSPOT_FORM_ID || '',
       // custom fields para audiencias específicas por tipología ICP
       industry: contactProps.industry || '',
       company_size: contactProps.company_size || '',
       job_title: contactProps.jobtitle || '',
-      lead_type: 'landing_page',
       hubspot_contact_id: hubspotContactId || '',
     },
   });
@@ -952,20 +1305,51 @@ async function sendMetaCAPILifecycleEvent(env, {
 
 /* ─── GA4 Measurement Protocol · generate_lead ───────────────────────────── */
 
+// Sprint 96: cross-fire a AMBOS streams GA4 con landing_source distinguiendo origen.
+//   GA4_MEASUREMENT_ID + GA4_API_SECRET     → stream landing (G-GNWQSC5NN1)
+//   GA4_MEASUREMENT_ID_MAIN + GA4_API_SECRET_MAIN → stream main site (G-T83JJQEYVH)
+// Homologa attribution cross-property sin romper streams históricos.
+// EN RESERVA · desde 2026-08-25 generate_lead se emite del lado del navegador
+// (GTM tags 84 landing / 51 apto.mx). Esta funcion queda para reactivar el envio
+// server-side si algun dia se detecta perdida por adblock; volver a llamarla sin
+// pausar los tags de GTM duplicaria el Key Event.
 async function sendGA4GenerateLead(env, contactProps, context) {
-  if (!env.GA4_MEASUREMENT_ID || !env.GA4_API_SECRET) return;
-  const url = `https://www.google-analytics.com/mp/collect?measurement_id=${env.GA4_MEASUREMENT_ID}&api_secret=${env.GA4_API_SECRET}`;
   const clientId = context.client_id || (await sha256(contactProps.email)).slice(0, 20);
+  const landingSource = context.landing_source || 'landing_apto_mx';
+  const eventParams = {
+    currency: 'MXN',
+    value: 100,
+    page_location: context.pageUri || 'https://apto.mx',
+    landing_source: landingSource,
+  };
+  if (context.form_id) eventParams.form_id = context.form_id;
   const payload = {
     client_id: clientId,
-    events: [{ name: 'generate_lead', params: { currency: 'MXN', value: 100, page_location: context.pageUri || 'https://apto.mx' } }],
+    events: [{ name: 'generate_lead', params: eventParams }],
   };
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (res.status >= 300) throw new Error(`GA4 MP failed: ${res.status}`);
+
+  const streams = [];
+  if (env.GA4_MEASUREMENT_ID && env.GA4_API_SECRET) {
+    streams.push({ id: env.GA4_MEASUREMENT_ID, secret: env.GA4_API_SECRET, label: 'landing' });
+  }
+  if (env.GA4_MEASUREMENT_ID_MAIN && env.GA4_API_SECRET_MAIN) {
+    streams.push({ id: env.GA4_MEASUREMENT_ID_MAIN, secret: env.GA4_API_SECRET_MAIN, label: 'main' });
+  }
+  if (!streams.length) return { skipped: 'no_ga4_streams' };
+
+  const results = await Promise.all(streams.map(async (s) => {
+    const url = `https://www.google-analytics.com/mp/collect?measurement_id=${s.id}&api_secret=${s.secret}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.status >= 300) return { label: s.label, ok: false, status: res.status };
+    return { label: s.label, ok: true };
+  }));
+  const failed = results.filter(r => !r.ok);
+  if (failed.length === streams.length) throw new Error(`GA4 MP all-streams-failed: ${JSON.stringify(failed)}`);
+  return { ok: true, streams: results };
 }
 
 /* ─── Email notify via Resend (MULTI-RECIPIENT) ──────────────────────────── */
