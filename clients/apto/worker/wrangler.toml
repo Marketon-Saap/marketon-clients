@@ -6,7 +6,11 @@ compatibility_date = "2026-07-26"
 [vars]
 ALLOWED_ORIGIN = "https://landing.apto.mx,https://mktgrupoplasenciaautomotriz.github.io"
 HUBSPOT_PORTAL_ID = "2583031"
-HUBSPOT_FORM_ID = "6f9db620-165b-451b-8b49-76b441eea7ce"
+# Form destino Forms API v3 · "Formulario Apto WEB" (form principal apto.mx)
+# 2026-08-11: consolidado a 696bbd9e después de desactivar reCAPTCHA en HubSpot UI.
+# Ambos forms (apto.mx/contacto/ nativo + landing.apto.mx vía Worker) caen al mismo
+# submissions view. Legacy form "APTO Landing Madre" (6f9db620) queda archivado.
+HUBSPOT_FORM_ID = "696bbd9e-ca44-410c-a474-af764b0e643a"
 HUBSPOT_PIPELINE_ID = "922134387"
 HUBSPOT_DEAL_STAGE_NEW_LEAD = "1407911441"
 DEFAULT_LIFECYCLE_STAGE = "lead"
