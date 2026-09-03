@@ -37,17 +37,18 @@ Del resto de agosto, seis quedaron descartados tras el primer contacto y cinco s
 
 ## Qué invertimos y dónde
 
-| Canal | Inversión | A dónde llevó |
-|---|---:|---|
-| Google Ads | $16,125 MXN | 9 de los prospectos |
-| Meta Ads | $6,967 MXN | 3 de los prospectos |
-| **Total** | **$23,092 MXN** | |
+| Canal | Inversión | Prospectos | Costo por prospecto |
+|---|---:|---:|---:|
+| Google Ads | $16,125 MXN | 9 | $1,792 |
+| Meta Ads | $6,967 MXN | 3 | $2,322 |
+| **Costo por prospecto de pauta** | **$23,092 MXN** | **12** | **$1,924** |
+| Sobre los 20 prospectos del mes | $23,092 MXN | 20 | **$1,155** |
 
-Doce prospectos vinieron de publicidad pagada. Los ocho restantes llegaron por búsqueda de marca o recomendación —gente que ya conocía APTO y entró directo al sitio—.
+Doce prospectos vinieron de publicidad pagada. Los ocho restantes llegaron por búsqueda de marca o recomendación —gente que ya conocía APTO y entró directo al sitio—. **Contando a todos, cada prospecto del mes costó $1,155.**
 
-**Google trae más volumen; Meta trae más barato.** Cada prospecto de Google costó cerca de $1,800 pesos y cada uno de Meta alrededor de $870. La diferencia es de casi el doble.
+**Google es hoy el canal más eficiente:** trae tres veces más prospectos y a menor costo cada uno.
 
-Hay un detalle que conviene atender: **Meta dejó de entregar el 18 de agosto** y no volvió a correr en lo que quedó del mes. Sus tres prospectos llegaron todos en la primera quincena. Reactivarlo es la decisión de mayor impacto que tenemos enfrente.
+**Meta está pausado desde el 18 de agosto.** Sus tres prospectos llegaron en la primera quincena, a un costo que todavía no compite con Google. Lo retomamos cuando sepamos qué versión de la landing convierte mejor.
 
 ---
 
@@ -65,23 +66,27 @@ La landing pasó por cuatro rondas de trabajo, cada una respondiendo a lo que la
 
 ## Cómo va la prueba entre las dos páginas
 
-Estamos comparando dos destinos para el mismo anuncio: el sitio principal contra la landing.
+Estamos comparando dos destinos para el mismo anuncio: el sitio principal contra la landing. Corre desde el 25 de agosto.
 
-**La primera vuelta no dio un resultado usable** y preferimos decirlo antes que sacar una conclusión endeble. Coincidió con las rondas de rediseño, así que la landing cambió mientras se le medía. Comparar en esas condiciones no sirve.
+| Destino | Clics | Interés | Inversión | Prospectos | Costo c/u |
+|---|---:|---:|---:|---:|---:|
+| Sitio principal | 26 | 4.9% | $1,820 | 2 | $910 |
+| **Landing** | 16 | **6.1%** | $1,256 | 2 | **$628** |
 
-**La segunda vuelta arrancó el 25 de agosto**, ya con la página estable. Lleva $1,256 invertidos y va temprano para leerla.
+**La landing va ganando en las dos medidas.** Despierta más interés —de cada 100 personas que ven el anuncio, entran 6 contra 5— y cada prospecto sale 31% más barato.
 
-Falta una condición para que la prueba valga: **la landing se diseñó para recibir tráfico de Meta**, gente que no conoce APTO y llega en frío. Con Meta detenido, esa página está compitiendo casi sin visitantes. Encender Meta es lo que le da sentido a la prueba.
+Son números chicos todavía: dos prospectos por lado. La dirección es clara, la magnitud aún no. Dos semanas más de datos la confirman o la corrigen.
 
----
+Una primera vuelta de esta prueba corrió antes, en pleno rediseño de la página. Como la landing cambiaba mientras se le medía, no dejó un resultado usable y preferimos descartarla.
+
 
 ## Lo que sigue
 
-**Reactivar Meta.** Trae el prospecto a la mitad de precio que Google y es el tráfico para el que la landing fue construida.
+**Terminar de aprender qué funciona en la landing.** Dos semanas más de la prueba con Google, que es el canal que ya está corriendo. Queremos saber qué mensaje, qué estructura y qué diseño convierten mejor antes de meterle más presupuesto.
 
-**Llamar a los cinco que están esperando.** Ya entraron, ya dijeron qué necesitan, y no cuestan inversión adicional.
+**Llamar a los cinco que esperan.** Ya entraron, ya dijeron qué necesitan, y no cuestan inversión adicional.
 
-**Dejar correr la prueba dos semanas con Meta encendido.** Ahí sí habrá con qué decidir a dónde mandar el presupuesto.
+**Meta entra después, no antes.** Meta es tráfico frío: gente que no conoce APTO. Encenderlo sobre una página que todavía estamos afinando sería pagar por aprender lo que la prueba actual nos va a decir gratis. Primero cerramos qué funciona en la landing; luego llevamos ahí el tráfico de Meta.
 
 Nos vemos el 8 de septiembre con el siguiente corte.
 
