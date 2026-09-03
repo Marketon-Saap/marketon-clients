@@ -12,11 +12,11 @@ confidencialidad: cliente
 
 ---
 
-## Dónde estamos
+## Lo que se movió en el negocio
 
-**Veinte prospectos llenaron los formularios de APTO en agosto. Ocho ya están dentro del proceso de venta, y dos de ellos con propuesta en desarrollo.**
+**Agosto es el primer mes en que los prospectos llegan con contexto: quién es, qué necesita y por qué escribió.** El formulario ahora obliga a describir el problema, así que Carlos abre el registro sabiendo de qué se trata y puede llamar preparado.
 
-Ése es el número que importa. No cuántos formularios se llenaron, sino cuántos avanzaron hasta convertirse en una conversación comercial real.
+Y quedan cinco personas que levantaron la mano y a las que todavía nadie ha llamado. Son la venta más barata de septiembre: ya están pagadas.
 
 ---
 
