@@ -12,11 +12,11 @@ confidencialidad: cliente
 
 ---
 
-## Lo que se movió en el negocio
+## El foco de la estrategia
 
-**Agosto es el primer mes en que los prospectos llegan con contexto: quién es, qué necesita y por qué escribió.** El formulario ahora obliga a describir el problema, así que Carlos abre el registro sabiendo de qué se trata y puede llamar preparado.
+**El trabajo de agosto se concentró en decir con claridad qué es APTO y qué vende.** Cuatro rondas sobre la landing, cada una acercando el mensaje a lo que ustedes de verdad ofrecen.
 
-Y quedan cinco personas que levantaron la mano y a las que todavía nadie ha llamado. Son la venta más barata de septiembre: ya están pagadas.
+Ése es el foco del trabajo, no un trámite previo. En cuanto sepamos qué versión explica mejor a APTO, ese mismo mensaje se lleva a los anuncios y al resto de los canales. Por eso Meta sigue detenido: **primero cerramos qué decir, después pagamos por repartirlo.**
 
 ---
 
