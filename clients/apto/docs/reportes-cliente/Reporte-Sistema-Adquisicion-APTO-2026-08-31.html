@@ -907,6 +907,14 @@
   }
 
 </style>
+<style>
+  /* Distribución vertical · el aire sobrante se reparte entre secciones
+     en vez de acumularse al pie, para que la hoja se lea compuesta. */
+  .sheet { display: flex; flex-direction: column; gap: 13px; }
+  .sheet > * { flex: 0 0 auto; }
+  .sheet > section { margin: 0; }
+  .doc-footer { margin-top: auto; }
+</style>
 </head>
 <body>
 
@@ -937,6 +945,29 @@
     <p>Ése es el número que importa. No cuántos formularios se llenaron, sino cuántos avanzaron hasta convertirse en una conversación comercial real.</p>
   </div>
 
+  <div class="mix-stats" style="grid-template-columns:repeat(4,1fr)">
+    <div class="mix-stat hero">
+      <div class="num">20</div>
+      <div class="cat">Prospectos</div>
+      <div class="desc">Llenaron los formularios</div>
+    </div>
+    <div class="mix-stat hero">
+      <div class="num">8</div>
+      <div class="cat">En proceso de venta</div>
+      <div class="desc">Dos con propuesta</div>
+    </div>
+    <div class="mix-stat">
+      <div class="num">$23,092</div>
+      <div class="cat">Invertido</div>
+      <div class="desc">Google y Meta</div>
+    </div>
+    <div class="mix-stat">
+      <div class="num">$1,155</div>
+      <div class="cat">Por prospecto</div>
+      <div class="desc">Costo global</div>
+    </div>
+  </div>
+
   <section>
     <h2 class="section-title">Los que ya están en el proceso de venta<span class="side">Ocho empresas</span></h2>
     <div class="baseline-panel">
@@ -957,19 +988,18 @@
   </section>
 
   <section>
-    <h2 class="section-title">Qué invertimos y dónde<span class="side">$23,092 MXN · $1,155 por prospecto</span></h2>
+    <h2 class="section-title">Qué invertimos y dónde<span class="side">$23,092 MXN en el mes</span></h2>
     <div class="baseline-panel">
       <table class="baseline-table">
-        <thead><tr><th>Canal</th><th class="num">Inversión</th><th class="num-sm">Prospectos</th><th>Costo por prospecto</th></tr></thead>
+        <thead><tr><th>Canal</th><th class="num-sm">Inversión</th><th class="num-sm">Prospectos</th><th class="num-sm">Costo por prospecto</th></tr></thead>
         <tbody>
-          <tr><td class="periodo post"><strong>Google Ads</strong></td><td class="num">$16,125</td><td class="num-sm hero-cell">9</td><td class="rango"><strong>$1,792</strong></td></tr>
-          <tr><td class="periodo post"><strong>Meta Ads</strong></td><td class="num">$6,967</td><td class="num-sm hero-cell">3</td><td class="rango"><strong>$2,322</strong></td></tr>
-          <tr class="total-row"><td class="periodo total"><strong>Costo por prospecto de pauta</strong></td><td class="num">$23,092</td><td class="num-sm">12</td><td class="rango"><strong>$1,924</strong></td></tr>
-          <tr><td class="rango">Sobre los 20 prospectos del mes</td><td class="num-sm">$23,092</td><td class="num-sm">20</td><td class="rango"><strong>$1,155</strong></td></tr>
+          <tr><td class="periodo post"><strong>Google Ads</strong></td><td class="rango">$16,125</td><td class="num-sm">9</td><td class="num hero">$1,792</td></tr>
+          <tr><td class="periodo post"><strong>Meta Ads</strong></td><td class="rango">$6,967</td><td class="num-sm">3</td><td class="num">$2,322</td></tr>
+          <tr class="total-row"><td class="periodo total"><strong>Total pauta</strong></td><td class="rango">$23,092</td><td class="num-sm">12</td><td class="num">$1,924</td></tr>
         </tbody>
       </table>
       <ul class="baseline-notes">
-        <li>Los ocho prospectos restantes llegaron por búsqueda de marca o recomendación: gente que ya conocía APTO y entró directo al sitio. <strong>Contando a todos, cada prospecto del mes costó $1,155.</strong></li>
+        <li>Los ocho prospectos restantes llegaron por búsqueda de marca o recomendación: gente que ya conocía APTO y entró directo al sitio. Sumándolos, <strong>cada prospecto del mes costó $1,155</strong>.</li>
         <li><strong>Google es hoy el canal más eficiente:</strong> trae tres veces más prospectos y a menor costo cada uno.</li>
         <li><strong>Meta está pausado desde el 18 de agosto.</strong> Sus tres prospectos llegaron en la primera quincena, a un costo que todavía no compite con Google. Lo retomamos cuando sepamos qué versión de la landing convierte mejor.</li>
       </ul>
@@ -997,25 +1027,35 @@
     <h2 class="section-title">Qué construimos este mes<span class="side">Cuatro rondas de trabajo sobre la landing</span></h2>
     <div class="grid-4">
       <div class="card">
-        <h3>Se ordenó la captura</h3>
+        <h3>1 · Se ordenó la captura</h3>
         <ul>
           <li>El formulario pide teléfono con lada y registra el consentimiento de privacidad</li>
           <li>Ahora exige que el prospecto <strong>describa su problema</strong></li>
-          <li>Antes un contacto podía llegar sin una sola línea de contexto; hoy Carlos abre el registro y <strong>ya sabe de qué se trata</strong></li>
+          <li>Antes un contacto podía llegar sin una línea de contexto; hoy Carlos abre el registro y <strong>ya sabe de qué se trata</strong></li>
         </ul>
       </div>
       <div class="card">
-        <h3>Se quitó lo que estorbaba</h3>
+        <h3>2 · Se quitó lo que estorbaba</h3>
         <ul>
-          <li>Las grabaciones de sesión mostraron dónde se atoraba la gente: un botón que no respondía dentro de Instagram, un video que hacía lenta la página en celular, un formulario de diez campos</li>
-          <li>El formulario bajó a <strong>cuatro campos visibles</strong> y se abre como ventana, sin obligar a nadie a bajar hasta el fondo</li>
+          <li>Las grabaciones de sesión mostraron dónde se atoraba la gente: un botón que no respondía dentro de Instagram y un video que hacía lenta la página en celular</li>
+          <li>El formulario bajó de diez campos a <strong>cuatro visibles</strong></li>
         </ul>
       </div>
-    </div>
-
-    <div class="method-note">
-      <div class="lbl">Se alineó el contenido a lo que APTO realmente ofrece</div>
-      <p>Ésta fue la ronda más profunda. Salieron precios y plazos que no correspondían, cifras de casos que no estaban verificadas y menciones que no venían al caso. Entraron <strong>las cinco etapas reales del método, los dos talleres y seis citas textuales de clientes</strong> tomadas del propio sitio. La página quedó 20% más corta en celular y sin jerga.</p>
+      <div class="card">
+        <h3>3 · Se acortó el camino</h3>
+        <ul>
+          <li>El formulario <strong>se abre como ventana</strong>, sin obligar a nadie a bajar hasta el fondo de la página</li>
+          <li>La navegación quedó en píldoras flotantes y cada sección entra con su propio CTA</li>
+          <li>La página quedó <strong>20% más corta en celular</strong></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>4 · Se alineó a lo que APTO ofrece</h3>
+        <ul>
+          <li>La ronda más profunda. Salieron precios y plazos que no correspondían, cifras de casos sin verificar y menciones que no venían al caso</li>
+          <li>Entraron <strong>las cinco etapas reales del método, los dos talleres y seis citas textuales de clientes</strong>, tomadas del propio sitio</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -1023,10 +1063,10 @@
     <h2 class="section-title">Cómo va la prueba entre las dos páginas<span class="side">Mismo anuncio, dos destinos · desde el 25 de agosto</span></h2>
     <div class="baseline-panel">
       <table class="baseline-table">
-        <thead><tr><th>Destino</th><th class="num-sm">Clics</th><th class="num-sm">Interés</th><th class="num">Inversión</th><th class="num-sm">Prospectos</th><th class="num">Costo c/u</th></tr></thead>
+        <thead><tr><th>Destino</th><th class="num-sm">Inversión</th><th class="num-sm">Clics</th><th class="num-sm">Interés</th><th class="num-sm">Prospectos</th><th class="num-sm">Costo por prospecto</th></tr></thead>
         <tbody>
-          <tr><td class="periodo post"><strong>Sitio principal</strong></td><td class="num-sm">26</td><td class="rango">4.9%</td><td class="num">$1,820</td><td class="num-sm">2</td><td class="num">$910</td></tr>
-          <tr class="total-row"><td class="periodo total"><strong>Landing</strong></td><td class="num-sm">16</td><td class="rango"><strong>6.1%</strong></td><td class="num">$1,256</td><td class="num-sm">2</td><td class="num hero"><strong>$628</strong></td></tr>
+          <tr><td class="periodo post"><strong>Sitio principal</strong></td><td class="rango">$1,820</td><td class="num-sm">26</td><td class="num-sm">4.9%</td><td class="num-sm">2</td><td class="num">$910</td></tr>
+          <tr class="total-row"><td class="periodo total"><strong>Landing</strong></td><td class="rango">$1,256</td><td class="num-sm">16</td><td class="num-sm hero-cell">6.1%</td><td class="num-sm">2</td><td class="num hero">$628</td></tr>
         </tbody>
       </table>
       <ul class="baseline-notes">
@@ -1041,7 +1081,7 @@
     <h2 class="section-title">Lo que sigue</h2>
     <div class="grid-4">
       <div class="card">
-        <h3>Terminar de aprender qué funciona en la landing</h3>
+        <h3>Cerrar qué funciona en la landing</h3>
         <ul>
           <li>Dos semanas más de la prueba con Google, que es el canal que ya está corriendo</li>
           <li>Queremos saber <strong>qué mensaje, qué estructura y qué diseño</strong> convierten mejor antes de meterle más presupuesto</li>
