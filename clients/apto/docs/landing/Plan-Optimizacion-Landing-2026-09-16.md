@@ -96,3 +96,22 @@ Lo que **no** se tocó, por regla: la estructura del formulario (mismos campos, 
 ## 6. Despliegue
 
 Resuelto el 16-sep: `apto-landing` vive en la org Marketon-Saap; se agregó la cuenta `chuchopp` a `gh` en esta Mac. Verificación en producción: H1 en caja normal, seis retos (2 columnas en desktop), hero WebP servido (31 KB en móvil), aviso de privacidad en 200, variante de hero activa con `utm_content`, formulario con los mismos 11 campos, 65 `data-track`, cero errores de consola. No se envió ningún registro de prueba: el pipeline del formulario no se tocó.
+
+---
+
+## 7. Segunda tanda (misma tarde) · formulario inline y bug del Worker
+
+**#15 Formulario inline en la sección de cierre** (go de Chucho). Un solo nodo: `#form-card` vive en `#cta-form` (antes del FAQ) y se muda al modal al tocar cualquier CTA; al cerrar regresa. Misma estructura, campos, `required` y payload; 64 `data-track` (sale el botón de cierre, lo sustituye el formulario). Al cerrar sin escribir se limpian los errores que deja el blur; al enviar desde el inline la confirmación se lleva al viewport. Commits `3c13adf`, `b242e6b`, `de84a73`.
+
+**Bug encontrado en el E2E y corregido:** el Worker exigía `jobtitle` (`required = [firstname, email, company, jobtitle]`) desde el 26-jul, pero la landing lo marca "Cargo (opcional)" desde el 14-ago. Cualquier envío sin cargo recibía 400 y `form_submit_fail`. GA4 no captura ese evento, así que no se puede cuantificar cuántos envíos reales se perdieron entre el 14-ago y hoy; los 5 leads que sí llegaron traían cargo. Corregido y desplegado (Worker `bdfacbd7`, commit `ae44285`). Pendiente: reenviar `form_submit_fail` a GA4 desde GTM para que esto sea visible.
+
+**E2E desde la UI real (16-sep, tarde), los cuatro caminos:**
+
+| Camino | Herramienta | Resultado |
+|---|---|---|
+| Móvil · inline | Playwright iPhone 13 sobre producción | 200 · contacto + negocio · D1 40 · CAPI ok · `generate_lead` en GA4 |
+| Desktop · modal | Chrome (usuario real) | 200 · D1 41 · CAPI ok · ping de conversión Google Ads · `generate_lead` |
+| Móvil · modal | Playwright iPhone 13 | 200 · D1 42 · CAPI ok · `generate_lead` |
+| Desktop · inline | Chrome (usuario real) | Validación de consentimiento funcionó primero; luego 200 · D1 43 · CAPI ok · `generate_lead` |
+
+GA4 tiempo real: 4 `generate_lead`. Registros de prueba borrados: 4 contactos y 4 negocios desde la UI de HubSpot (confirmado por búsqueda), 4 filas en D1. La empresa "Marketon" en HubSpot existe desde el 26-jul (QA anterior), no la crearon estas pruebas; queda con 0 contactos.
