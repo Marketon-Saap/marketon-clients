@@ -862,7 +862,8 @@ async function insertLead(env, body, contactProps, context, clientIp, userAgent,
 
 function validatePayload(body) {
   const errors = [];
-  const required = ['firstname', 'email', 'company', 'jobtitle'];
+  // jobtitle es opcional en el formulario de la landing ("Cargo (opcional)"); exigirlo aquí rechazaba envíos reales con 400
+  const required = ['firstname', 'email', 'company'];
   for (const field of required) {
     if (!body[field] || String(body[field]).trim().length < 2) {
       errors.push({ field, message: `${field} required (min 2 chars)` });
