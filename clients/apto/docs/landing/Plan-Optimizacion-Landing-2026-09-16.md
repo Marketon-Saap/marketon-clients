@@ -1,6 +1,6 @@
 # Plan de optimización · landing.apto.mx
 
-**Fecha:** 16 de septiembre de 2026 · **Base:** `Auditoria-CRO-Landing-2026-09-16.md` · **Estado:** ejecutado en local y en plataformas; despliegue de la landing pendiente de acceso a GitHub (ver §6)
+**Fecha:** 16 de septiembre de 2026 · **Base:** `Auditoria-CRO-Landing-2026-09-16.md` · **Estado:** desplegado en producción el 16-sep (landing `7461d73`) y verificado con Playwright sobre landing.apto.mx; negativas y GA4 ya en producción
 
 ---
 
@@ -10,10 +10,10 @@ Google califica la landing por debajo del promedio en cinco palabras clave y con
 
 | Factor de Google | Qué evalúa | Qué hacemos | Estado |
 |---|---|---|---|
-| **Relevancia y originalidad del contenido** | Que la página hable de lo que la persona buscó | Hero por intención: el H1 cambia según el grupo de anuncios (`utm_content`). Diez variantes, solo texto, todas con vocabulario publicado en apto.mx. Ejemplo: quien busca "empresa de desarrollo de software" ve *"Diseñamos y construimos el software de tu operación. Y lo dejamos funcionando."* | Hecho · pendiente de desplegar |
-| **Transparencia y confianza** | Aviso de privacidad, datos de contacto, quién está detrás | Aviso de privacidad hospedado en `/aviso-de-privacidad/` (el de apto.mx da 404). Contacto y equipo ya estaban | Hecho · pendiente de desplegar · Carlos publica el canónico en apto.mx |
+| **Relevancia y originalidad del contenido** | Que la página hable de lo que la persona buscó | Hero por intención: el H1 cambia según el grupo de anuncios (`utm_content`). Diez variantes, solo texto, todas con vocabulario publicado en apto.mx. Ejemplo: quien busca "empresa de desarrollo de software" ve *"Diseñamos y construimos el software de tu operación. Y lo dejamos funcionando."* | Desplegado |
+| **Transparencia y confianza** | Aviso de privacidad, datos de contacto, quién está detrás | Aviso de privacidad hospedado en `/aviso-de-privacidad/` (el de apto.mx da 404). Contacto y equipo ya estaban | Desplegado · Carlos publica el canónico en apto.mx |
 | **Facilidad de navegación** | Encontrar rápido lo que se busca | Retos en 2×3, casos y método accesibles desde la navegación flotante; píldoras sin afordancia de botón | Hecho |
-| **Velocidad, sobre todo móvil** | LCP, CLS | Hero en WebP con `srcset` (31/51/83 KB en vez de 178 KB) + preload | Hecho · medir LCP en producción |
+| **Velocidad, sobre todo móvil** | LCP, CLS | Hero en WebP con `srcset` (31/51/83 KB en vez de 178 KB) + preload | Desplegado · LCP móvil en laboratorio 4.3 s → 0.2 s |
 
 Además, en Google Ads:
 - **Negativas** en las dos campañas (29 cada una): web/SEO/redes, agencias de marketing, proveedor de TI y soporte, hardware y licencias, "cerca de mí", cómputo, investigación de mercados. Menos clics irrelevantes = mejor CTR esperado = mejor nivel de calidad. **Hecho.**
@@ -68,7 +68,6 @@ Lo que **no** se tocó, por regla: la estructura del formulario (mismos campos, 
 
 | Cuándo | Qué | Quién |
 |---|---|---|
-| Hoy | `gh auth switch` a la cuenta con acceso a `MktGrupoPlasenciaAutomotriz/apto-landing` y `Marketon-Saap/marketon-clients`; entonces se hace push y se verifica en producción (smoke desde UI real, LCP móvil, aviso 200) | Chucho → yo |
 | Hoy | Aplicar el experimento en Google Ads | Chucho |
 | Esta semana | Propiedad "Encaje ICP" (sí / parcial / no) en HubSpot; la llena Carlos en cada lead | Yo la creo desde la UI · Carlos la usa |
 | Esta semana | Aviso de privacidad canónico en apto.mx/aviso-de-privacidad; logo vectorial de BanCoppel | Carlos |
@@ -94,6 +93,6 @@ Lo que **no** se tocó, por regla: la estructura del formulario (mismos campos, 
 
 ---
 
-## 6. Bloqueo de despliegue
+## 6. Despliegue
 
-`gh auth status` muestra la cuenta `MktGrupoPlasenciaAutomotriz` como activa y sin permiso sobre los dos repos (403 en push). El trabajo está commiteado en local (`apto-landing` `7461d73`; `marketon-clients` `970f33d` con la auditoría). Con la cuenta correcta, el push y la verificación en producción toman diez minutos.
+Resuelto el 16-sep: `apto-landing` vive en la org Marketon-Saap; se agregó la cuenta `chuchopp` a `gh` en esta Mac. Verificación en producción: H1 en caja normal, seis retos (2 columnas en desktop), hero WebP servido (31 KB en móvil), aviso de privacidad en 200, variante de hero activa con `utm_content`, formulario con los mismos 11 campos, 65 `data-track`, cero errores de consola. No se envió ningún registro de prueba: el pipeline del formulario no se tocó.
