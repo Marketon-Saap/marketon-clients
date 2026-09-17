@@ -1,6 +1,6 @@
 # Plan de optimización · landing.apto.mx
 
-**Fecha:** 16 de septiembre de 2026 · **Base:** `Auditoria-CRO-Landing-2026-09-16.md` · **Estado:** desplegado en producción el 16-sep (landing `7461d73`) y verificado con Playwright sobre landing.apto.mx; negativas y GA4 ya en producción
+**Fecha:** 16 de septiembre de 2026 · **Base:** `Auditoria-CRO-Landing-2026-09-16.md` · **Estado:** desplegado en producción el 16-sep (landing `7461d73` + `1308e84`) y verificado con Playwright sobre landing.apto.mx; negativas y GA4 ya en producción
 
 ---
 
@@ -31,14 +31,14 @@ Cada una pasó por los cinco criterios de la auditoría (¿ataca fricción con d
 | # | Petición | Verificación | Decisión | Cómo quedó |
 |---|---|---|---|---|
 | 1 | Badge del hero: "Game Changers" | Ninguna de las dos frases está en apto.mx; el badge es una etiqueta de audiencia, no una afirmación | **Entra, en español**, como decisión de marca | "Para agentes de cambio en las organizaciones" |
-| 2 | H1 sin mayúsculas | Era `text-transform: uppercase` en CSS | **Entra** (claridad; no toca nada medido) | Caja normal: mayúscula inicial y minúsculas |
+| 2 | Títulos sin mayúsculas | Era `text-transform: uppercase` global en `h1` y `h2` | **Entra** para todos los títulos (h1 y h2); los eyebrows y la navegación siguen en versalitas como etiquetas | Caja normal: mayúscula inicial y minúsculas (commit `1308e84`) |
 | 3 | "Prueba 1/2/3" → explicar deseabilidad, factibilidad, viabilidad y que se unen | Las tres palabras son vocabulario publicado de APTO (12, 17 y 15 apariciones) | **Entra** (claridad, LIFT) | Etiquetas Deseabilidad / Factibilidad / Viabilidad; el lead dice que se unen las tres capas para diseñar la estrategia de solución |
 | 4 | Sexto reto: experiencia omnicanal | Es línea de servicio publicada en la home ("Diseño de servicios y experiencias omnicanales") y el caso Grupo San Carlos lo dice textual | **Entra** con caso San Carlos | Reto 06 con "qué te llega" tomado casi literal del sitio; retos en 2 columnas × 3 en desktop |
 | 5 | Logos de Kiosko y BanCoppel en la rejilla | Kiosko ya estaba (hero y banda). BanCoppel **no tiene logotipo publicado** en apto.mx (su caso usa el logo de APTO) | Kiosko: ya estaba. BanCoppel: **no entra** hasta que Carlos entregue el vectorial | Sigue en la lista de proyectos como texto |
 | 6 | MTP → México Telecom Partners | apto.mx escribe "MTP (Mexico Telecom Partners)" | **Entra** con la grafía del sitio | Lista de proyectos, cita y `alt` de logo |
 | 7 | Texto de "autopartes" de APYMSA | El sitio la describe como "experiencia digital B2B en el sector de autopartes" | **Entra** parcial: se mantiene autopartes porque es lo publicado, se antepone lo que APTO hizo | "Plataforma B2B · autopartes" |
 | 8 | "Más de 50 proyectos" | apto.mx publica **36** (36 tarjetas, 36 URLs en el sitemap). "Más de 50" no aparece | **Entra como dicho del cliente**, sin la palabra "publicados". Las frases que hablan de lo publicado dejan de dar número | Píldora y H2 de proyectos: "Más de 50 proyectos" · Método y FAQ: "en todos los proyectos" / "en los proyectos publicados" |
-| 9 | Orden del método: entender, diseñar, definir, construir | Las cinco etapas publicadas se mantienen; solo cambian las dos bandas | **Entra** | "Entender y diseñar" (Inmersión, Exploración, Ideación) · "Definir y construir" (Definición, Construcción) |
+| 9 | Orden del método: primero entender, diseñar y decidir; después solo construir | apto.mx lo publica como **Taller de estrategia → Taller de producto → Desarrollo**; las cinco etapas se mantienen | **Entra** (corregido en segunda pasada: Definición es decidir y va en la primera banda) | "Entender, diseñar y definir" (Inmersión, Exploración, Ideación, Definición · Taller de estrategia + Taller de producto) · "Construir" (Construcción · Desarrollo) |
 | 10 | "Cómo trabajamos" → "Nuestra metodología" + explicar que parte del pensamiento de diseño | "Design thinking" y "pensamiento de diseño": **0 apariciones** en apto.mx. La lógica sí está publicada con sus palabras | **Entra el nombre; no entra la etiqueta** | Eyebrow "Nuestra metodología"; el lead explica que es la misma lógica de las tres capas aplicada etapa por etapa. Si Álvaro quiere nombrar el pensamiento de diseño, que dicte la frase y se publica como suya |
 
 Lo que **no** se tocó, por regla: la estructura del formulario (mismos campos, `required` y payload), la capa de medición (`generate_lead`, `data-track`, GTM, Pixel/CAPI), y ningún dato que no esté publicado o dicho por el cliente.
