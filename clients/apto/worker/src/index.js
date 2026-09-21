@@ -872,6 +872,15 @@ function validatePayload(body) {
   if (body.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
     errors.push({ field: 'email', message: 'invalid email format' });
   }
+  // Teléfono: E.164 (+lada+nacional) · México exige 10 dígitos nacionales; otros países según su plan
+  if (body.phone) {
+    const PHONE_LEN = { '52': [10], '1': [10], '34': [9], '57': [10], '54': [10], '56': [9], '51': [9], '55': [10, 11], '593': [9], '598': [8, 9] };
+    const digits = String(body.phone).replace(/\D/g, '');
+    const cc = Object.keys(PHONE_LEN).sort((a, b) => b.length - a.length).find(c => digits.startsWith(c));
+    const national = cc ? digits.slice(cc.length) : digits;
+    const ok = /^\d{8,15}$/.test(digits) && (!cc || PHONE_LEN[cc].includes(national.length));
+    if (!ok) errors.push({ field: 'phone', message: cc ? `phone: ${PHONE_LEN[cc].join(' o ')} national digits expected for +${cc}` : 'phone invalid' });
+  }
   if (body.privacy_consent !== true) {
     errors.push({ field: 'privacy_consent', message: 'privacy consent required' });
   }
