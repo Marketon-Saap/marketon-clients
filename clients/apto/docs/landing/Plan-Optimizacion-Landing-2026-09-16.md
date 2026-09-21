@@ -115,3 +115,13 @@ Resuelto el 16-sep: `apto-landing` vive en la org Marketon-Saap; se agregó la c
 | Desktop · inline | Chrome (usuario real) | Validación de consentimiento funcionó primero; luego 200 · D1 43 · CAPI ok · `generate_lead` |
 
 GA4 tiempo real: 4 `generate_lead`. Registros de prueba borrados: 4 contactos y 4 negocios desde la UI de HubSpot (confirmado por búsqueda), 4 filas en D1. La empresa "Marketon" en HubSpot existe desde el 26-jul (QA anterior), no la crearon estas pruebas; queda con 0 contactos.
+
+
+---
+
+## 8. 21-sep · validación de teléfono, tercera tanda de E2E y auditoría de la caída
+
+- **Bug reportado por Chucho:** el teléfono aceptaba de 8 a 15 dígitos sin mirar la lada. Corregido en cliente (solo dígitos, tope y mensaje por país, revalida al cambiar la lada; México = 10 exactos) y en el Worker (E.164 con longitud nacional por lada). Commits `7afd3cf`, `38c4f3b`, `374efbe`; Worker `3b5ac866`. Verificado como usuario: 15 dígitos se quedan en 10, 9 dígitos marcan error, 10 pasan.
+- **Dos defectos más encontrados y corregidos en el smoke:** en móvil el décimo dígito se recortaba (a 375 px se apilan lada y número); la confirmación de envío del formulario fijo quedaba fuera de pantalla (ahora scroll determinista).
+- **E2E 4/4 desde UI** (desktop en Chrome; móvil en Chromium con emulación de teléfono porque la ventana de Chrome está en pantalla completa y no acepta cambio de tamaño). **Los 4 registros quedan en HubSpot para que Chucho los valide** (contactos `249850365488`, `249814015921`, `249825948230`, `249849277229`; negocios `65173390338`, `65167883800`, `65173077555`, `65173698184`). Se borran cuando él diga.
+- **Auditoría de la caída:** `Auditoria-Caida-Conversion-Ads-GA4-2026-09-21.md`. Resumen: no es la landing; es tráfico (días sin anuncios, un clic de $1,446, términos de estudiante/micronegocio desde el 15). Pausada la keyword de nivel 1 y 8 negativas nuevas.
