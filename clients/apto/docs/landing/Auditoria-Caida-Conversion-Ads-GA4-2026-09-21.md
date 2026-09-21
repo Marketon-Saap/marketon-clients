@@ -50,12 +50,13 @@ En 21 días de septiembre el brazo landing sirvió 11 días.
 ## 5. Qué hice hoy (reversible, con datos que lo sostienen)
 
 1. ~~Pausé la palabra clave "empresa de desarrollo de software"~~ **Corregido el mismo día:** la pausé por nivel de calidad 1 y costo, y fue un error. Sus dos leads (Tres Fénix, Club de Industriales) están avanzando en el pipeline de APTO. Reactivada en las dos campañas. Regla desde hoy: nada que tenga conversiones se apaga sin decisión de Chucho; la palanca es CPA objetivo, no el interruptor.
-2. **Negativas nuevas en las dos campañas** (solo términos con clics y cero conversiones): desarrollo de plataformas digitales · crear una empresa · canvas · aceleradora(s) · ejemplos · mejorar mis ventas · programas a la medida.
+2. **Negativas nuevas en las dos campañas** (solo términos con clics y cero conversiones): crear una empresa · canvas · aceleradora(s) · ejemplos · mejorar mis ventas. Quité dos que había puesto y rozaban intenciones que sí vendemos (*programas a la medida*, *desarrollo de plataformas digitales*).
+3. **Cruce de 280 negativas contra 430 palabras clave positivas:** ninguna negativa bloquea literalmente una positiva. Un conflicto real venía del setup original: la negativa *"empresas de tecnología"* (con acento) tapaba las búsquedas con acento de la positiva *empresas de tecnologia en guadalajara*. Eliminada en las dos campañas.
 3. Landing: validación de teléfono por lada (México 10 dígitos exactos, cliente y Worker), campo sin recorte en móvil, confirmación de envío siempre visible.
 
 ## 5b. Aplicado con el go de Chucho (21-sep, tarde)
 
-- **Programación ampliada a lunes–domingo**, 8:00–19:00, en las dos campañas.
+- **Programación ampliada a lunes–domingo**, 8:00–19:00, en las dos campañas (Chucho: los anuncios corren todos los días; si también se abren las horas, es un paso más).
 - **CPA objetivo $1,200** en "Maximizar conversiones", en el experimento y en la campaña base.
 
 ## 6. Qué te toca decidir (no lo hago sin tu "go")
