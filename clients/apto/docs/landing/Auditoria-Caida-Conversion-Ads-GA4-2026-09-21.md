@@ -49,16 +49,20 @@ En 21 días de septiembre el brazo landing sirvió 11 días.
 
 ## 5. Qué hice hoy (reversible, con datos que lo sostienen)
 
-1. **Pausé la palabra clave "empresa de desarrollo de software"** (nivel 1, $1,551 en la semana, 2 de sus 3 leads fuera de encaje). Su intención buena la cubre "contratar desarrollo de software" y el grupo de Digitalización.
-2. **Negativas nuevas en las dos campañas:** desarrollo de plataformas digitales · crear una empresa · canvas · aceleradora(s) · ejemplos · mejorar mis ventas · programas a la medida.
+1. ~~Pausé la palabra clave "empresa de desarrollo de software"~~ **Corregido el mismo día:** la pausé por nivel de calidad 1 y costo, y fue un error. Sus dos leads (Tres Fénix, Club de Industriales) están avanzando en el pipeline de APTO. Reactivada en las dos campañas. Regla desde hoy: nada que tenga conversiones se apaga sin decisión de Chucho; la palanca es CPA objetivo, no el interruptor.
+2. **Negativas nuevas en las dos campañas** (solo términos con clics y cero conversiones): desarrollo de plataformas digitales · crear una empresa · canvas · aceleradora(s) · ejemplos · mejorar mis ventas · programas a la medida.
 3. Landing: validación de teléfono por lada (México 10 dígitos exactos, cliente y Worker), campo sin recorte en móvil, confirmación de envío siempre visible.
+
+## 5b. Aplicado con el go de Chucho (21-sep, tarde)
+
+- **Programación ampliada a lunes–domingo**, 8:00–19:00, en las dos campañas.
+- **CPA objetivo $1,200** en "Maximizar conversiones", en el experimento y en la campaña base.
 
 ## 6. Qué te toca decidir (no lo hago sin tu "go")
 
 1. **Aplicar el experimento** y mandar el 100% a la landing. Sigue costando ~$250/día en un brazo que en septiembre no dio un lead.
-2. **CPA objetivo de $1,200** en "Maximizar conversiones" (el costo por lead observado es $1,203). Frena los clics de $1,400 y le da a Google un tope. Con tan poca señal, la alternativa es "Maximizar clics" con CPC máximo de $80 hasta juntar 30 conversiones.
-3. **Presupuesto y horario:** si el negocio recibe leads en fin de semana (el de Hillman entró un martes, pero los de agosto incluyen sábado), abrir sábado 9–14. Y confirmar qué pasó entre el 29-ago y el 6-sep: desde la API solo se ve que no hubo impresiones y que el presupuesto se movió el 7 y 8.
-4. Si quieres volumen ya: el grupo **Digitalización de operaciones** y **Transformación digital** son los que convierten; subirles prioridad (presupuesto propio o CPA más alto) y bajar Innovación corporativa, que gasta y no convierte.
+2. **Confirmar qué pasó entre el 29-ago y el 6-sep:** desde la API solo se ve que no hubo impresiones y que el presupuesto se movió el 7 y 8.
+3. Si quieres volumen ya: el grupo **Digitalización de operaciones** y **Transformación digital** son los que convierten; subirles prioridad (presupuesto propio o CPA más alto) y bajar Innovación corporativa, que gasta y no convierte.
 
 ## 7. Cómo lo seguimos
 
