@@ -56,7 +56,7 @@ En 21 días de septiembre el brazo landing sirvió 11 días.
 
 ## 5b. Aplicado con el go de Chucho (21-sep, tarde)
 
-- **Programación ampliada a lunes–domingo**, 8:00–19:00, en las dos campañas (Chucho: los anuncios corren todos los días; si también se abren las horas, es un paso más).
+- **Programación eliminada: las campañas corren 24/7** (Chucho: toda la semana, las 24 horas; se optimiza después con datos). Antes solo servían lunes a viernes de 8 a 19.
 - **CPA objetivo $1,200** en "Maximizar conversiones", en el experimento y en la campaña base.
 
 ## 6. Qué te toca decidir (no lo hago sin tu "go")
