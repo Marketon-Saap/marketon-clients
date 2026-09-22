@@ -106,7 +106,9 @@ Regla que se cumple: todo el copy nuevo viene del cliente, no inventamos nada. L
 ### Fase 2 · SEO y rendimiento (medio día)
 Sección 5 completa.
 
-### Fase 3 · QA en staging `/v2/` (un día) · compuertas obligatorias, con evidencia guardada a disco
+### Fase 3 · QA en dos pasos (un día) · compuertas obligatorias, con evidencia guardada a disco
+**Paso 1, local:** se sirve la rama `v2-norma` en un servidor local y se revisa en mi navegador: render en 360/390/768/1024/1440, consola limpia, assets, cabecera de vidrio, expansores, video, validación del formulario (sin enviar). Ahí se corrigen diseño y comportamiento sin tocar el dominio.
+**Paso 2, staging `/v2/` en `landing.apto.mx`:** solo aquí se pueden verificar GTM, HubSpot, el CORS del Worker y las conversiones reales. Nada pasa a producción sin las dos rondas.
 | Compuerta | Criterio de paso |
 |---|---|
 | Build | HTML válido, 0 errores de consola, 0 assets 404, 0 desbordamiento horizontal en 360/390/768/1024/1440, contraste de cabecera correcto en cada sección |
@@ -131,7 +133,7 @@ Días 1, 3 y 7: eventos por nombre contra baseline; tasa clic→lead; nivel de c
 | Elemento | Cliente hoy | Qué haremos |
 |---|---|---|
 | `robots` | `noindex,nofollow` | `index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1` |
-| `<title>` | "APTO — Hagamos realidad el cambio" (guion largo, sin keyword, 34 caracteres) | Opción A: "Hagamos realidad el cambio · Estrategia, diseño y tecnología | APTO" (66). Opción B: "Consultoría de diseño estratégico y tecnología | APTO" (53). Álvaro elige |
+| `<title>` | "APTO [guion largo] Hagamos realidad el cambio" (guion largo, sin keyword, 34 caracteres) | Opción A: "Hagamos realidad el cambio · Estrategia, diseño y tecnología · APTO" (66). Opción B: "Consultoría de diseño estratégico y tecnología · APTO" (53). Álvaro elige |
 | `meta description` | Genérica, sin ubicación ni keyword | "Estrategia, diseño y tecnología en un mismo equipo. Convertimos retos de negocio en servicios, productos y herramientas que tu organización puede operar. Guadalajara y todo México." (≤ 155) |
 | Canonical y hreflang | No hay | `https://landing.apto.mx/` + `es-MX` + `x-default` |
 | Open Graph y Twitter | Solo `og:title` y `og:description` | `og:type, og:url, og:locale, og:image` nueva **1200×630** con la ilustración del hero nuevo y el wordmark, JPG < 300 KB, `og:image:width/height/alt`, `twitter:card summary_large_image`, `twitter:image`. Se produce con visual-composer y se valida en el depurador de Meta |
