@@ -1,7 +1,7 @@
 # Landing APTO v2 (diseño Norma) · Auditoría y plan de transición a producción
 
 **Fecha:** 22-sep-2026 · **Preparó:** Marketon (Chucho Porras) · **Para:** decisión de Chucho, luego alineación con Álvaro y Carlos (APTO)
-**Entrada auditada:** `~/Downloads/apto-landing_cliente/` (index.html 42 KB · styles.css 27 KB · script.js 4 KB · 40 assets, 1.1 MB · carpeta `revision/`), entregada el 22-sep a las 10:49.
+**Entrada auditada:** `Clientes/Apto/03-Estrategia/Fase-2-Plan-MKT/Landing/Entrega-cliente-v2-Norma-2026-09-22/` (movida desde Descargas; index.html 42 KB · styles.css 27 KB · script.js 4 KB · 40 assets, 1.1 MB · carpeta `revision/`), entregada el 22-sep a las 10:49.
 **Producción auditada:** repo `Marketon-Saap/apto-landing` (último push 21-sep 21:49), sitio vivo `landing.apto.mx` (193 KB), Worker `apto-landing-api`, D1 `apto-leads`, GTM-K7J6MQ8 workspace 77.
 
 ---
