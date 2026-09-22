@@ -1,0 +1,224 @@
+{
+  "created_at": "2026-09-22T15:36:23.370615+00:00",
+  "root": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing",
+  "selection_note": "Untitled16.png selected for clear triangle with requested material arrangement; Untitled17.png is byte-identical. Full original framing retained for all assets.",
+  "sources": [
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled14.png",
+      "source_bytes": 2189226,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "70522bafd4ee840ed6f75236cd30fe3e40385d0b629d2c49cc955e65a9c24aa2",
+      "visual_confirmation": "Azul liso"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled13.png",
+      "source_bytes": 2346140,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "152e29da4317079776815f9b5ddeedb569f812bbd6d769179c887424f6c0121c",
+      "visual_confirmation": "Azul texturado de curvas"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled12.png",
+      "source_bytes": 2188681,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "9ca494dc3584af4d4ead9498849712c002aecd9e503ff8e38ed7163e096fef57",
+      "visual_confirmation": "Cobre"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled16.png",
+      "source_bytes": 2539185,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "52e0f871d1183648af584a645c675ac387201f94f216732d0d600e6513c6f57a",
+      "visual_confirmation": "Marco triangular: azul liso izquierdo, texturado inferior, cobre superior/derecho"
+    }
+  ],
+  "outputs": [
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled14.png",
+      "source_bytes": 2189226,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "70522bafd4ee840ed6f75236cd30fe3e40385d0b629d2c49cc955e65a9c24aa2",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/capacidad-estrategia-320.webp",
+      "relative_path": "assets/capacidad-estrategia-320.webp",
+      "output_bytes": 1040,
+      "output_dimensions": [
+        320,
+        180
+      ],
+      "output_sha256": "c82624316ba2f4995f3875545b85d99f8b6b9786e899d9c9b1d85691eb6b14b3",
+      "quality": 80,
+      "crop": false,
+      "regenerated": false,
+      "verification": "decoded and dimensions checked"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled14.png",
+      "source_bytes": 2189226,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "70522bafd4ee840ed6f75236cd30fe3e40385d0b629d2c49cc955e65a9c24aa2",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/capacidad-estrategia-640.webp",
+      "relative_path": "assets/capacidad-estrategia-640.webp",
+      "output_bytes": 2972,
+      "output_dimensions": [
+        640,
+        360
+      ],
+      "output_sha256": "3454b35248ff9331d314d54fab6cb1b5490282db5de116cbffce33ae79fa5e52",
+      "quality": 80,
+      "crop": false,
+      "regenerated": false,
+      "verification": "decoded and dimensions checked"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled13.png",
+      "source_bytes": 2346140,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "152e29da4317079776815f9b5ddeedb569f812bbd6d769179c887424f6c0121c",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/capacidad-diseno-320.webp",
+      "relative_path": "assets/capacidad-diseno-320.webp",
+      "output_bytes": 1944,
+      "output_dimensions": [
+        320,
+        180
+      ],
+      "output_sha256": "7ee9127ccc569ad9f3a84fd85ef3edd82b67e6487cd2422ce5d14eec6077e8be",
+      "quality": 80,
+      "crop": false,
+      "regenerated": false,
+      "verification": "decoded and dimensions checked"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled13.png",
+      "source_bytes": 2346140,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "152e29da4317079776815f9b5ddeedb569f812bbd6d769179c887424f6c0121c",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/capacidad-diseno-640.webp",
+      "relative_path": "assets/capacidad-diseno-640.webp",
+      "output_bytes": 7506,
+      "output_dimensions": [
+        640,
+        360
+      ],
+      "output_sha256": "2ac3999372d868c0b722b71c735aff38c2ee373ebf8987653f0b9d415c08304b",
+      "quality": 80,
+      "crop": false,
+      "regenerated": false,
+      "verification": "decoded and dimensions checked"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled12.png",
+      "source_bytes": 2188681,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "9ca494dc3584af4d4ead9498849712c002aecd9e503ff8e38ed7163e096fef57",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/capacidad-tecnologia-320.webp",
+      "relative_path": "assets/capacidad-tecnologia-320.webp",
+      "output_bytes": 1812,
+      "output_dimensions": [
+        320,
+        180
+      ],
+      "output_sha256": "0ef1a689b5f02ce5fdacca242106040c138a711e75cb49a2432a5396b72af406",
+      "quality": 80,
+      "crop": false,
+      "regenerated": false,
+      "verification": "decoded and dimensions checked"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled12.png",
+      "source_bytes": 2188681,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "9ca494dc3584af4d4ead9498849712c002aecd9e503ff8e38ed7163e096fef57",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/capacidad-tecnologia-640.webp",
+      "relative_path": "assets/capacidad-tecnologia-640.webp",
+      "output_bytes": 5210,
+      "output_dimensions": [
+        640,
+        360
+      ],
+      "output_sha256": "36c43ba3a0269169faf67bc43cb68dace4f2a405c29a7ac119b859758c98825a",
+      "quality": 80,
+      "crop": false,
+      "regenerated": false,
+      "verification": "decoded and dimensions checked"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled16.png",
+      "source_bytes": 2539185,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "52e0f871d1183648af584a645c675ac387201f94f216732d0d600e6513c6f57a",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/capacidades-integradas-800.webp",
+      "relative_path": "assets/capacidades-integradas-800.webp",
+      "output_bytes": 13198,
+      "output_dimensions": [
+        800,
+        450
+      ],
+      "output_sha256": "929d1121f93d0b31886e684ec03401ea7dc5847159a98d79298c075fbed72f46",
+      "quality": 80,
+      "crop": false,
+      "regenerated": false,
+      "verification": "decoded and dimensions checked"
+    },
+    {
+      "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled16.png",
+      "source_bytes": 2539185,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "source_sha256": "52e0f871d1183648af584a645c675ac387201f94f216732d0d600e6513c6f57a",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/capacidades-integradas-1400.webp",
+      "relative_path": "assets/capacidades-integradas-1400.webp",
+      "output_bytes": 35388,
+      "output_dimensions": [
+        1400,
+        788
+      ],
+      "output_sha256": "850666aa4812ca429d6f440648ca11fdd94f6e3606d3152279fffe8fa30f5847",
+      "quality": 80,
+      "crop": false,
+      "regenerated": false,
+      "verification": "decoded and dimensions checked"
+    }
+  ],
+  "summary": {
+    "output_files": 8,
+    "total_output_bytes": 69070,
+    "unique_source_bytes": 9263232,
+    "original_sources_unchanged": true,
+    "failures": 0
+  }
+}

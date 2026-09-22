@@ -1,0 +1,60 @@
+{
+  "created_at": "2026-09-22T15:49:11.206297+00:00",
+  "root": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing",
+  "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Torres_tactiles_02.png",
+  "source_dimensions": [
+    1920,
+    1080
+  ],
+  "source_bytes": 1789958,
+  "source_sha256": "f09442c9ac84af41cd91701cccf461365f222d1589a4ca426e4c7548c299270f",
+  "selection": "Torre compacta a la derecha con remate de cobre, materiales azules y espacio oscuro a la izquierda para el H1.",
+  "candidates_reviewed": [
+    "APTO_Torres_tactiles_01.png",
+    "APTO_Torres_tactiles_02.png",
+    "APTO_Volumenes_y_curva_04.png",
+    "APTO_Lineas_finas_y_cobre.png"
+  ],
+  "quality": 80,
+  "crop": false,
+  "regenerated": false,
+  "outputs": [
+    {
+      "relative_path": "assets/hero-torres-640.webp",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/hero-torres-640.webp",
+      "dimensions": [
+        640,
+        360
+      ],
+      "bytes": 3902,
+      "sha256": "a473ce07842288355666a1316f2bc16075b27c7ead221b41c798da45214295f2"
+    },
+    {
+      "relative_path": "assets/hero-torres-1280.webp",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/hero-torres-1280.webp",
+      "dimensions": [
+        1280,
+        720
+      ],
+      "bytes": 10070,
+      "sha256": "617acba356750df574bab73a572d5c67c4eb36e56bbf3f9960783beadab626b3"
+    },
+    {
+      "relative_path": "assets/hero-torres-1920.webp",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/hero-torres-1920.webp",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "bytes": 17470,
+      "sha256": "84b544f0fc2e7cf9e431e2c03b9c048548f10ec57505edee6ee835458825ed8d"
+    }
+  ],
+  "verification": {
+    "all_outputs_decoded": true,
+    "dimensions_checked": true,
+    "original_unchanged": true,
+    "failures": 0
+  },
+  "total_output_bytes": 31442
+}

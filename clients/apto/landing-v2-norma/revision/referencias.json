@@ -1,0 +1,120 @@
+{
+  "landing_estructura": "https://landing.apto.mx/",
+  "repositorio_diseno": "/Users/carlosbeltran/Code/aptobrain",
+  "fuente_norma": "apps/apto-web/src/styles/global.css",
+  "guia": "docs/DESIGN.md",
+  "fecha": "2026-09-22",
+  "secciones": [
+    "hero",
+    "categoria",
+    "problema",
+    "productos",
+    "casos",
+    "proyectos",
+    "metodo",
+    "conoce-equipo",
+    "cta-form",
+    "faq"
+  ],
+  "recursos_locales": [
+    "assets/apto-logo.png",
+    "assets/capacidad-diseno-320.webp",
+    "assets/capacidad-diseno-640.webp",
+    "assets/capacidad-estrategia-320.webp",
+    "assets/capacidad-estrategia-640.webp",
+    "assets/capacidad-tecnologia-320.webp",
+    "assets/capacidad-tecnologia-640.webp",
+    "assets/capacidades-integradas-1400.webp",
+    "assets/capacidades-integradas-800.webp",
+    "assets/cases/Coppel-CPF-Hero-image-web-apto-optimized.webp",
+    "assets/cases/baywa-compressed.webp",
+    "assets/cases/fanosa-compressed.webp",
+    "assets/cases/slide_apymsa-compressed.webp",
+    "assets/ciudad-1600.webp",
+    "assets/ciudad-800.webp",
+    "assets/ensamble-1280.webp",
+    "assets/ensamble-1920.webp",
+    "assets/ensamble-640.webp",
+    "assets/favicon-official.png",
+    "assets/fonts/ClashGrotesk-Variable.woff2",
+    "assets/fonts/Satoshi-Variable.woff2",
+    "assets/fonts/licenses/clash-grotesk/FFL.txt",
+    "assets/fonts/licenses/satoshi/FFL.txt",
+    "assets/hero-elegido-1024.webp",
+    "assets/hero-elegido-640.webp",
+    "assets/hero-torres-1280.webp",
+    "assets/hero-torres-1920.webp",
+    "assets/hero-torres-640.webp",
+    "assets/logos/apto-logo-white.svg",
+    "assets/logos/clientes/apymsa.svg",
+    "assets/logos/clientes/bayware.svg",
+    "assets/logos/clientes/bregrand.svg",
+    "assets/logos/clientes/coppel.svg",
+    "assets/logos/clientes/fanosa.svg",
+    "assets/logos/clientes/iteso.svg",
+    "assets/logos/clientes/kiosko.svg",
+    "assets/logos/clientes/mtp.svg",
+    "assets/logos/clientes/nmdp.svg",
+    "assets/logos/clientes/nunsam.svg",
+    "assets/logos/clientes/octano.svg",
+    "assets/relieve-1400.webp",
+    "assets/relieve-800.webp",
+    "assets/team/alvaro-portrait.webp",
+    "assets/team/carlos-portrait.webp",
+    "assets/team/video-cover-apto.webp"
+  ],
+  "fecha_diseno_base": "2026-09-21",
+  "como_pensamos": {
+    "referencia": "Slide APTO adjunto por el usuario el 22 de septiembre de 2026",
+    "fecha": "2026-09-22",
+    "seccion": "categoria",
+    "logica": "Tres capacidades complementarias se integran en un mismo marco triangular: Estrategia, Diseño y Tecnología.",
+    "mapping": [
+      {
+        "capacidad": "Estrategia",
+        "material": "azul liso",
+        "fuente": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled14.png",
+        "assets": [
+          "assets/capacidad-estrategia-320.webp",
+          "assets/capacidad-estrategia-640.webp"
+        ]
+      },
+      {
+        "capacidad": "Diseño",
+        "material": "azul texturado con líneas curvas",
+        "fuente": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled13.png",
+        "assets": [
+          "assets/capacidad-diseno-320.webp",
+          "assets/capacidad-diseno-640.webp"
+        ]
+      },
+      {
+        "capacidad": "Tecnología",
+        "material": "cobre",
+        "fuente": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled12.png",
+        "assets": [
+          "assets/capacidad-tecnologia-320.webp",
+          "assets/capacidad-tecnologia-640.webp"
+        ]
+      },
+      {
+        "capacidad": "Capacidades integradas",
+        "material": "marco triangular: azul liso izquierdo, texturado inferior, cobre superior y derecho",
+        "fuente": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled16.png",
+        "assets": [
+          "assets/capacidades-integradas-800.webp",
+          "assets/capacidades-integradas-1400.webp"
+        ]
+      }
+    ],
+    "manifest": "revision/imagenes-capacidades-20260922.json",
+    "transformacion": "Redimensionado proporcional y compresión WebP calidad 80, sin recortes ni regeneración.",
+    "nota_seleccion": "Untitled17.png es idéntico a Untitled16.png por SHA-256."
+  },
+  "portada_actualizada_2026_09_22": {
+    "fuente": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled6.jpg",
+    "seleccion": "Imagen elegida explícitamente por el usuario en captura de las09:56:43; coincidencia visual confirmada.",
+    "manifest": "revision/imagen-portada-elegida-20260922.json",
+    "logo": "assets/apto-logo.png, imagen directa"
+  }
+}

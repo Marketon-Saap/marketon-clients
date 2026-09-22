@@ -1,0 +1,81 @@
+{
+  "sections": 10,
+  "retos": 6,
+  "missing_references": [],
+  "duplicate_ids": 0,
+  "external_scripts": 0,
+  "form_network_calls": 0,
+  "responsive_widths_verified": [
+    390,
+    768,
+    1280,
+    1440
+  ],
+  "assets_bytes": 1337820,
+  "initial_verification_date": "2026-09-21",
+  "update_2026_09_22": {
+    "scope": "Cómo pensamos (#categoria): integración de estrategia, diseño y tecnología; contraste de cabecera al recorrer esta sección.",
+    "responsive_widths_verified": [
+      390,
+      768,
+      1280,
+      1440
+    ],
+    "horizontal_overflow": false,
+    "section_images_loaded": 4,
+    "visual_review": "Se observaron los tres cubos y el ensamble completos, con etiquetas legibles. En móvil se apilan las capacidades y después el ensamble. En tableta, lista de capacidades junto al ensamble.",
+    "console_errors_observed": 0,
+    "browser_protocol": "http://127.0.0.1:8765/",
+    "new_image_variants": 8,
+    "new_image_bytes": 69070,
+    "original_images_modified": false,
+    "form_behavior_changes": false,
+    "form_interactions_retested": false,
+    "html_outside_categoria_unchanged": true,
+    "local_references_checked": 60,
+    "missing_references": [],
+    "unique_ids": 42,
+    "new_image_hashes_verified": 8,
+    "original_image_hashes_verified": 4
+  },
+  "header_update_2026_09_22": {
+    "logo": "IMG directo, sin máscara CSS; blanco en navy, oscuro en superficies claras y módulo móvil.",
+    "source_image": "APTO_Torres_tactiles_02.png",
+    "new_asset_bytes": 31442,
+    "responsive_widths_verified": [
+      390,
+      768,
+      1440
+    ],
+    "horizontal_overflow": false,
+    "logo_loaded": true,
+    "hero_loaded": true,
+    "logo_dark_and_light_visual_check": true,
+    "console_errors_observed": 0,
+    "html_outside_logo_and_hero_image_unchanged": true,
+    "script_unchanged": true,
+    "missing_references": [],
+    "duplicate_ids": 0,
+    "direct_file_browser_test": "No disponible por política de URLs del navegador automatizado. IMG usa la ruta relativa existente; comprobación visual por HTTP local."
+  },
+  "hero_selection_2026_09_22": {
+    "current_source_image": "Untitled6.jpg",
+    "reference": "Captura proporcionada por el usuario a las09:56:43",
+    "webp_widths": [
+      640,
+      1024
+    ],
+    "webp_quality": 88,
+    "new_asset_bytes": 182484,
+    "source_upscaled": false,
+    "source_modified": false,
+    "responsive_widths_verified": [
+      390,
+      1440
+    ],
+    "horizontal_overflow": false,
+    "images_loaded": true,
+    "console_errors_observed": 0,
+    "logo_css_js_and_html_outside_hero_image_unchanged": true
+  }
+}

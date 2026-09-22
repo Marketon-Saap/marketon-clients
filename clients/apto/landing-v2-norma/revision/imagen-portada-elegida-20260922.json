@@ -1,0 +1,50 @@
+{
+  "created_at": "2026-09-22T16:01:05.262538+00:00",
+  "root": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing",
+  "source_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/Untitled6.jpg",
+  "source_dimensions": [
+    1024,
+    576
+  ],
+  "source_bytes": 567370,
+  "source_sha256": "7213bd1810ec1388ac788d539d25723ab6aa3a9e98ba73c6e65e53aff0bdcdda",
+  "reference_match": {
+    "screenshot": "/var/folders/fv/hwwq6s7s3fv8c0bsrm3q8ntw0000gn/T/TemporaryItems/NSIRD_screencaptureui_5a1Zq8/Screenshot 2026-09-22 at 9.56.43 AM.png",
+    "assessment": "Visual match confirmed with Untitled6.jpg: same grain, lighting, composition, materials and distinctive organic cube patterns. Selected JPEG itself is the only source for both outputs.",
+    "confirmed_by": "Root and asset agents after direct visual inspection",
+    "pixel_identity_claimed": false
+  },
+  "quality": 88,
+  "crop": false,
+  "upscaled": false,
+  "regenerated": false,
+  "outputs": [
+    {
+      "relative_path": "assets/hero-elegido-640.webp",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/hero-elegido-640.webp",
+      "dimensions": [
+        640,
+        360
+      ],
+      "bytes": 39356,
+      "sha256": "467434c6f23146b7a37f71fcf5dbe9f7abf0f1a0bf3dc465794a9433a05c32af"
+    },
+    {
+      "relative_path": "assets/hero-elegido-1024.webp",
+      "local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-21/apto-landing/assets/hero-elegido-1024.webp",
+      "dimensions": [
+        1024,
+        576
+      ],
+      "bytes": 143128,
+      "sha256": "76324ad0c895337123aeb8890ef260e48883225c8dfacc1dea223b6728fb084a"
+    }
+  ],
+  "verification": {
+    "all_outputs_decoded": true,
+    "dimensions_checked": true,
+    "original_unchanged": true,
+    "failures": 0
+  },
+  "total_output_bytes": 182484
+}

@@ -1,0 +1,711 @@
+{
+  "generated_at": "2026-09-21T23:52:28.457228+00:00",
+  "root": "/tmp/apto-prepared-assets",
+  "assets": [
+    {
+      "source": "https://apto.mx/wp-content/uploads/2026/01/Coppel-CPF-Hero-image-web-apto.webp",
+      "source_reference": "https://apto.mx/wp-content/uploads/2026/01/Coppel-CPF-Hero-image-web-apto.webp",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/cases/Coppel-CPF-Hero-image-web-apto.webp",
+      "source_bytes": 293902,
+      "content_type": "image/webp",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/cases/Coppel-CPF-Hero-image-web-apto-optimized.webp",
+      "relative_path": "assets/cases/Coppel-CPF-Hero-image-web-apto-optimized.webp",
+      "optimized_bytes": 43370,
+      "source_dimensions": [
+        1760,
+        840
+      ],
+      "dimensions": [
+        1400,
+        668
+      ],
+      "quality": 80,
+      "max_width": 1400,
+      "sha256": "4f0eab120c2bc69885038e88bb7b7f0f0c763588943cbe2212e5373ca166febe"
+    },
+    {
+      "source": "https://apto.mx/wp-content/uploads/2024/08/baywa-compressed.jpg",
+      "source_reference": "https://apto.mx/wp-content/uploads/2024/08/baywa-compressed.jpg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/cases/baywa-compressed.jpg",
+      "source_bytes": 104341,
+      "content_type": "image/jpeg",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/cases/baywa-compressed.webp",
+      "relative_path": "assets/cases/baywa-compressed.webp",
+      "optimized_bytes": 82198,
+      "source_dimensions": [
+        440,
+        656
+      ],
+      "dimensions": [
+        440,
+        656
+      ],
+      "quality": 80,
+      "max_width": 800,
+      "sha256": "d58093cc09f3116d02fb39c8fd3ce938211ecd8d7b82fc1da840e491e6056b66"
+    },
+    {
+      "source": "https://apto.mx/wp-content/uploads/2024/08/fanosa-compressed.jpg",
+      "source_reference": "https://apto.mx/wp-content/uploads/2024/08/fanosa-compressed.jpg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/cases/fanosa-compressed.jpg",
+      "source_bytes": 27809,
+      "content_type": "image/jpeg",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/cases/fanosa-compressed.webp",
+      "relative_path": "assets/cases/fanosa-compressed.webp",
+      "optimized_bytes": 13360,
+      "source_dimensions": [
+        440,
+        656
+      ],
+      "dimensions": [
+        440,
+        656
+      ],
+      "quality": 80,
+      "max_width": 800,
+      "sha256": "77b62a925cf60de8db7241d451ccf4a2673bd08627218bf92eda26ff8beb110d"
+    },
+    {
+      "source": "https://apto.mx/wp-content/uploads/2024/09/slide_apymsa-compressed.jpg",
+      "source_reference": "https://apto.mx/wp-content/uploads/2024/09/slide_apymsa-compressed.jpg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/cases/slide_apymsa-compressed.jpg",
+      "source_bytes": 271358,
+      "content_type": "image/jpeg",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/cases/slide_apymsa-compressed.webp",
+      "relative_path": "assets/cases/slide_apymsa-compressed.webp",
+      "optimized_bytes": 71386,
+      "source_dimensions": [
+        1760,
+        840
+      ],
+      "dimensions": [
+        800,
+        382
+      ],
+      "quality": 80,
+      "max_width": 800,
+      "sha256": "3b867c6fd14f0889b96ad880248b17c5226b9b4ec0dcf9e9ae8f9e2bce0e980a"
+    },
+    {
+      "source": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ciudad_geometrica_04.png",
+      "original_local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ciudad_geometrica_04.png",
+      "local_path": "/tmp/apto-prepared-assets/assets/ciudad-1600.webp",
+      "relative_path": "assets/ciudad-1600.webp",
+      "source_bytes": 2743237,
+      "optimized_bytes": 72584,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "dimensions": [
+        1600,
+        900
+      ],
+      "quality": 80,
+      "max_width": 1600,
+      "status": "ok",
+      "sha256": "c1c0150d809192cb32b029a49b5a0f8286bc46097c3079a0cfcea129235e6f49"
+    },
+    {
+      "source": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ciudad_geometrica_04.png",
+      "original_local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ciudad_geometrica_04.png",
+      "local_path": "/tmp/apto-prepared-assets/assets/ciudad-800.webp",
+      "relative_path": "assets/ciudad-800.webp",
+      "source_bytes": 2743237,
+      "optimized_bytes": 22446,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "dimensions": [
+        800,
+        450
+      ],
+      "quality": 80,
+      "max_width": 800,
+      "status": "ok",
+      "sha256": "f0a6aec0fa2456d2a3d2a0481e40263b5085858ca91ef90d0fd1bf4011fce972"
+    },
+    {
+      "source": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ensamble_entrelazado_05.png",
+      "original_local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ensamble_entrelazado_05.png",
+      "local_path": "/tmp/apto-prepared-assets/assets/ensamble-1280.webp",
+      "relative_path": "assets/ensamble-1280.webp",
+      "source_bytes": 2692041,
+      "optimized_bytes": 38334,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "dimensions": [
+        1280,
+        720
+      ],
+      "quality": 80,
+      "max_width": 1280,
+      "status": "ok",
+      "sha256": "4b78977291ace54f902f7f409af909a09ea2be5cf607f77438c26f760da196e9"
+    },
+    {
+      "source": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ensamble_entrelazado_05.png",
+      "original_local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ensamble_entrelazado_05.png",
+      "local_path": "/tmp/apto-prepared-assets/assets/ensamble-1920.webp",
+      "relative_path": "assets/ensamble-1920.webp",
+      "source_bytes": 2692041,
+      "optimized_bytes": 72854,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "quality": 80,
+      "max_width": 1920,
+      "status": "ok",
+      "sha256": "2207b16bc3bf31b99a3d60c92f7b007fd514d22bb6638dbd04231ac150a1f94c"
+    },
+    {
+      "source": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ensamble_entrelazado_05.png",
+      "original_local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ensamble_entrelazado_05.png",
+      "local_path": "/tmp/apto-prepared-assets/assets/ensamble-640.webp",
+      "relative_path": "assets/ensamble-640.webp",
+      "source_bytes": 2692041,
+      "optimized_bytes": 11768,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "dimensions": [
+        640,
+        360
+      ],
+      "quality": 80,
+      "max_width": 640,
+      "status": "ok",
+      "sha256": "91cd03f00c147df39580613cbee2100bf4ebe35b5a1ef3ef74166ef8998e2e4e"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/favicon-official.png",
+      "source_reference": "./assets/favicon-official.png",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/favicon-official.png",
+      "source_bytes": 2829,
+      "content_type": "image/png",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/favicon-official.png",
+      "relative_path": "assets/favicon-official.png",
+      "optimized_bytes": 2829,
+      "source_dimensions": [
+        100,
+        100
+      ],
+      "dimensions": [
+        100,
+        100
+      ],
+      "sha256": "bf6872f06293e5ec6c1f78dbe00318ff749feb64326b9678acd6f4fe9d4c9056"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/hero-taller-apto.jpg",
+      "source_reference": "./assets/hero-taller-apto.jpg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/hero-taller-apto.jpg",
+      "source_bytes": 181989,
+      "content_type": "image/jpeg",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/hero-taller-apto.webp",
+      "relative_path": "assets/hero-taller-apto.webp",
+      "optimized_bytes": 71132,
+      "source_dimensions": [
+        1920,
+        1071
+      ],
+      "dimensions": [
+        1400,
+        781
+      ],
+      "quality": 80,
+      "max_width": 1400,
+      "sha256": "cbc39f0a8262267267bb65856af03914e20dfc2548a1ecc68d1e3b4389528f07"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/apto-logo-white.svg",
+      "source_reference": "./assets/logos/apto-logo-white.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/apto-logo-white.svg",
+      "source_bytes": 7192,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/apto-logo-white.svg",
+      "relative_path": "assets/logos/apto-logo-white.svg",
+      "optimized_bytes": 7192,
+      "dimensions": [
+        88.0,
+        56.0
+      ],
+      "sha256": "c09d24547622e66e6401499dffdd29aae45873c0e1022971373152048e307304",
+      "svg_viewbox": "0 0 88 56"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/apymsa.svg",
+      "source_reference": "./assets/logos/clientes/apymsa.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/apymsa.svg",
+      "source_bytes": 5851,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/apymsa.svg",
+      "relative_path": "assets/logos/clientes/apymsa.svg",
+      "optimized_bytes": 5851,
+      "dimensions": [
+        191.08,
+        21.35
+      ],
+      "sha256": "4322dd9cff231d81494aa55a12b20400820712afa440d0e31c4efaa275f8c946",
+      "svg_viewbox": "43.82 38.21 191.08 21.35"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/bayware.svg",
+      "source_reference": "./assets/logos/clientes/bayware.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/bayware.svg",
+      "source_bytes": 7873,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/bayware.svg",
+      "relative_path": "assets/logos/clientes/bayware.svg",
+      "optimized_bytes": 7873,
+      "dimensions": [
+        182.6,
+        36.86
+      ],
+      "sha256": "974adb68b88cabc746474e4b88445d142e0dc9a1a0fb214f61ba2b1266207552",
+      "svg_viewbox": "47.56 31.0 182.6 36.86"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/bregrand.svg",
+      "source_reference": "./assets/logos/clientes/bregrand.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/bregrand.svg",
+      "source_bytes": 7880,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/bregrand.svg",
+      "relative_path": "assets/logos/clientes/bregrand.svg",
+      "optimized_bytes": 7880,
+      "dimensions": [
+        219.88,
+        35.0
+      ],
+      "sha256": "00f1314b7a08abe917eaf810df42def9db2aebc0605e1b0761f04bbc2d55db6e",
+      "svg_viewbox": "7.5 31.5 219.88 35.0"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/coppel.svg",
+      "source_reference": "./assets/logos/clientes/coppel.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/coppel.svg",
+      "source_bytes": 5950,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/coppel.svg",
+      "relative_path": "assets/logos/clientes/coppel.svg",
+      "optimized_bytes": 5950,
+      "dimensions": [
+        174.38,
+        37.59
+      ],
+      "sha256": "a08eac6b6e5bc02d199fce57b2cba827898044c305a2014348eeb21745fac60c",
+      "svg_viewbox": "51.32 29.73 174.38 37.59"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/fanosa.svg",
+      "source_reference": "./assets/logos/clientes/fanosa.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/fanosa.svg",
+      "source_bytes": 60529,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/fanosa.svg",
+      "relative_path": "assets/logos/clientes/fanosa.svg",
+      "optimized_bytes": 60529,
+      "dimensions": [
+        224.2,
+        48.5
+      ],
+      "sha256": "eeee685bc9d50040fc0d863df79481a566adab84c2b5ebfbd750cb2fd582ad21",
+      "svg_viewbox": "25.9 24.75 224.2 48.5"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/iteso.svg",
+      "source_reference": "./assets/logos/clientes/iteso.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/iteso.svg",
+      "source_bytes": 120373,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/iteso.svg",
+      "relative_path": "assets/logos/clientes/iteso.svg",
+      "optimized_bytes": 120373,
+      "dimensions": [
+        121.0,
+        99.0
+      ],
+      "sha256": "acabde0a31ddfd9d4aea3316f3059f3fa8aa5dedb3fb79ab2dda517b34d46e02",
+      "svg_viewbox": "56.5 -0.5 121.0 99.0"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/kiosko.svg",
+      "source_reference": "./assets/logos/clientes/kiosko.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/kiosko.svg",
+      "source_bytes": 3053,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/kiosko.svg",
+      "relative_path": "assets/logos/clientes/kiosko.svg",
+      "optimized_bytes": 3053,
+      "dimensions": [
+        205.0,
+        35.0
+      ],
+      "sha256": "90565ffcce6e276e75d815a1008405c9c8d703ed6216b152d2457e52375a5b26",
+      "svg_viewbox": "17.5 32.0 205.0 35.0"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/mtp.svg",
+      "source_reference": "./assets/logos/clientes/mtp.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/mtp.svg",
+      "source_bytes": 18915,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/mtp.svg",
+      "relative_path": "assets/logos/clientes/mtp.svg",
+      "optimized_bytes": 18915,
+      "dimensions": [
+        111.18,
+        65.94
+      ],
+      "sha256": "2f9a165647ca867c70d41f8264e86db550b89d0aea9b0bd6ec428c7da196dcdd",
+      "svg_viewbox": "61.41 16.04 111.18 65.94"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/nmdp.svg",
+      "source_reference": "./assets/logos/clientes/nmdp.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/nmdp.svg",
+      "source_bytes": 82481,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/nmdp.svg",
+      "relative_path": "assets/logos/clientes/nmdp.svg",
+      "optimized_bytes": 82481,
+      "dimensions": [
+        120.82,
+        81.0
+      ],
+      "sha256": "e6ecdbe0621ebcf5f8e2216b4b0799b746fa6d95e05b5f53b7deaed58d2768b3",
+      "svg_viewbox": "78.5 8.5 120.82 81.0"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/nunsam.svg",
+      "source_reference": "./assets/logos/clientes/nunsam.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/nunsam.svg",
+      "source_bytes": 16325,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/nunsam.svg",
+      "relative_path": "assets/logos/clientes/nunsam.svg",
+      "optimized_bytes": 16325,
+      "dimensions": [
+        208.06,
+        44.96
+      ],
+      "sha256": "02d6446a4241061c6d674b3d50014ca47fd335037c04c03004c434ff2e6f6ef2",
+      "svg_viewbox": "12.37 26.54 208.06 44.96"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/logos/clientes/octano.svg",
+      "source_reference": "./assets/logos/clientes/octano.svg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/octano.svg",
+      "source_bytes": 50118,
+      "content_type": "image/svg+xml",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/logos/clientes/octano.svg",
+      "relative_path": "assets/logos/clientes/octano.svg",
+      "optimized_bytes": 50118,
+      "dimensions": [
+        64.81,
+        99.0
+      ],
+      "sha256": "fd223dd57c74081ed69f460af375c445de516a520433e951a06cfeb4e8bc89a5",
+      "svg_viewbox": "106.24 -0.5 64.81 99.0"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/og-image-apto-official.png",
+      "source_reference": "https://landing.apto.mx/assets/og-image-apto-official.png",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/og-image-apto-official.png",
+      "source_bytes": 24084,
+      "content_type": "image/png",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/og-image-apto-official.png",
+      "relative_path": "assets/og-image-apto-official.png",
+      "optimized_bytes": 24084,
+      "source_dimensions": [
+        1200,
+        675
+      ],
+      "dimensions": [
+        1200,
+        675
+      ],
+      "sha256": "4639f1c571a52de7d88a2d2fa0a84df92b572a7c790ea4f27debbdac9a6be2e5"
+    },
+    {
+      "source": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Relieve_arquitectonico_03.png",
+      "original_local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Relieve_arquitectonico_03.png",
+      "local_path": "/tmp/apto-prepared-assets/assets/relieve-1400.webp",
+      "relative_path": "assets/relieve-1400.webp",
+      "source_bytes": 2579051,
+      "optimized_bytes": 43192,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "dimensions": [
+        1400,
+        788
+      ],
+      "quality": 80,
+      "max_width": 1400,
+      "status": "ok",
+      "sha256": "ce41a68549fafa845644054ab9c04fff595c1d83954f636303c9ccedc3438e51"
+    },
+    {
+      "source": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Relieve_arquitectonico_03.png",
+      "original_local_path": "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Relieve_arquitectonico_03.png",
+      "local_path": "/tmp/apto-prepared-assets/assets/relieve-800.webp",
+      "relative_path": "assets/relieve-800.webp",
+      "source_bytes": 2579051,
+      "optimized_bytes": 13836,
+      "source_dimensions": [
+        1920,
+        1080
+      ],
+      "dimensions": [
+        800,
+        450
+      ],
+      "quality": 80,
+      "max_width": 800,
+      "status": "ok",
+      "sha256": "340cc982a1770df764b23ef63b04457e479cabdfdf7c7e9092400bc751cc188c"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/team/alvaro-portrait.jpg",
+      "source_reference": "./assets/team/alvaro-portrait.jpg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/team/alvaro-portrait.jpg",
+      "source_bytes": 136460,
+      "content_type": "image/jpeg",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/team/alvaro-portrait.webp",
+      "relative_path": "assets/team/alvaro-portrait.webp",
+      "optimized_bytes": 9854,
+      "source_dimensions": [
+        800,
+        1200
+      ],
+      "dimensions": [
+        480,
+        720
+      ],
+      "quality": 80,
+      "max_width": 480,
+      "sha256": "fa0f1dfb386e5029bf20004a90822b598950f4bb5f77f2e611fd1a137ceee4fa"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/team/carlos-portrait.jpg",
+      "source_reference": "./assets/team/carlos-portrait.jpg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/team/carlos-portrait.jpg",
+      "source_bytes": 117318,
+      "content_type": "image/jpeg",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/team/carlos-portrait.webp",
+      "relative_path": "assets/team/carlos-portrait.webp",
+      "optimized_bytes": 13464,
+      "source_dimensions": [
+        800,
+        800
+      ],
+      "dimensions": [
+        480,
+        480
+      ],
+      "quality": 80,
+      "max_width": 480,
+      "sha256": "c17c7a10e6af5c56b767bd170efccc67ba002225d399eefc6460946993e05581"
+    },
+    {
+      "source": "https://landing.apto.mx/assets/team/video-cover-apto.jpg",
+      "source_reference": "./assets/team/video-cover-apto.jpg",
+      "original_local_path": "/tmp/apto-prepared-assets/assets/team/video-cover-apto.jpg",
+      "source_bytes": 47163,
+      "content_type": "image/jpeg",
+      "status": "ok",
+      "local_path": "/tmp/apto-prepared-assets/assets/team/video-cover-apto.webp",
+      "relative_path": "assets/team/video-cover-apto.webp",
+      "optimized_bytes": 16534,
+      "source_dimensions": [
+        1280,
+        720
+      ],
+      "dimensions": [
+        1000,
+        562
+      ],
+      "quality": 80,
+      "max_width": 1000,
+      "sha256": "e2874f537a200f572a2e2109dcca5689d4c033e46cc115640603845a72d6fc0d"
+    },
+    {
+      "source": "/Users/carlosbeltran/Code/aptobrain/apps/apto-web/public/fonts/Satoshi-Variable.woff2",
+      "original_local_path": "/Users/carlosbeltran/Code/aptobrain/apps/apto-web/public/fonts/Satoshi-Variable.woff2",
+      "local_path": "/tmp/apto-prepared-assets/assets/fonts/Satoshi-Variable.woff2",
+      "relative_path": "assets/fonts/Satoshi-Variable.woff2",
+      "source_bytes": 42588,
+      "optimized_bytes": 42588,
+      "dimensions": null,
+      "status": "ok",
+      "sha256": "e739aff9b4d02c264341d6d4872edcda28e79373aeda936f659566a1cd3eb47f"
+    },
+    {
+      "source": "/Users/carlosbeltran/Code/aptobrain/apps/apto-web/public/fonts/ClashGrotesk-Variable.woff2",
+      "original_local_path": "/Users/carlosbeltran/Code/aptobrain/apps/apto-web/public/fonts/ClashGrotesk-Variable.woff2",
+      "local_path": "/tmp/apto-prepared-assets/assets/fonts/ClashGrotesk-Variable.woff2",
+      "relative_path": "assets/fonts/ClashGrotesk-Variable.woff2",
+      "source_bytes": 47224,
+      "optimized_bytes": 47224,
+      "dimensions": null,
+      "status": "ok",
+      "sha256": "dc4701a7ee3ed1044033e53e60dd3a9e40b2a4a75244c6958693d900a340aba6"
+    },
+    {
+      "source": "/Users/carlosbeltran/Code/aptobrain/apps/apto-web/public/apto-logo.png",
+      "original_local_path": "/Users/carlosbeltran/Code/aptobrain/apps/apto-web/public/apto-logo.png",
+      "local_path": "/tmp/apto-prepared-assets/assets/apto-logo.png",
+      "relative_path": "assets/apto-logo.png",
+      "source_bytes": 24995,
+      "optimized_bytes": 24995,
+      "dimensions": [
+        1186,
+        528
+      ],
+      "status": "ok",
+      "sha256": "8cae7977bfa32872742a7b6ab175469fd6bcfac19d3e2c1a75c1bb36ddf6b227"
+    },
+    {
+      "source": "https://api.fontshare.com/v2/fonts/download/satoshi",
+      "archive_entry": "Satoshi_Complete/License/FFL.txt",
+      "local_path": "/tmp/apto-prepared-assets/assets/fonts/licenses/satoshi/FFL.txt",
+      "relative_path": "assets/fonts/licenses/satoshi/FFL.txt",
+      "source_bytes": 12734,
+      "optimized_bytes": 12734,
+      "dimensions": null,
+      "status": "ok",
+      "sha256": "145e7fe2429a3336ba215c070ef722000e01348a3e1baaa127e871bb5012f554"
+    },
+    {
+      "source": "https://api.fontshare.com/v2/fonts/download/clash-grotesk",
+      "archive_entry": "ClashGrotesk_Complete/License/FFL.txt",
+      "local_path": "/tmp/apto-prepared-assets/assets/fonts/licenses/clash-grotesk/FFL.txt",
+      "relative_path": "assets/fonts/licenses/clash-grotesk/FFL.txt",
+      "source_bytes": 12734,
+      "optimized_bytes": 12734,
+      "dimensions": null,
+      "status": "ok",
+      "sha256": "145e7fe2429a3336ba215c070ef722000e01348a3e1baaa127e871bb5012f554"
+    },
+    {
+      "source": "generated local @font-face declarations for repository font files",
+      "local_path": "/tmp/apto-prepared-assets/assets/fonts/fonts.css",
+      "relative_path": "assets/fonts/fonts.css",
+      "source_bytes": 342,
+      "optimized_bytes": 342,
+      "dimensions": null,
+      "sha256": "68acf5bd9f0831a2bc16269757a614afca326014d1208c0604e0b5b1c08acac9",
+      "status": "ok"
+    }
+  ],
+  "url_map": {
+    "./assets/logos/clientes/kiosko.svg": "assets/logos/clientes/kiosko.svg",
+    "https://landing.apto.mx/assets/logos/clientes/kiosko.svg": "assets/logos/clientes/kiosko.svg",
+    "./assets/logos/apto-logo-white.svg": "assets/logos/apto-logo-white.svg",
+    "https://landing.apto.mx/assets/logos/apto-logo-white.svg": "assets/logos/apto-logo-white.svg",
+    "./assets/favicon-official.png": "assets/favicon-official.png",
+    "https://landing.apto.mx/assets/favicon-official.png": "assets/favicon-official.png",
+    "./assets/logos/clientes/coppel.svg": "assets/logos/clientes/coppel.svg",
+    "https://landing.apto.mx/assets/logos/clientes/coppel.svg": "assets/logos/clientes/coppel.svg",
+    "./assets/logos/clientes/bregrand.svg": "assets/logos/clientes/bregrand.svg",
+    "https://landing.apto.mx/assets/logos/clientes/bregrand.svg": "assets/logos/clientes/bregrand.svg",
+    "./assets/logos/clientes/nmdp.svg": "assets/logos/clientes/nmdp.svg",
+    "https://landing.apto.mx/assets/logos/clientes/nmdp.svg": "assets/logos/clientes/nmdp.svg",
+    "./assets/logos/clientes/iteso.svg": "assets/logos/clientes/iteso.svg",
+    "https://landing.apto.mx/assets/logos/clientes/iteso.svg": "assets/logos/clientes/iteso.svg",
+    "./assets/logos/clientes/bayware.svg": "assets/logos/clientes/bayware.svg",
+    "https://landing.apto.mx/assets/logos/clientes/bayware.svg": "assets/logos/clientes/bayware.svg",
+    "./assets/logos/clientes/mtp.svg": "assets/logos/clientes/mtp.svg",
+    "https://landing.apto.mx/assets/logos/clientes/mtp.svg": "assets/logos/clientes/mtp.svg",
+    "./assets/logos/clientes/apymsa.svg": "assets/logos/clientes/apymsa.svg",
+    "https://landing.apto.mx/assets/logos/clientes/apymsa.svg": "assets/logos/clientes/apymsa.svg",
+    "./assets/logos/clientes/fanosa.svg": "assets/logos/clientes/fanosa.svg",
+    "https://landing.apto.mx/assets/logos/clientes/fanosa.svg": "assets/logos/clientes/fanosa.svg",
+    "./assets/logos/clientes/nunsam.svg": "assets/logos/clientes/nunsam.svg",
+    "https://landing.apto.mx/assets/logos/clientes/nunsam.svg": "assets/logos/clientes/nunsam.svg",
+    "https://landing.apto.mx/assets/og-image-apto-official.png": "assets/og-image-apto-official.png",
+    "./assets/logos/clientes/octano.svg": "assets/logos/clientes/octano.svg",
+    "https://landing.apto.mx/assets/logos/clientes/octano.svg": "assets/logos/clientes/octano.svg",
+    "./assets/team/carlos-portrait.jpg": "assets/team/carlos-portrait.webp",
+    "https://landing.apto.mx/assets/team/carlos-portrait.jpg": "assets/team/carlos-portrait.webp",
+    "./assets/team/alvaro-portrait.jpg": "assets/team/alvaro-portrait.webp",
+    "https://landing.apto.mx/assets/team/alvaro-portrait.jpg": "assets/team/alvaro-portrait.webp",
+    "./assets/team/video-cover-apto.jpg": "assets/team/video-cover-apto.webp",
+    "https://landing.apto.mx/assets/team/video-cover-apto.jpg": "assets/team/video-cover-apto.webp",
+    "https://apto.mx/wp-content/uploads/2024/08/fanosa-compressed.jpg": "assets/cases/fanosa-compressed.webp",
+    "https://apto.mx/wp-content/uploads/2024/09/slide_apymsa-compressed.jpg": "assets/cases/slide_apymsa-compressed.webp",
+    "https://apto.mx/wp-content/uploads/2024/08/baywa-compressed.jpg": "assets/cases/baywa-compressed.webp",
+    "./assets/hero-taller-apto.jpg": "assets/hero-taller-apto.webp",
+    "https://landing.apto.mx/assets/hero-taller-apto.jpg": "assets/hero-taller-apto.webp",
+    "https://apto.mx/wp-content/uploads/2026/01/Coppel-CPF-Hero-image-web-apto.webp": "assets/cases/Coppel-CPF-Hero-image-web-apto-optimized.webp",
+    "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ensamble_entrelazado_05.png": [
+      "assets/ensamble-640.webp",
+      "assets/ensamble-1280.webp",
+      "assets/ensamble-1920.webp"
+    ],
+    "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Ciudad_geometrica_04.png": [
+      "assets/ciudad-800.webp",
+      "assets/ciudad-1600.webp"
+    ],
+    "/Users/carlosbeltran/Documents/Codex/2026-09-14/t/outputs/APTO_Relieve_arquitectonico_03.png": [
+      "assets/relieve-800.webp",
+      "assets/relieve-1400.webp"
+    ],
+    "/Users/carlosbeltran/Code/aptobrain/apps/apto-web/public/fonts/Satoshi-Variable.woff2": "assets/fonts/Satoshi-Variable.woff2",
+    "/Users/carlosbeltran/Code/aptobrain/apps/apto-web/public/fonts/ClashGrotesk-Variable.woff2": "assets/fonts/ClashGrotesk-Variable.woff2",
+    "/Users/carlosbeltran/Code/aptobrain/apps/apto-web/public/apto-logo.png": "assets/apto-logo.png",
+    "https://api.fontshare.com/v2/fonts/download/satoshi": "assets/fonts/licenses/satoshi/FFL.txt",
+    "https://api.fontshare.com/v2/fonts/download/clash-grotesk": "assets/fonts/licenses/clash-grotesk/FFL.txt"
+  },
+  "failures": [],
+  "summary": {
+    "successful_outputs": 35,
+    "failures": 0,
+    "output_bytes": 1150382
+  },
+  "notes": [
+    "Barlow downloaded before design correction; unused files archived separately in /tmp/apto-barlow-unused. Current fonts.css includes Satoshi and Clash Grotesk only.",
+    "Original PNG renders were preserved at their source paths.",
+    "Photo originals remain next to their optimized WebP derivatives."
+  ],
+  "verification": {
+    "image_decode": "passed for all WebP outputs",
+    "woff2_signature": "passed for both fonts",
+    "original_sources": "preserved",
+    "output_file_sizes": "all matched manifest",
+    "all_asset_paths_exist": true
+  }
+}
