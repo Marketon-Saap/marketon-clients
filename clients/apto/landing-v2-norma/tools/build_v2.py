@@ -146,11 +146,44 @@ modal='''
 rep('<section class="section" id="faq">',modal+'<section class="section" id="faq">')
 sticky='<div class="sticky-cta-mobile" aria-hidden="false"><a href="#cta-form" class="btn sticky-cta-mobile__btn" data-track="sticky_cta_click">Hablemos de tu reto <span aria-hidden="true">↗</span></a></div>\n'
 rep('<script src="script.js"></script>',sticky+f'<script src="script.js?v={VER}"></script><script src="capture.js?v={VER}"></script>')
+
+# ===== PROPUESTA 22-sep · relevancia para Ads · pendiente de aprobacion APTO (PROPUESTA=True para incluirla) =====
+PROPUESTA = __import__('os').environ.get('PROPUESTA','1')=='1'
+if PROPUESTA:
+    rep('<title>APTO · Hagamos realidad el cambio</title>','<title>Hagamos realidad el cambio · Estrategia, diseño y tecnología · APTO</title><!-- PROPUESTA title opcion A -->')
+    rep('<meta content="Estrategia, diseño y tecnología para transformar retos de negocio en servicios, productos y herramientas que tu organización puede poner en práctica." name="description"/>','<meta name="description" content="Estrategia, diseño y tecnología en un mismo equipo. Convertimos retos de negocio en servicios, productos y herramientas que tu organización puede operar."><!-- PROPUESTA description -->')
+    servicios = [("Transformación digital","productos"),("Diseño de servicios y experiencias omnicanales","productos"),("Experiencia del cliente","productos"),("Diseño, validación y desarrollo de productos digitales","productos"),("Desarrollo de software","productos"),("Arquitectura de software empresarial","productos"),("Estrategia de negocio","categoria"),("Equipos de innovación y diseño","productos"),("Capacitación en diseño e innovación","metodo")]
+    chips=''.join(f'<li><a href="#{a}" data-track="servicio_chip_click" data-item="{t}">{t}</a></li>' for t,a in servicios)
+    bloque=f"""
+<!-- PROPUESTA 22-sep · bloque "Qué hacemos" con servicios publicados en apto.mx · pendiente de aprobación APTO -->
+<section class="servicios" id="servicios" aria-labelledby="servicios-title">
+<div class="container">
+<p class="eyebrow">Qué hacemos</p>
+<h2 id="servicios-title" class="servicios__title">Estrategia de negocio, diseño de servicios, productos digitales y desarrollo de software para tu organización.</h2>
+<ul class="servicios__list">{chips}</ul>
+</div>
+</section>
+<!-- /PROPUESTA -->
+"""
+    rep('<section class="categoria categoria--capacidades" id="categoria"',bloque+'<section class="categoria categoria--capacidades" id="categoria"')
+    temas={"servicio":"Diseño de servicios y experiencia del cliente","digital":"Diseño, validación y desarrollo de productos digitales","operacion":"Desarrollo de software y arquitectura de software empresarial","usuario":"Enfoque centrado en el usuario y estrategia de negocio","innovacion":"Equipos de innovación y validación de productos","omnicanal":"Transformación digital y ecosistemas de servicio omnicanales"}
+    def add_tema(m):
+        art=m.group(0); k=re.search(r'data-producto="([a-z]+)"',art)
+        if not k or k.group(1) not in temas: return art
+        return art.replace('</h3>\n</div>',f'</h3>\n<p class="reto__tema">{temas[k.group(1)]}</p><!-- PROPUESTA subtítulo temático -->\n</div>',1)
+    s2=re.sub(r'<article class="reto">.*?</article>',add_tema,s,flags=re.S); assert s2.count('reto__tema')==6, s2.count('reto__tema'); s=s2
 _t=re.sub(r'<[^>]+>','',s); print('em dash en copy del cliente (se respeta):',[_t[max(0,m.start()-40):m.start()+30].replace('\n',' ') for m in re.finditer('—',_t)])
 open(f'{V}/index.html','w',encoding='utf-8').write(s)
 # --- styles.css ---
 css=open(f'{C}/styles.css',encoding='utf-8').read()
 css+='''
+/* ===== PROPUESTA 22-sep · bloque Qué hacemos + subtítulo temático de retos ===== */
+.servicios{background:var(--paper-2);padding-block:clamp(48px,6vw,80px)!important}
+.servicios__title{font-size:clamp(1.5rem,2.6vw,2.25rem);line-height:1.15;letter-spacing:-.02em;max-width:24ch;margin-bottom:28px}
+.servicios__list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.servicios__list a{display:inline-flex;align-items:center;min-height:44px;padding:10px 16px;border:1px solid var(--line);border-radius:var(--radius);background:#fff;color:var(--ink);font-size:.9375rem;font-weight:500;transition:border-color .2s,background .2s}
+.servicios__list a:hover{border-color:var(--ink);background:var(--paper)}
+.reto__tema{font:500 .8125rem/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:#bcb6ac;margin:6px 0 0}
 /* ===== Marketon · capa de captura (modal, barra fija, exito) · tokens Norma ===== */
 .form-modal{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center}
 .form-modal[hidden]{display:none}
