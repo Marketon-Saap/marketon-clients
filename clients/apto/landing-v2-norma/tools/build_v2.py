@@ -1,12 +1,14 @@
 import re,os,shutil,json,html
 C="/Users/JPEREZ/Documents/Marketon/SaaP/Claude Code/Clientes/Apto/03-Estrategia/Fase-2-Plan-MKT/Landing/Entrega-cliente-v2-Norma-2026-09-22"
-R=os.path.expanduser('~/Documents/apto-landing'); V=os.environ.get('OUT') or f'{R}/v2'; S=os.path.dirname(os.path.abspath(__file__))
+R=os.path.expanduser('~/Documents/apto-landing'); PROD=os.environ.get('PROD','0')=='1'
+V=(f'{S0}/prod_build' if PROD else (os.environ.get('OUT') or f'{R}/v2')) if (S0:=os.path.dirname(os.path.abspath(__file__))) else None; S=S0
 REVIEW=os.environ.get('REVIEW','0')=='1'
 VER='20260922a'
 if os.path.exists(V): shutil.rmtree(V)
 os.makedirs(V); shutil.copytree(f'{C}/assets',f'{V}/assets',ignore=shutil.ignore_patterns('.DS_Store'))
 shutil.copy(f'{R}/assets/og-image-apto-official.png',f'{V}/assets/og-image-apto-official.png')
-os.makedirs(f'{V}/aviso-de-privacidad',exist_ok=True); shutil.copy(f'{R}/aviso-de-privacidad/index.html',f'{V}/aviso-de-privacidad/index.html')
+if not PROD:
+    os.makedirs(f'{V}/aviso-de-privacidad',exist_ok=True); shutil.copy(f'{R}/aviso-de-privacidad/index.html',f'{V}/aviso-de-privacidad/index.html')
 s=open(f'{C}/index.html',encoding='utf-8').read()
 def rep(old,new,count=1):
     global s
@@ -16,7 +18,7 @@ def rep(old,new,count=1):
 rep('<meta content="width=device-width,initial-scale=1" name="viewport"/>','<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">')
 rep('<title>APTO — Hagamos realidad el cambio</title>','<title>APTO · Hagamos realidad el cambio</title>')
 rep('<meta content="APTO — Hagamos realidad el cambio" property="og:title"/>','<meta content="APTO · Hagamos realidad el cambio" property="og:title"/>')
-rep('<meta content="noindex,nofollow" name="robots"/>','<meta name="robots" content="noindex, nofollow" data-staging="v2"><!-- CUTOVER: content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" -->')
+rep('<meta content="noindex,nofollow" name="robots"/>', '<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">' if PROD else '<meta name="robots" content="noindex, nofollow" data-staging="v2">')
 head_extra='''
 <meta name="author" content="APTO Innovación S.A.P.I. de C.V.">
 <link rel="canonical" href="https://landing.apto.mx/">
@@ -189,6 +191,27 @@ if REVIEW:
     s=s.replace('href="/aviso-de-privacidad/"','href="aviso-de-privacidad/"')
     s=s.replace('<link rel="canonical" href="https://landing.apto.mx/">','<link rel="canonical" href="https://landing.apto.mx/"><!-- REVISION -->')
     assert 'GTM-K7J6MQ8' not in s and 'hs-scripts' not in s
+
+# dimensiones intrínsecas en <img> sin width/height (Fase 2 · CLS)
+try:
+    from PIL import Image
+    def _dim(m):
+        tag=m.group(0)
+        if 'width=' in tag and 'height=' in tag: return tag
+        src=re.search(r'src="([^"]+)"',tag)
+        if not src: return tag
+        path=os.path.join(V,src.group(1))
+        if not os.path.exists(path): return tag
+        if path.endswith('.svg'):
+            t=open(path,encoding='utf-8',errors='ignore').read(); w=re.search(r'\bwidth="(\d+)',t); h=re.search(r'\bheight="(\d+)',t)
+            if not (w and h): return tag
+            W,H=w.group(1),h.group(1)
+        else:
+            W,H=Image.open(path).size
+        return tag[:-2]+f' width="{W}" height="{H}"/>' if tag.endswith('/>') else tag[:-1]+f' width="{W}" height="{H}">'
+    s=re.sub(r'<img[^>]*>',_dim,s)
+    print('imgs sin dimensiones tras el ajuste:',len([m for m in re.findall(r'<img[^>]*>',s) if 'width=' not in m or 'height=' not in m]))
+except Exception as e: print('dims: omitido',e)
 open(f'{V}/index.html','w',encoding='utf-8').write(s)
 # --- styles.css ---
 css=open(f'{C}/styles.css',encoding='utf-8').read()
@@ -258,11 +281,14 @@ crep("""        window.addEventListener('load', function(){
 crep("submitLabel.textContent = 'Agenda tu sesión de descubrimiento';","submitLabel.textContent = submitLabel.dataset.label || 'Enviar mi reto';")
 crep("      // Nav pill opacity ramp on scroll","      // Menu movil de Norma: el toggle lo maneja script.js; aqui solo medimos la apertura\n      (function(){ var t=document.querySelector('.menu-toggle'), m=document.getElementById('mobile-nav'); if(!t||!m) return; t.addEventListener('click', function(){ if(m.hidden===false) track('nav_mobile_menu_open', {}); }); })();\n      // Nav pill opacity ramp on scroll (v1 · no aplica en Norma, sale sin hacer nada)")
 crep("        // Reentrancy guard · previene doble submit","        if (form.dataset.mode === 'review') { showMessage('warn', 'Página de revisión: el formulario valida correctamente pero no envía datos ni crea registros.'); return; }\n        // Reentrancy guard · previene doble submit")
+crep("        } else if (input.value.trim() && input.minLength > 0 && input.value.trim().length < input.minLength) {\n          msg = `Mínimo ${input.minLength} caracteres.`;","        } else if (input.value.trim() && input.minLength > 0 && input.value.trim().length < input.minLength) {\n          msg = `Mínimo ${input.minLength} caracteres.`;\n        } else if (['firstname','lastname','jobtitle'].indexOf(input.name) !== -1 && input.value.trim() && !/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ ]+$/.test(input.value.trim())) {\n          msg = 'Solo letras y espacios, sin números ni caracteres especiales.';\n        } else if (input.name === 'company' && input.value.trim() && !/^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9 .&-]+$/.test(input.value.trim())) {\n          msg = 'Solo letras y números, sin caracteres especiales.';")
+crep("      form.querySelectorAll('input, textarea, select').forEach(input => {\n        input.addEventListener('blur', () => validateField(input));","      // Reglas de captura (22-sep-2026): nombre, apellido, empresa y cargo se guardan en MAYÚSCULAS y sin espacios dobles\n      var UPPER_FIELDS = ['firstname','lastname','company','jobtitle'];\n      function normalizeText(input) { if (UPPER_FIELDS.indexOf(input.name) === -1) return; var v = input.value.replace(/\\s+/g, ' ').trim().toUpperCase(); if (input.value !== v) input.value = v; }\n      form.querySelectorAll('input, textarea, select').forEach(input => {\n        input.addEventListener('blur', () => { normalizeText(input); validateField(input); });")
+crep("        const inputs = form.querySelectorAll('input, textarea, select');\n        let allValid = true;","        const inputs = form.querySelectorAll('input, textarea, select');\n        inputs.forEach(normalizeText);\n        let allValid = true;")
 cap="/* APTO landing · capa de captura y medicion (Marketon) · portada de v1 sin cambiar nombres de evento, ids ni payload.\n   Eventos: data-track por clic · form_start · form_field_error · form_submit_success · form_submit_fail · form_submit_success_fallback\n   · form_modal_open/close · nav_mobile_menu_open · section_view · video_play. Contrato con el Worker apto-landing-api sin cambios. */\n"+cap
 open(f'{V}/capture.js','w',encoding='utf-8').write(cap)
 # robots: bloquear /v2/ mientras es staging
 rb=open(f'{R}/robots.txt').read()
-if 'Disallow: /v2/' not in rb: open(f'{R}/robots.txt','w').write(rb.replace('Allow: /','Allow: /\nDisallow: /v2/'))
+if False: open(f'{R}/robots.txt','w').write(rb.replace('Allow: /','Allow: /\nDisallow: /v2/'))
 print('v2 generado:',{f:os.path.getsize(f'{V}/{f}') for f in ['index.html','styles.css','script.js','capture.js']})
 print('data-track:',sorted(set(re.findall(r'data-track="([^"]+)"',s))))
 print('faq ld:',len(faq_ld['mainEntity']))

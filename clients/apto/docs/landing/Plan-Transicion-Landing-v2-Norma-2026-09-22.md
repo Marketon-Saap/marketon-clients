@@ -272,3 +272,13 @@ Fase 2 (title y description elegidos por Álvaro, OG image nueva, dimensiones en
 
 ### Ajuste de proceso · 22-sep, tarde
 Por indicación de Chucho, se eliminaron la rama `v2-norma` y la carpeta `/v2/` del repo de producción: **no hay staging en `landing.apto.mx` ni ramas paralelas**. Toda revisión y prueba vive en `Marketon-Saap/previews` (GitHub Pages) y en Cloudflare Pages `marketon-previews` (cuenta Marketon-SaaP). Consecuencia para la Fase 3: el paso 2 (GTM Preview, HubSpot, CORS del Worker) se hace en el cutover mismo con un envío real que Chucho valida; el resto se cubre en previews con el Worker simulado. El generador `build_v2.py` produce la versión de producción con `PROPUESTA=1 REVIEW=0` cuando llegue el día.
+
+---
+
+## Cutover · 22-sep-2026, 13:30 hora de México · HECHO
+
+Con el visto bueno de Álvaro, la v2 se publicó en `landing.apto.mx` (commit `0fc1409` en `main`; rollback con `git revert` o el tag `v1-2026-09-22`). Build de producción con `PROD=1 PROPUESTA=1 REVIEW=0` desde el generador: robots `index, follow`, GTM y HubSpot activos, propuesta de relevancia aprobada, logo unificado, dimensiones en todas las imágenes, sitemap con `lastmod` nuevo. Antes de publicar se agregaron las reglas de campos que pidió Chucho (nombre, apellido y cargo solo letras en mayúsculas; empresa letras y números; teléfono 10 dígitos MX; correo con arroba) y el QA local subió a 29 de 29.
+
+**Smoke test E2E en producción: 4 de 4** (desktop modal e inline en Chrome; móvil bottom sheet e inline en el navegador integrado). Detalle, ids de los registros de prueba y hallazgos en `Smoke-Test-v2-Produccion-2026-09-22.md`. Search Console: indexada, canonical correcto, sitemap reenviado.
+
+**Pendientes inmediatos:** borrar los 4 registros de prueba cuando Chucho valide; reescribir los 35 anuncios a la voz nueva y fijar titulares (punto 2 y 3 del nivel de calidad), con su go; PageSpeed mañana; configurar `RESEND_API_KEY` si APTO quiere el correo de aviso; re-estilizar el aviso de privacidad con Norma.
