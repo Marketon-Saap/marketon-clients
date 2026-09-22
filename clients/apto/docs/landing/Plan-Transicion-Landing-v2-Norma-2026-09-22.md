@@ -223,3 +223,31 @@ Total: 3 días hábiles de trabajo, más un día natural de validación de Chuch
 | footer_* (7) | footer | `.footer` enlaces | Reponer |
 | form_start, form_field_error, form_submit_success, form_submit_fail, form_submit_success_fallback | módulo del formulario | mismo módulo portado | Reponer |
 | section_view | `section[id]` | igual | Sobrevive |
+
+---
+
+## Estado de ejecución · 22-sep-2026, tarde
+
+**Decisiones de Chucho:** modal, barra fija móvil y hero por intención se conservan. Arrancaron Fase 0 y Fase 1.
+
+### Fase 0 · hecha
+- Tag `v1-2026-09-22` en `Marketon-Saap/apto-landing`; respaldo de `index.html`, `robots.txt` y `sitemap.xml` en `Landing/Baseline-v1-2026-09-22/`.
+- Baseline 15 a 21-sep: GA4 en `landing.apto.mx` 69 usuarios, 196 páginas vistas, 21 `form_start` de 7 usuarios, 8 `generate_lead` de 4 usuarios (incluye las 4 pruebas del 21-sep), 6 `hero_cta_click`, 5 y 5 clics a LinkedIn de los socios, 2 `video_play`. Google Ads: 51 clics, 0 conversiones. Capturas completas 1440 y 390 guardadas. PageSpeed no se pudo tomar hoy (cuota diaria de la API agotada); se toma mañana y se registra aquí.
+- Rama `v2-norma` creada; `/v2/` publicado en el mismo dominio como staging con `meta robots noindex` y `Disallow: /v2/` en robots.txt. La raíz no cambió.
+
+### Fase 1 · hecha, pendiente de QA en staging
+- `v2/index.html` = archivo del cliente + cabecera de medición (GTM, HubSpot), SEO base (canonical, hreflang, OG con la imagen actual, JSON-LD `ProfessionalService` con la voz nueva y `FAQPage` regenerado con las 8 preguntas), `viewport-fit=cover`, preload de Clash Grotesk y del hero.
+- 28 nombres de `data-track` idénticos a v1 más los programáticos. Ajustes de mapa: `categoria_cta_click` ahora es el CTA al final de "Seis retos" (el cliente quitó el CTA de "Cómo pensamos"); `ver_mas_casos`, `devsecops_link_click`, `no_somos_expand` y `no_somos_cta_click` desaparecen porque esos elementos ya no existen.
+- Modal (mismo `#form-card` teletransportado, bottom sheet en móvil), barra fija móvil que se esconde mientras el CTA del hero está a la vista, bloque `#form-success`, segundo skip link al formulario, enlace al aviso de privacidad en el checkbox y en el footer.
+- Hero por intención: el subtítulo recibe como prefijo la primera frase de la variante de v1 (las 10 frases, revisadas por Álvaro el 16-sep), mapeadas tanto a los ids de grupo del experimento como a los de la campaña base que quedó activa.
+- `capture.js`: módulo de v1 portado; se corrigió un bug heredado: el deep link `#cta-form` nunca abría el modal porque el fix de anclas borraba el hash antes de leerlo.
+- `script.js` del cliente conserva cabecera y menú; el facade de YouTube y el formulario pasan a `capture.js`. `styles.css` del cliente intacto más un bloque Marketon con tokens Norma.
+- Se respetó todo el copy del cliente, incluido un guion largo en la atribución de la cita de Coppel; solo se quitaron los del `<title>` y de dos `aria-label`.
+
+### QA local (paso 1) · 25 de 25
+Servidor local, terceros bloqueados (GTM, HubSpot, Pixel, YouTube) y Worker simulado. Verificado: sin desbordamiento en 360/390/768/1024/1440; consola limpia; sin 404; 14 aperturas al formulario, 12 visibles en desktop abren el modal y Escape lo cierra devolviendo el form a la versión inline; negativas de correo, teléfono de 9 dígitos y consentimiento; recorte a 10 dígitos; envío con `form_submit_success` y las 19 claves que leen las variables de GTM; éxito visible; video con `enablejsapi=1` y `video_play`; `section_view` en las 10 secciones; `producto_expand` y `footer_tel_click`; barra fija móvil y bottom sheet; menú móvil con `nav_mobile_menu_open` y `nav_mobile_link_click`; hero por intención con id de grupo base; deep link. Evidencia en `Landing/QA-v2-local-2026-09-22/` (capturas y `qa-local-resultados.json`).
+
+**Observación para el cliente (no bloquea):** en móvil, al recorrer "Cómo pensamos", el logo de la cabecera aparece sobre un recuadro claro con difuminado; es su regla de contraste, conviene que la revisen.
+
+### Siguiente
+Fase 2 (title y description elegidos por Álvaro, OG image nueva, dimensiones en 21 imágenes, PageSpeed) y Fase 3 paso 2: QA en `landing.apto.mx/v2/` con GTM Preview y envíos reales desde Chrome en móvil y desktop, con validación de Chucho en HubSpot.

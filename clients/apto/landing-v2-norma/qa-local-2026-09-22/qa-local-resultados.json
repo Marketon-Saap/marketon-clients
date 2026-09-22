@@ -1,0 +1,163 @@
+{
+  "widths": {
+    "360": {
+      "sw": 360,
+      "iw": 360,
+      "h1": 1,
+      "sticky": "block",
+      "modalHidden": true
+    },
+    "390": {
+      "sw": 390,
+      "iw": 390,
+      "h1": 1,
+      "sticky": "block",
+      "modalHidden": true
+    },
+    "768": {
+      "sw": 768,
+      "iw": 768,
+      "h1": 1,
+      "sticky": "block",
+      "modalHidden": true
+    },
+    "1024": {
+      "sw": 1024,
+      "iw": 1024,
+      "h1": 1,
+      "sticky": "none",
+      "modalHidden": true
+    },
+    "1440": {
+      "sw": 1440,
+      "iw": 1440,
+      "h1": 1,
+      "sticky": "none",
+      "modalHidden": true
+    }
+  },
+  "checks": [
+    {
+      "name": "sin desbordamiento horizontal @360",
+      "pass": true,
+      "detail": "scrollWidth 360 / 360"
+    },
+    {
+      "name": "sin desbordamiento horizontal @390",
+      "pass": true,
+      "detail": "scrollWidth 390 / 390"
+    },
+    {
+      "name": "sin desbordamiento horizontal @768",
+      "pass": true,
+      "detail": "scrollWidth 768 / 768"
+    },
+    {
+      "name": "sin desbordamiento horizontal @1024",
+      "pass": true,
+      "detail": "scrollWidth 1024 / 1024"
+    },
+    {
+      "name": "sin desbordamiento horizontal @1440",
+      "pass": true,
+      "detail": "scrollWidth 1440 / 1440"
+    },
+    {
+      "name": "consola sin errores",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "sin 404/fallos de assets",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "name": "aperturas del formulario (a[href=#cta-form])",
+      "pass": true,
+      "detail": "14 · skip_link_form_click,nav_cta_click,nav_mobile_menu_cta_click,hero_cta_click,problema_cta_click,categoria_cta_click,casos_cta_click,casos_cta_click,proyectos_cta_click,metodo_cta_click,conoce_cta_click,faq_cta_click,footer_cta_click,sticky_cta_click"
+    },
+    {
+      "name": "cada opener visible abre el modal y Escape lo cierra",
+      "pass": true,
+      "detail": "abiertos 12 · form-card de vuelta en form-inline-host"
+    },
+    {
+      "name": "dataLayer: hero_cta_click + form_modal_open + form_modal_close",
+      "pass": true,
+      "detail": "gtm.js,section_view,skip_link_form_click,form_modal_open,form_start,form_modal_close,nav_cta_click,hero_cta_click,problema_cta_click,categoria_cta_click,casos_cta_click,proyectos_cta_click,metodo_cta_click,conoce_cta_click,faq_cta_click,footer_cta_click"
+    },
+    {
+      "name": "negativas: correo, telefono de 9 digitos y consentimiento bloquean",
+      "pass": true,
+      "detail": "{\"email\":\"Formato inválido. Ejemplo: nombre@empresa.com\",\"phone\":\"Escribe los 10 dígitos de tu número, sin lada.\",\"consent\":\"Debes aceptar el aviso de privacidad para continuar.\",\"hidden\":false}"
+    },
+    {
+      "name": "telefono: el input recorta a 10 digitos (MX)",
+      "pass": true,
+      "detail": "3318145528"
+    },
+    {
+      "name": "envio: form_submit_success con contrato completo, exito visible, sin fallback",
+      "pass": true,
+      "detail": "{\"keys\":28,\"contact\":\"QA-C\",\"phone\":\"+523318145528\",\"diag\":{\"events\":[\"form_start\",\"form_start\",\"form_start\",\"form_field_error\",\"form_start\",\"form_submit_success\"],\"msg\":\"\",\"errs\":[]}}"
+    },
+    {
+      "name": "claves que leen las variables DL-* de GTM",
+      "pass": true,
+      "detail": "todas"
+    },
+    {
+      "name": "video: iframe con enablejsapi=1 y origin (trigger GTM 90)",
+      "pass": true,
+      "detail": "https://www.youtube.com/embed/40gjKGn8qME?autoplay=1&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&origin"
+    },
+    {
+      "name": "dataLayer: video_play",
+      "pass": true
+    },
+    {
+      "name": "section_view por seccion",
+      "pass": true,
+      "detail": "hero,categoria,problema,productos,casos,proyectos,metodo,conoce-equipo,cta-form,faq"
+    },
+    {
+      "name": "producto_expand + footer_tel_click",
+      "pass": true
+    },
+    {
+      "name": "barra fija movil: oculta con el CTA del hero a la vista, visible despues",
+      "pass": true,
+      "detail": "{\"s0\":true,\"s1\":{\"hidden\":false,\"disp\":\"block\"}}"
+    },
+    {
+      "name": "movil: la barra abre el bottom sheet y la barra se esconde",
+      "pass": true,
+      "detail": "{\"hidden\":false,\"top\":67.53125,\"stickyDisp\":\"none\"}"
+    },
+    {
+      "name": "menu movil abre y emite nav_mobile_menu_open",
+      "pass": true,
+      "detail": "{\"open\":true,\"dl\":true}"
+    },
+    {
+      "name": "menu movil: link cierra el menu, hace scroll y emite nav_mobile_link_click",
+      "pass": true,
+      "detail": "{\"closed\":true,\"y\":4027,\"dl\":2}"
+    },
+    {
+      "name": "hero por intencion (grupo base 199879292282)",
+      "pass": true,
+      "detail": "Diseñamos y desarrollamos tu producto digital. Convertimos r"
+    },
+    {
+      "name": "deep link #cta-form abre el modal",
+      "pass": true
+    },
+    {
+      "name": "terceros bloqueados en local (GTM/HubSpot/Pixel no llamados)",
+      "pass": true,
+      "detail": "19 peticiones bloqueadas"
+    }
+  ]
+}
