@@ -68,3 +68,40 @@ En 21 días de septiembre el brazo landing sirvió 11 días.
 ## 7. Cómo lo seguimos
 
 Corte diario esta semana: impresiones, clics, costo y CPC por grupo; términos de búsqueda con clic; `form_start` y `generate_lead` en GA4 contra D1. Si el jueves 25 seguimos en cero con tráfico de buena intención, entonces sí toca mirar la página con lupa, sección por sección, con las grabaciones de Clarity de esos usuarios.
+
+---
+
+## Anexo 21-sep (tarde) · Cobertura de keywords con conversiones en 2026 tras aplicar el experimento
+
+**Estado verificado por API.** Experimento 10061487455 en estado PROMOTED (aplicado). La campaña base 24032573932 quedó ENABLED con las variables del experimento encima: todas las URLs finales apuntan a landing.apto.mx, tCPA $1,200, presupuesto compartido $800/día. La campaña de experimento 24178936025 quedó PAUSED. La campaña "[EXP]" 24130395983 aparece ENABLED pero con serving ENDED (experimento viejo, cero gasto en septiembre); no interfiere.
+
+**Pregunta de Chucho:** que toda keyword con conversiones en el año esté en la estructura activa.
+
+**Consulta:** `keyword_view`, 2026-01-01 a 2026-09-21, todas las campañas, `conversions > 0`. 41 keywords con conversiones: 29 en la campaña legacy "ESTRATEGIA DE NEGOCIO" (pausada, 111 conversiones de formulario en el año) y 12 en la estructura nueva.
+
+**Hallazgos:**
+- 24 de las 29 keywords de la legacy no existían en la campaña activa (ni en frase ni en amplia).
+- "software empresarial" en frase (3 conversiones con 4 clics) estaba REMOVED en el grupo Arquitectura. Se eliminó antes del 24-ago, durante el armado original (el historial de cambios de 30 días no registra la baja).
+- 10 negativas a nivel campaña bloqueaban literalmente las keywords faltantes: ecommerce, e-commerce, desarrolladores, desarrollador, programador, programadores, developer, odoo, "implementación odoo", "empresas de software".
+- Sin listas negativas compartidas ni negativas a nivel grupo.
+
+**Ejecutado (campaña 24032573932):**
+
+| Grupo | Keywords agregadas (amplia, igual que convirtieron) | Conv. 2026 en legacy |
+|---|---|---|
+| T2 Op · Arquitectura de software empresarial | desarrollo de software (10) · desarrolladores de software (10) · software personalizado (9) · desarrollo de software a la medida (4) · empresas de desarrollo de software (3) · desarrollo de software en mexico (3) · empresas de desarrollo de software en méxico (2) · programador de software (4) · programadores de software (1) · empresas de software en mexico (1) · **software empresarial [frase, re-agregada]** (3) | 50 |
+| T2 Core · Diseño y desarrollo de productos digitales | desarrollo de apps (7) · desarrollador de apps (5) · app developer (4) · diseño de app (1) · desarrollo ecommerce (8) · desarrollo de ecommerce (1) · ecommerce b2b (1) | 27 |
+| T1 · Consultoría de innovación corporativa | consultoría empresarial (9) · consultoras en mexico (2) · business consulting agency (1) | 12 |
+| T2 Core · Transformación digital empresa mediana | digitalización de empresas (2) · transformacion digital empresas (2) | 4 |
+| T2 Op · Digitalización de operaciones | erp (13) · implementación odoo (1) | 14 |
+
+Negativas removidas: 10 (IDs 10160771, 10250421, 17990962, 17992272, 17718181, 19158081, 10231311, 1089643004, 1458354991161, 98809423). Quedan 127. Se conservaron las de intención laboral y formación (vacante, empleo, sueldo, cv, curriculum, salary, trabajo, freelance, curso, bootcamp) y las de competidores.
+
+**Verificación posterior:** consulta fresca muestra las 25 keywords ENABLED en su grupo; cruce programático (amplia = todas las palabras contenidas, frase = subcadena, exacta = igual) contra las 127 negativas restantes: cero bloqueos.
+
+**Ya cubiertas antes del cambio (no se tocaron):** service design, innovacion empresarial, customer journey, diseño de experiencias, proveedores de software, y las 12 de la estructura nueva (consultoría transformación digital, estrategia y diseño, estrategia de negocio digital, empresas de tecnologia en guadalajara, design thinking, desarrollo de software para empresas, experiencia de cliente, ux ui, consultoría de innovación, empresa de desarrollo de software frase y amplia, digitalización de procesos).
+
+**Para decisión de Chucho, no ejecutado:**
+- Keywords con solo conversiones secundarias (llamadas) en la legacy: "desarrollo de software a medida" (1) y "proveedores TI" (1). No se agregaron porque el criterio fue conversión principal.
+- Riesgo a vigilar en 7 días: "erp" en amplia y las de "desarrolladores/programador" traen intención mixta (proveedores de ERP, gente buscando trabajo). El tCPA $1,200 y las negativas laborales acotan, pero conviene revisar términos de búsqueda el 28-sep antes de decidir si alguna pasa a frase.
+- La landing no menciona ERP, apps ni ecommerce de forma explícita; el nivel de calidad de esas keywords arrancará bajo. Si convierten, vale un bloque en la landing (contenido que ya está en apto.mx).
