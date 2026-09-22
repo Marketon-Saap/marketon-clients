@@ -1,10 +1,12 @@
 import re,os,shutil,json,html
 C="/Users/JPEREZ/Documents/Marketon/SaaP/Claude Code/Clientes/Apto/03-Estrategia/Fase-2-Plan-MKT/Landing/Entrega-cliente-v2-Norma-2026-09-22"
-R=os.path.expanduser('~/Documents/apto-landing'); V=f'{R}/v2'; S=os.getcwd()
+R=os.path.expanduser('~/Documents/apto-landing'); V=os.environ.get('OUT') or f'{R}/v2'; S=os.path.dirname(os.path.abspath(__file__))
+REVIEW=os.environ.get('REVIEW','0')=='1'
 VER='20260922a'
 if os.path.exists(V): shutil.rmtree(V)
 os.makedirs(V); shutil.copytree(f'{C}/assets',f'{V}/assets',ignore=shutil.ignore_patterns('.DS_Store'))
 shutil.copy(f'{R}/assets/og-image-apto-official.png',f'{V}/assets/og-image-apto-official.png')
+os.makedirs(f'{V}/aviso-de-privacidad',exist_ok=True); shutil.copy(f'{R}/aviso-de-privacidad/index.html',f'{V}/aviso-de-privacidad/index.html')
 s=open(f'{C}/index.html',encoding='utf-8').read()
 def rep(old,new,count=1):
     global s
@@ -112,6 +114,8 @@ def ftrack(m):
 f=re.sub(r'<a ([^>]*href="[^"]*"[^>]*)>',ftrack,f)
 f=f.replace('<div>© 2026 APTO Innovación Digital · Todos los derechos reservados</div>','<div>© 2026 APTO Innovación Digital · Todos los derechos reservados · <a href="/aviso-de-privacidad/" target="_blank" rel="noopener" data-track="footer_section_click">Aviso de privacidad</a></div>')
 s=s[:i]+f
+# logo unico (Álvaro 22-sep: "solo el update del logo porque hay dos"): el footer usaba el SVG delgado de v1; ahora usa el PNG nuevo de la cabecera
+rep('<img alt="APTO" decoding="async" height="56" src="assets/logos/apto-logo-white.svg" width="93"/>','<img alt="APTO" decoding="async" src="assets/apto-logo.png" width="80" height="36"/>')
 # form
 rep('<p class="preview-note">Vista previa local: puedes probar el formulario; los datos no se envían.</p>','')
 rep('<form data-hs-do-not-collect="true" data-mode="local-preview" id="diagnostico-form" novalidate="">','<form id="diagnostico-form" novalidate="" autocomplete="on">')
@@ -173,6 +177,18 @@ if PROPUESTA:
         return art.replace('</h3>\n</div>',f'</h3>\n<p class="reto__tema">{temas[k.group(1)]}</p><!-- PROPUESTA subtítulo temático -->\n</div>',1)
     s2=re.sub(r'<article class="reto">.*?</article>',add_tema,s,flags=re.S); assert s2.count('reto__tema')==6, s2.count('reto__tema'); s=s2
 _t=re.sub(r'<[^>]+>','',s); print('em dash en copy del cliente (se respeta):',[_t[max(0,m.start()-40):m.start()+30].replace('\n',' ') for m in re.finditer('—',_t)])
+
+if REVIEW:
+    # Pagina de revision para el cliente: sin GTM ni HubSpot, formulario que valida pero no envia, noindex, aviso relativo
+    s=re.sub(r'<!-- Google Tag Manager · GTM-K7J6MQ8.*?<!-- End Google Tag Manager -->','<!-- REVISION: sin GTM -->',s,flags=re.S)
+    s=re.sub(r'<!-- Google Tag Manager \(noscript\) -->.*?<!-- End Google Tag Manager -->','',s,flags=re.S)
+    s=re.sub(r'<!-- HubSpot tracking[^\n]*\n<script[^>]*hs-scripts\.com/2583031\.js"></script>','<!-- REVISION: sin HubSpot -->',s)
+    s=s.replace('<link rel="preconnect" href="https://www.googletagmanager.com">\n','').replace('<link rel="preconnect" href="https://js.hs-scripts.com">\n','')
+    s=s.replace('<form id="diagnostico-form" novalidate="" autocomplete="on">','<form id="diagnostico-form" novalidate="" autocomplete="on" data-mode="review">')
+    s=s.replace('<div aria-live="assertive" class="form-message" hidden="" id="form-message" role="alert"></div>','<div aria-live="assertive" class="form-message" hidden="" id="form-message" role="alert"></div><p class="preview-note">Página de revisión: el formulario valida pero no envía datos.</p>')
+    s=s.replace('href="/aviso-de-privacidad/"','href="aviso-de-privacidad/"')
+    s=s.replace('<link rel="canonical" href="https://landing.apto.mx/">','<link rel="canonical" href="https://landing.apto.mx/"><!-- REVISION -->')
+    assert 'GTM-K7J6MQ8' not in s and 'hs-scripts' not in s
 open(f'{V}/index.html','w',encoding='utf-8').write(s)
 # --- styles.css ---
 css=open(f'{C}/styles.css',encoding='utf-8').read()
@@ -241,6 +257,7 @@ crep("""        window.addEventListener('load', function(){
           window.scrollTo(0, 0);""")
 crep("submitLabel.textContent = 'Agenda tu sesión de descubrimiento';","submitLabel.textContent = submitLabel.dataset.label || 'Enviar mi reto';")
 crep("      // Nav pill opacity ramp on scroll","      // Menu movil de Norma: el toggle lo maneja script.js; aqui solo medimos la apertura\n      (function(){ var t=document.querySelector('.menu-toggle'), m=document.getElementById('mobile-nav'); if(!t||!m) return; t.addEventListener('click', function(){ if(m.hidden===false) track('nav_mobile_menu_open', {}); }); })();\n      // Nav pill opacity ramp on scroll (v1 · no aplica en Norma, sale sin hacer nada)")
+crep("        // Reentrancy guard · previene doble submit","        if (form.dataset.mode === 'review') { showMessage('warn', 'Página de revisión: el formulario valida correctamente pero no envía datos ni crea registros.'); return; }\n        // Reentrancy guard · previene doble submit")
 cap="/* APTO landing · capa de captura y medicion (Marketon) · portada de v1 sin cambiar nombres de evento, ids ni payload.\n   Eventos: data-track por clic · form_start · form_field_error · form_submit_success · form_submit_fail · form_submit_success_fallback\n   · form_modal_open/close · nav_mobile_menu_open · section_view · video_play. Contrato con el Worker apto-landing-api sin cambios. */\n"+cap
 open(f'{V}/capture.js','w',encoding='utf-8').write(cap)
 # robots: bloquear /v2/ mientras es staging
