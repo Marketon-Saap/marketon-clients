@@ -200,6 +200,12 @@ crep("var heroCta = document.querySelector('.hero__cta-group');","var heroCta = 
 crep("var NAV_OFFSET = 72; // altura aproximada del nav sticky (px)","var NAV_OFFSET = 96; // cabecera fija de Norma + aire")
 crep("      // Anchor scroll fix · IG WebView","      var INITIAL_HASH = window.location.hash; // se lee antes de que el fix de anclas lo borre\n      // Anchor scroll fix · IG WebView")
 crep("if (window.location.hash === '#cta-form') {","if (INITIAL_HASH === '#cta-form') {")
+crep("""        window.addEventListener('load', function(){
+          window.scrollTo(0, 0);""","""        // Sitelinks de Ads llegan con ?sl=<seccion>#<seccion>: aterrizar en esa seccion, no en el hero
+        var SL_TARGET = (INITIAL_HASH && INITIAL_HASH !== '#cta-form' && document.getElementById(INITIAL_HASH.slice(1))) ? INITIAL_HASH.slice(1) : '';
+        window.addEventListener('load', function(){
+          if (SL_TARGET) { setTimeout(function(){ scrollToId(SL_TARGET); }, 150); return; }
+          window.scrollTo(0, 0);""")
 crep("submitLabel.textContent = 'Agenda tu sesión de descubrimiento';","submitLabel.textContent = submitLabel.dataset.label || 'Enviar mi reto';")
 crep("      // Nav pill opacity ramp on scroll","      // Menu movil de Norma: el toggle lo maneja script.js; aqui solo medimos la apertura\n      (function(){ var t=document.querySelector('.menu-toggle'), m=document.getElementById('mobile-nav'); if(!t||!m) return; t.addEventListener('click', function(){ if(m.hidden===false) track('nav_mobile_menu_open', {}); }); })();\n      // Nav pill opacity ramp on scroll (v1 · no aplica en Norma, sale sin hacer nada)")
 cap="/* APTO landing · capa de captura y medicion (Marketon) · portada de v1 sin cambiar nombres de evento, ids ni payload.\n   Eventos: data-track por clic · form_start · form_field_error · form_submit_success · form_submit_fail · form_submit_success_fallback\n   · form_modal_open/close · nav_mobile_menu_open · section_view · video_play. Contrato con el Worker apto-landing-api sin cambios. */\n"+cap

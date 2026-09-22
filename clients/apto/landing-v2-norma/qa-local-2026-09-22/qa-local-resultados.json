@@ -143,7 +143,7 @@
     {
       "name": "menu movil: link cierra el menu, hace scroll y emite nav_mobile_link_click",
       "pass": true,
-      "detail": "{\"closed\":true,\"y\":4027,\"dl\":2}"
+      "detail": "{\"closed\":true,\"y\":4003,\"dl\":2}"
     },
     {
       "name": "hero por intencion (grupo base 199879292282)",
@@ -155,9 +155,14 @@
       "pass": true
     },
     {
+      "name": "sitelink ?sl=casos#casos aterriza en la seccion (no en el hero)",
+      "pass": true,
+      "detail": "{\"y\":4438,\"casosTop\":4539}"
+    },
+    {
       "name": "terceros bloqueados en local (GTM/HubSpot/Pixel no llamados)",
       "pass": true,
-      "detail": "19 peticiones bloqueadas"
+      "detail": "21 peticiones bloqueadas"
     }
   ]
 }

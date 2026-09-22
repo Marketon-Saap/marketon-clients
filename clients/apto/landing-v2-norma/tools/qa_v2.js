@@ -91,6 +91,10 @@ const R = { widths: {}, checks: [] }; const ok=(name,pass,detail)=>{ R.checks.pu
   await hp.goto(URL+'#cta-form',{waitUntil:'load'}); await hp.waitForTimeout(800);
   ok('deep link #cta-form abre el modal', await hp.evaluate(()=>document.getElementById('form-modal').hidden===false));
   await hp.close();
+  const sl = await newPage(1440,900); await sl.goto(URL+'?sl=casos#casos',{waitUntil:'load'}); await sl.waitForTimeout(1200);
+  const slr = await sl.evaluate(()=>({ y: Math.round(scrollY), casosTop: Math.round(document.getElementById('casos').getBoundingClientRect().top + scrollY) }));
+  ok('sitelink ?sl=casos#casos aterriza en la seccion (no en el hero)', slr.y > 400 && Math.abs(slr.y - (slr.casosTop-96)) < 40, JSON.stringify(slr));
+  await sl.close();
   ok('terceros bloqueados en local (GTM/HubSpot/Pixel no llamados)', blocked.length>0, blocked.length+' peticiones bloqueadas');
   fs.writeFileSync(`${Q}/qa-local-resultados.json`, JSON.stringify(R,null,2));
   await browser.close(); srv.kill();

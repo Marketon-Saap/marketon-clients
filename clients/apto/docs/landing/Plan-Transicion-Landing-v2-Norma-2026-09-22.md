@@ -251,3 +251,18 @@ Servidor local, terceros bloqueados (GTM, HubSpot, Pixel, YouTube) y Worker simu
 
 ### Siguiente
 Fase 2 (title y description elegidos por Álvaro, OG image nueva, dimensiones en 21 imágenes, PageSpeed) y Fase 3 paso 2: QA en `landing.apto.mx/v2/` con GTM Preview y envíos reales desde Chrome en móvil y desktop, con validación de Chucho en HubSpot.
+
+---
+
+## Nivel de calidad de Google Ads · diagnóstico y acciones (22-sep, tarde)
+
+**Diagnóstico (últimos 30 días, campaña 24032573932, 22 keywords no marca con nivel visible):** experiencia en la página de destino inferior al promedio en 17, CTR esperado inferior en 14, relevancia del anuncio mixta (9 arriba, 8 abajo). Marca en 6 y 10. Competidores en 1. La landing es el freno principal; v2 corrige velocidad, transparencia y navegación, pero no la relevancia estática porque el copy del cliente es de marca (transformación digital aparece una vez, desarrollo de software solo en la FAQ, experiencia de cliente, MVP, arquitectura de software y equipo de innovación no aparecen).
+
+**Ejecutado hoy con go de Chucho:**
+- **Sitelinks.** Los 6 anteriores (Proyectos, Contacto, Insights, Servicios, Equipo Apto, Apto Education) mandaban a apto.mx, que convirtió cero en el experimento. Desvinculados. Cinco nuevos a la landing: Casos: Coppel y APYMSA (`?sl=casos#casos`), Los seis retos (`#productos`), Nuestra metodología (`#metodo`), Cuéntanos tu reto (`#cta-form`), Conoce al equipo (`#conoce-equipo`). Descripciones tomadas del copy del cliente. En v1 el JS fuerza el hero al cargar, así que hasta el cutover aterrizan arriba; en v2 `capture.js` lee el hash antes de borrarlo y hace scroll a la sección (verificado en QA local, 26 de 26).
+- **Competidores.** Pausadas accenture, kpmg, bcg, boston consulting group, globant y globant mexico: nivel 1 y cero conversiones históricas. Wizeline se queda (convirtió en la legacy) igual que las 8 marcas chicas agregadas el 22-sep.
+- **Concordancia.** Amplias con nivel 1 o 2 y cero conversiones pasadas a frase: ux ui (la frase ya existía), soluciones digitales guadalajara y customer experience (frase nueva, amplia pausada).
+
+**Pendiente para el día del cutover (no antes, para no resetear los anuncios dos veces):** alinear los 35 anuncios a la voz nueva (93 titulares y descripciones con "10 años" o "Del papel a la realidad", 21 con "Agenda tu sesión"; el cliente ya no dice eso) y fijar el titular del tema en posición 1 en cada grupo; 6 anuncios están en "Deficiente" (3 de competidores, 1 de digitalización, 1 de estrategia).
+
+**Propuestas de landing para Álvaro:** bloque "Qué hacemos" con los servicios publicados en apto.mx (los mismos del fragmento estructurado que ya corre: servicios omnicanales, productos digitales, estrategia de negocio, arquitectura de software, equipos de innovación, capacitación en diseño) más transformación digital y experiencia de cliente, con anclas a los seis retos; subtítulo temático en cada reto; title y description con keyword. Lectura del nivel de calidad: una a dos semanas después del cutover.
