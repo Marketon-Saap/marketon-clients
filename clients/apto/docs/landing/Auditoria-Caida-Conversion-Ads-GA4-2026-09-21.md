@@ -154,3 +154,11 @@ Reporte geográfico con conversiones de formulario, todas las campañas, presenc
 **Ahora:** los 23 estados con conversión, a nivel estado (la resolución geográfica por ciudad en México es pobre y partiría la demanda del área metropolitana). Cambio en una sola operación atómica: 12 bajas + 23 altas, sin ventana con la campaña sin ubicaciones. Tipo de segmentación sin cambio (presencia o interés). Fuera quedan los 9 estados sin conversión en el año: Aguascalientes, Zacatecas, Nayarit, Colima, Hidalgo, Tlaxcala, Tabasco, Campeche y Baja California Sur.
 
 **Verificado por API tras el cambio:** 23 criterios de ubicación activos, todos estados, ninguna ciudad restante.
+
+---
+
+## Nota 22-sep · Odoo fuera por decisión del cliente
+
+APTO (vía Chucho, 22-sep) no quiere aparecer en búsquedas relacionadas con Odoo. Revertido: se removieron las keywords "implementación odoo", "software odoo" y "odoo guadalajara" del grupo Digitalización de operaciones, y se restauraron las negativas de campaña "odoo" (amplia) e "implementación odoo" (frase), que se suman a "oddo", "odoo partner", "odoo partners", "odoo mexico" y "odoo puebla" que nunca se tocaron. Con "odoo" en amplia como negativa, "erp" en amplia tampoco puede entrar a consultas que mencionen Odoo. Las 5 conversiones históricas de Odoo se dan por renunciadas a propósito. Queda cerrado el punto "partner odoo" de la lista de decisiones.
+
+Siguiente revisión: en unos días, con datos del nuevo set de keywords y de la segmentación por 23 estados.
