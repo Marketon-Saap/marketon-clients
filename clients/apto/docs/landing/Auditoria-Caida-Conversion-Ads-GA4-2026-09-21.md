@@ -105,3 +105,52 @@ Negativas removidas: 10 (IDs 10160771, 10250421, 17990962, 17992272, 17718181, 1
 - Keywords con solo conversiones secundarias (llamadas) en la legacy: "desarrollo de software a medida" (1) y "proveedores TI" (1). No se agregaron porque el criterio fue conversión principal.
 - Riesgo a vigilar en 7 días: "erp" en amplia y las de "desarrolladores/programador" traen intención mixta (proveedores de ERP, gente buscando trabajo). El tCPA $1,200 y las negativas laborales acotan, pero conviene revisar términos de búsqueda el 28-sep antes de decidir si alguna pasa a frase.
 - La landing no menciona ERP, apps ni ecommerce de forma explícita; el nivel de calidad de esas keywords arrancará bajo. Si convierten, vale un bloque en la landing (contenido que ya está en apto.mx).
+
+---
+
+## Anexo 22-sep · Términos de búsqueda con conversión y segmentación geográfica
+
+### A) Términos de búsqueda con conversiones de formulario (2026-01-01 a 2026-09-22, todas las campañas)
+
+46 términos con conversión, todos de formulario (Formulario de contacto, generate_lead, HubSpot Form Submission); ninguno de llamada. Clasificación:
+
+**Ya cubiertos** por keyword existente o agregada el 21-sep: desarrollo de software, diseño de app, programador de software, desarrollador de apps, desarrolladores de software, desarrollador de app, erp para ventas, implementar odoo (variante de "implementación odoo").
+
+**Agregados 22-sep (22 keywords):**
+
+| Grupo | Keyword (concordancia) | Conv. |
+|---|---|---|
+| T2 Op · Arquitectura de software | casas desarrolladoras de software (amplia) · empresas desarrolladoras de software en méxico (amplia) · empresa desarrolladora de software en mexico (amplia) · empresas de desarrollo de software en puebla (amplia) · "servicios de programacion" (frase) · "consultoria de programacion" (frase) · "creacion de sistema" (frase) | 7 |
+| T2 Core · Productos digitales | desarrollo de aplicaciones moviles (amplia) · creación de apps (amplia) · empresas de desarrollo de app (amplia) · ecommerce personalizado (amplia) · "realizacion de aplicaciones" (frase) | 5 |
+| C6 · Competidores | "xr business solutions" (2) · "nearsoft" · "xdevelop" · "quadit" · "practia global" · "pci consultores" · "evolupyme" · "empresa ideo", todas en frase | 9 |
+| T2 Op · Digitalización de operaciones | "software odoo" (frase) · "odoo guadalajara" (frase) | 2 |
+
+Los genéricos van en frase para no abrir "sistema", "programación" o "aplicaciones" en amplia. Se removió la negativa "desarrolladora" (307371999791) porque bloqueaba "empresa desarrolladora de software en mexico"; quedan 126 negativas.
+
+**No agregados, para decisión de Chucho:**
+- Cluster web (5 conv.: desarrollo de paginas web 2, desarrollo de sitio web, diseño web guadalajara, web development mexico). Bloqueado a propósito por las negativas "paginas web", "página web", "diseño web" del armado original: APTO no se posiciona como agencia web. Si se quiere entrar, hay que quitar esas 4 negativas y agregar las 4 keywords.
+- "partner odoo" (1 conv.). Bloqueado por la negativa "odoo partner". Decidir si APTO quiere pelear búsquedas de partner Odoo.
+- Catálogos (3 conv.: diseñadores de catalogos 2, diseño de catalogos digitales 1). Fuera de la oferta publicada en apto.mx; los leads probablemente no encajan. Revisar en HubSpot antes de abrir.
+- Agencias y genéricos (agencias de diseño grafico, agencias de branding en guadalajara, agencia publicidad, mercadotecnia cerca de mi, agencia investigacion de mercados, servicio al cliente, ventas, programador web full stack): 1 conv. cada uno, intención fuera de encaje y varios ya negativizados a propósito. No se agregan.
+
+### B) Segmentación geográfica (últimos 12 meses, 2025-09-22 a 2026-09-22)
+
+Reporte geográfico con conversiones de formulario, todas las campañas, presencia + interés. 23 estados con al menos una conversión:
+
+| Estado | Conv. | Estado | Conv. |
+|---|---|---|---|
+| Jalisco | 47 | Coahuila | 3 |
+| Ciudad de México | 47 | San Luis Potosí | 3 |
+| Estado de México | 18 | Yucatán | 2 |
+| Nuevo León | 12 | Tamaulipas | 2 |
+| Querétaro | 8 | Oaxaca | 2 |
+| Quintana Roo | 5 | Chihuahua | 2 |
+| Puebla | 4 | Guerrero | 2 |
+| Morelos | 4 | Veracruz | 2 |
+| Guanajuato | 4 | Durango · Michoacán · Sinaloa · Sonora · Chiapas · Baja California | 1 c/u |
+
+**Antes:** 12 ciudades (Aguascalientes, Tijuana, CDMX, Guadalajara, Zapopan, Cuernavaca, Monterrey, Querétaro, Cancún, Hermosillo, Mérida, Puebla). Aguascalientes: cero conversiones en el año. Fuera de la lista quedaban Estado de México (18), SLP, Coahuila, Tamaulipas, Oaxaca, Playa del Carmen y varias más.
+
+**Ahora:** los 23 estados con conversión, a nivel estado (la resolución geográfica por ciudad en México es pobre y partiría la demanda del área metropolitana). Cambio en una sola operación atómica: 12 bajas + 23 altas, sin ventana con la campaña sin ubicaciones. Tipo de segmentación sin cambio (presencia o interés). Fuera quedan los 9 estados sin conversión en el año: Aguascalientes, Zacatecas, Nayarit, Colima, Hidalgo, Tlaxcala, Tabasco, Campeche y Baja California Sur.
+
+**Verificado por API tras el cambio:** 23 criterios de ubicación activos, todos estados, ninguna ciudad restante.
