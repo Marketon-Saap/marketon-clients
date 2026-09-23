@@ -282,3 +282,21 @@ Con el visto bueno de Álvaro, la v2 se publicó en `landing.apto.mx` (commit `0
 **Smoke test E2E en producción: 4 de 4** (desktop modal e inline en Chrome; móvil bottom sheet e inline en el navegador integrado). Detalle, ids de los registros de prueba y hallazgos en `Smoke-Test-v2-Produccion-2026-09-22.md`. Search Console: indexada, canonical correcto, sitemap reenviado.
 
 **Pendientes inmediatos:** borrar los 4 registros de prueba cuando Chucho valide; reescribir los 35 anuncios a la voz nueva y fijar titulares (punto 2 y 3 del nivel de calidad), con su go; PageSpeed mañana; configurar `RESEND_API_KEY` si APTO quiere el correo de aviso; re-estilizar el aviso de privacidad con Norma.
+
+---
+
+## Medición de clics · GTM v73 · 23-sep-2026 · HECHO y verificado en producción
+
+Petición de Chucho: saber qué botón pulsa cada usuario (a GA4) y que hacia el Pixel de Meta todos los clics que abren el formulario cuenten como un solo evento.
+
+**Cambios en GTM (contenedor 68635063, versión 73 publicada):**
+- Variables de capa de datos nuevas: `label`, `nav_link`, `producto`, `taller`, `item`, `section_id`, `source`, `field`.
+- Trigger 113 "Landing · Todos los clics y eventos (GA4)": todos los nombres `data-track` de la landing y los eventos programáticos, excepto `form_start` y `form_submit_success`, que conservan sus etiquetas propias.
+- Trigger 114 "Landing · Formulario abierto (Meta, un solo evento)": solo `form_modal_open`.
+- Tag 94 (GA4) ahora dispara con el trigger 113 y manda los ocho parámetros; en GA4 se registraron las ocho dimensiones personalizadas de evento con esos nombres.
+- Tag 95 (Meta) dispara con el trigger 114 y envía un solo `ViewContent` con `content_name = formulario_abierto` y `content_type` = el CTA que abrió el formulario. Se eliminó el trigger 93 (regex antiguo que mandaba cada microconversión al Pixel).
+- La conversión principal (`generate_lead`, Lead de Meta, conversión de Ads, mejoradas) no se tocó.
+
+**Verificación en producción, navegando como usuario en Chrome (23-sep):** el CDN ya sirve la v73. Clic en "Casos" del menú, en la etiqueta "Transformación digital" de Qué hacemos y en el CTA del hero (abre el modal), luego Escape. GA4 en tiempo real recibió `nav_link_click`, `servicio_chip_click`, `hero_cta_click`, `form_modal_open` y `form_modal_close`. Meta recibió exactamente un `ViewContent` (`formulario_abierto`, `content_type = hero_cta_click`) y nada por el menú ni la etiqueta.
+
+**Hallazgo y corrección:** el manejador de scroll suave de `capture.js` volvía a empujar el `data-track` sin etiqueta, así que GA4 contaba dos eventos por clic en enlaces ancla (uno sin `label`). Venía así desde v1. Se quitó el segundo push (commit `106e625` en `main`); queda solo el listener por elemento, que sí manda `label`, `nav_link` e `item`. Nota de método: la herramienta de red de Chrome muestra `/g/collect` con estado 503 aunque GA4 sí recibe el evento; la prueba válida es el informe en tiempo real.
