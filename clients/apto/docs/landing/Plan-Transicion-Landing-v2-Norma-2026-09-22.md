@@ -316,3 +316,21 @@ Pregunta de Chucho: qué conversiones de GA4 importar a Ads y si como principale
 **GTM v74 publicada (24-sep):** tag 59 "Llamada Web" ahora apunta a `_9p_CO7KhYQdEN7v0sYD` (acción 7793108334). Se editó en el espacio de trabajo por defecto (78) porque el 77 quedó cerrado tras la v73. Los clics al teléfono de la landing y de apto.mx vuelven a contar en Ads como secundaria.
 
 **Efecto esperado:** la columna "Conversiones" baja y el CPA reportado sube al valor real; Maximizar conversiones con tCPA $1,200 tarda una o dos semanas en reajustar. Revisar el tCPA contra el CPA real después de ese periodo.
+
+---
+
+## Extensiones de campaña y conversión de apertura de formulario · 24-sep-2026
+
+**Conversión secundaria nueva:** `form_modal_open` marcado como key event en GA4 (una vez por sesión) e importado a Ads como "APTO - GA4 (web) form_modal_open" (7793164951), categoría Participación, secundaria. No entra a la puja; sirve como columna de intención por keyword y grupo. La API no permite crear importaciones de GA4: se creó desde la interfaz y se activó por API. El conteo de importaciones GA4 no se puede cambiar (queda varias por clic), pero el key event ya cuenta una por sesión.
+
+**Por qué no como principal:** Maximizar conversiones con tCPA optimizaría por abrir el formulario, que es mucho más barato y frecuente que un lead. Compraría clics curiosos y bajaría leads.
+
+**Extensiones a nivel campaña (24032573932), todas verificadas contra el texto publicado en la landing:**
+- Llamada: +52 33 1814 5528 (nuevo), sin conversión de llamada desde anuncios.
+- Nombre de empresa: APTO (nuevo). El logo ya estaba a nivel cuenta.
+- Vínculos: 8 en total. Nuevos: Qué hacemos (#servicios), Clientes y proyectos (#proyectos), Preguntas frecuentes (#faq). Verificado con Playwright contra producción: los 8 aterrizan en su sección en escritorio y móvil.
+- Textos destacados: se desvincularon 6 que la landing ya no dice ("10 años con líderes", "Del papel a la realidad", "Diseño = Estrategia", "Diseño + Estrategia", "Producto, no proyecto", "Enfoque usuario-céntrico"). Nuevos: Más de 50 proyectos, Transformación digital, Prototipos con usuarios, Arquitectura de software, Capacitación en diseño, Empresas de todo tamaño. Quedan 12.
+- Fragmentos estructurados (3), imágenes (6) y ubicación del Perfil de Negocio (nivel cuenta) ya estaban.
+- No aplican: precio y promoción (APTO no publica precios ni promociones), formulario de clientes potenciales (saltaría la landing y HubSpot).
+
+**Nota de método:** Chrome con la pestaña oculta no ejecuta el desplazamiento suave, así que los vínculos parecen quedarse arriba. Verificar aterrizajes con Playwright, no con la pestaña de fondo.
