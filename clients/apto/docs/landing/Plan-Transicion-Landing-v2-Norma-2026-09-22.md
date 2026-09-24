@@ -285,6 +285,18 @@ Con el visto bueno de Álvaro, la v2 se publicó en `landing.apto.mx` (commit `0
 
 ---
 
+## Cutover ejecutado · 22-sep-2026
+
+**La v2 está en producción en `landing.apto.mx`.** Álvaro aprobó, se unificó el logo, se corrió el smoke test de punta a punta desde la UI y se publicó. Chucho avisó al cliente.
+
+Verificación externa post-cutover: v2 sirviendo (Satoshi, Clash Grotesk, `styles.css`, `capture.js`); GTM-K7J6MQ8 y `hs-scripts.com/2583031.js` en el head; 67 atributos `data-track`; modal, barra fija y facade de video presentes, con `enablejsapi` y `video_play` dentro de `capture.js`; `robots` en `index, follow`; `<title>` opción A; canonical y OG presentes; `/v2/` en 404 y `robots.txt` sin el `Disallow`; aviso de privacidad en 200.
+
+Falta de las compuertas: **velocidad y accesibilidad**, porque PageSpeed quedó bloqueado por cuota el 21-sep y no hay lectura posterior al cutover. Arranca la Fase 5 (post-lanzamiento, días 1, 3 y 7) y la ventana de validación cierra el 6-oct.
+
+Registro de sesión: `03-Estrategia/Sesiones-Trabajo/2026-09-22-Cutover-Landing-v2-Produccion.md`.
+
+---
+
 ## Medición de clics · GTM v73 · 23-sep-2026 · HECHO y verificado en producción
 
 Petición de Chucho: saber qué botón pulsa cada usuario (a GA4) y que hacia el Pixel de Meta todos los clics que abren el formulario cuenten como un solo evento.
@@ -334,3 +346,13 @@ Pregunta de Chucho: qué conversiones de GA4 importar a Ads y si como principale
 - No aplican: precio y promoción (APTO no publica precios ni promociones), formulario de clientes potenciales (saltaría la landing y HubSpot).
 
 **Nota de método:** Chrome con la pestaña oculta no ejecuta el desplazamiento suave, así que los vínculos parecen quedarse arriba. Verificar aterrizajes con Playwright, no con la pestaña de fondo.
+
+---
+
+## Anuncios a la voz nueva y conversiones mejoradas · 24-sep-2026
+
+**Anuncios.** Se reescribieron los 35 anuncios activos de la campaña 24032573932, uno por uno, conservando lo que ya era correcto. Salieron 166 titulares y 86 descripciones que la landing ya no dice o que no están publicadas: "10 años", "Del papel a la realidad", "Agenda diagnóstico", "Diagnóstico sin costo", "Respuesta en menos de 24 horas", "Fractional CMO", "Startups YC", "15 sucursales", comparaciones con Big Four, "Diseño = Estrategia", "Producto, no proyecto", "usuario-céntrico", Kazam y "Bayware" (corregido a BayWa r.e.). Cada texto nuevo sale del copy publicado en la landing: "Hagamos realidad el cambio", "Más de 50 proyectos", "Primera conversación sin costo", "Metodología de 5 etapas", los servicios de "Qué hacemos", las frases de los seis retos y el FAQ. En cada grupo temático se fijaron dos titulares del tema en la posición 1 (60 fijados en total). Verificado en la cuenta: 35 activos, 35 aprobados, cero frases viejas. La fuerza de anuncio queda "pendiente" mientras Google recalcula. Los anuncios pausados no se tocaron.
+
+**Conversiones mejoradas en la principal.** GTM versión 75 publicada. La etiqueta 67 ("Hubspot - Form Submission (Lead)", única principal de leads) ahora manda el correo y el teléfono del lead en modo manual. Variable 115 toma el correo de la landing (`em_raw`) o, en apto.mx, de `JS email`. Variable 116 junta correo y teléfono (el teléfono ya llega como +52 y 10 dígitos). La cuenta ya tenía aceptados los términos de datos de clientes. Verificado con un envío por la UI de la landing en Playwright, con el Worker simulado y los envíos a Google, Meta y GA4 capturados y bloqueados (ningún registro ni conversión real): el ping de la conversión principal sale con `em` y `ec_mode=m`. El píxel de Meta no envía eventos en navegadores automatizados, así que no se puede probar ahí; no cambió en esta versión y quedó verificado en Chrome real el 22 y 23 de septiembre.
+
+**Pendiente de Chucho:** validar y borrar los 4 registros del smoke test (contactos 250086969888, 250085377318, 250091470928, 250100716148; tratos 65198952831, 65198653520, 65176899688, 65182011515; D1 48 a 51). Revisar el tCPA de $1,200 contra el CPA real una a dos semanas después de la limpieza de conversiones. PageSpeed sigue pendiente.
