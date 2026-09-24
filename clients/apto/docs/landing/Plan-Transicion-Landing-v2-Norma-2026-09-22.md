@@ -300,3 +300,19 @@ Petición de Chucho: saber qué botón pulsa cada usuario (a GA4) y que hacia el
 **Verificación en producción, navegando como usuario en Chrome (23-sep):** el CDN ya sirve la v73. Clic en "Casos" del menú, en la etiqueta "Transformación digital" de Qué hacemos y en el CTA del hero (abre el modal), luego Escape. GA4 en tiempo real recibió `nav_link_click`, `servicio_chip_click`, `hero_cta_click`, `form_modal_open` y `form_modal_close`. Meta recibió exactamente un `ViewContent` (`formulario_abierto`, `content_type = hero_cta_click`) y nada por el menú ni la etiqueta.
 
 **Hallazgo y corrección:** el manejador de scroll suave de `capture.js` volvía a empujar el `data-track` sin etiqueta, así que GA4 contaba dos eventos por clic en enlaces ancla (uno sin `label`). Venía así desde v1. Se quitó el segundo push (commit `106e625` en `main`); queda solo el listener por elemento, que sí manda `label`, `nav_link` e `item`. Nota de método: la herramienta de red de Chrome muestra `/g/collect` con estado 503 aunque GA4 sí recibe el evento; la prueba válida es el informe en tiempo real.
+
+---
+
+## Conversiones de Google Ads · limpieza de principales · 24-sep-2026
+
+Pregunta de Chucho: qué conversiones de GA4 importar a Ads y si como principales. Diagnóstico (90 días): la misma solicitud contaba dos o tres veces como principal (etiqueta GTM "Hubspot - Form Submission (Lead)" + "Formulario de contacto" + importación GA4 generate_lead), y la etiqueta 59 "Llamada Web" apuntaba a una acción de conversión eliminada, así que los clics al teléfono no contaban en Ads.
+
+**Hecho con go de Chucho (cuenta 702-132-4934):**
+- "Hubspot - Form Submission (Lead)" (7683684640) es la única principal para lead de formulario; conteo cambiado a una por clic.
+- "Formulario de contacto" (6540084871) y "APTO - GA4 (web) generate_lead" (7720148566) pasan a secundarias.
+- Acción nueva "Llamada Web (clic al teléfono, landing y sitio)" (7793108334), sitio web, categoría contacto, una por clic, secundaria. Label `_9p_CO7KhYQdEN7v0sYD`.
+- No se importa nada más de GA4; las secundarias GA4 existentes (formulario_general, mailto, tel) se quedan. Las offline de HubSpot (Oportunidad $30,000, Cliente $456,000) siguen principales con 0 en 90 días: confirmar con APTO que la sincronización HubSpot → Ads está viva.
+
+**Pendiente (bloqueado por permisos de la sesión):** en GTM, tag 59 "Llamada Web" cambiar `conversionLabel` de `voSSCPvo0eobEN7v0sYD` a `_9p_CO7KhYQdEN7v0sYD`, crear versión 74 y publicar. Hasta entonces los clics al teléfono siguen sin contar en Ads.
+
+**Efecto esperado:** la columna "Conversiones" baja y el CPA reportado sube al valor real; Maximizar conversiones con tCPA $1,200 tarda una o dos semanas en reajustar. Revisar el tCPA contra el CPA real después de ese periodo.
