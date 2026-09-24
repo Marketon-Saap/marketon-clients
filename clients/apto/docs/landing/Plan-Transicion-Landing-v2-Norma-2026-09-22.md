@@ -313,6 +313,6 @@ Pregunta de Chucho: qué conversiones de GA4 importar a Ads y si como principale
 - Acción nueva "Llamada Web (clic al teléfono, landing y sitio)" (7793108334), sitio web, categoría contacto, una por clic, secundaria. Label `_9p_CO7KhYQdEN7v0sYD`.
 - No se importa nada más de GA4; las secundarias GA4 existentes (formulario_general, mailto, tel) se quedan. Las offline de HubSpot (Oportunidad $30,000, Cliente $456,000) siguen principales con 0 en 90 días: confirmar con APTO que la sincronización HubSpot → Ads está viva.
 
-**Pendiente (bloqueado por permisos de la sesión):** en GTM, tag 59 "Llamada Web" cambiar `conversionLabel` de `voSSCPvo0eobEN7v0sYD` a `_9p_CO7KhYQdEN7v0sYD`, crear versión 74 y publicar. Hasta entonces los clics al teléfono siguen sin contar en Ads.
+**GTM v74 publicada (24-sep):** tag 59 "Llamada Web" ahora apunta a `_9p_CO7KhYQdEN7v0sYD` (acción 7793108334). Se editó en el espacio de trabajo por defecto (78) porque el 77 quedó cerrado tras la v73. Los clics al teléfono de la landing y de apto.mx vuelven a contar en Ads como secundaria.
 
 **Efecto esperado:** la columna "Conversiones" baja y el CPA reportado sube al valor real; Maximizar conversiones con tCPA $1,200 tarda una o dos semanas en reajustar. Revisar el tCPA contra el CPA real después de ese periodo.
