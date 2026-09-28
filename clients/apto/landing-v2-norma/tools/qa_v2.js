@@ -37,25 +37,30 @@ const R = { widths: {}, checks: [] }; const ok=(name,pass,detail)=>{ R.checks.pu
   // modal screenshot
   await p.click('.hero .btn-glass'); await p.waitForTimeout(400); await p.screenshot({ path:`${Q}/v2-1440-modal.png` });
   // 3. validaciones negativas dentro del modal
-  await p.fill('#f-firstname','QA'); await p.fill('#f-lastname','Prueba'); await p.fill('#f-email','correo-invalido'); await p.fill('#f-company','Marketon QA'); await p.fill('#f-phone_number','123456789'); await p.fill('#f-message','Prueba local de QA v2, no enviar.');
+  await p.fill('#f-firstname','QA'); await p.fill('#f-lastname','Prueba'); await p.fill('#f-email','correo-invalido'); await p.fill('#f-company','Marketon QA'); await p.fill('#f-phone_number','123456789'); await p.fill('#f-message','Prueba local de QA v2, no enviar.'); await p.focus('#f-firstname'); await p.waitForTimeout(100);
+  const msgRule = await p.evaluate(()=>({ err:document.getElementById('err-message').textContent, val:document.getElementById('f-message').value }));
+  ok('reglas: el campo mensaje limpia coma y punto y sube a MAYUSCULAS', !msgRule.err && msgRule.val==='PRUEBA LOCAL DE QA V2 NO ENVIAR', JSON.stringify(msgRule));
+  await p.fill('#f-message','prueba local de qa v2 no enviar');
   await p.click('#form-submit'); await p.waitForTimeout(300);
   const errs = await p.evaluate(()=>({ email:document.getElementById('err-email').textContent, phone:document.getElementById('err-phone_number').textContent, consent:document.getElementById('err-privacy_consent').textContent, hidden:document.getElementById('diagnostico-form').hidden }));
   ok('negativas: correo, telefono de 9 digitos y consentimiento bloquean', errs.email && errs.phone && errs.consent && !errs.hidden, JSON.stringify(errs));
   await p.fill('#f-firstname','Qa 123'); await p.fill('#f-company','Marketon @QA!'); await p.click('#form-submit'); await p.waitForTimeout(250);
-  const rules = await p.evaluate(()=>({ name:document.getElementById('err-firstname').textContent, company:document.getElementById('err-company').textContent, nameVal:document.getElementById('f-firstname').value }));
-  ok('reglas: nombre con digitos y empresa con caracteres especiales se rechazan', /Solo letras/.test(rules.name) && /Solo letras/.test(rules.company), JSON.stringify(rules));
-  await p.fill('#f-firstname','qa  prueba'); await p.fill('#f-lastname','pérez  porras'); await p.fill('#f-jobtitle','director de marketing'); await p.fill('#f-company','marketon s.a. de c.v.'); await p.focus('#f-email');
+  const rules = await p.evaluate(()=>({ name:document.getElementById('err-firstname').textContent, company:document.getElementById('err-company').textContent, nameVal:document.getElementById('f-firstname').value, companyVal:document.getElementById('f-company').value }));
+  ok('reglas: el campo limpia digitos y caracteres especiales mientras se escribe', rules.nameVal==='QA' && rules.companyVal==='MARKETON QA' && !rules.name && !rules.company, JSON.stringify(rules));
+  await p.fill('#f-firstname','qa  prueba'); await p.fill('#f-lastname','pérez  porras'); await p.fill('#f-jobtitle','director de marketing'); await p.fill('#f-company','marketon sa de cv'); await p.focus('#f-email');
   const up = await p.evaluate(()=>['f-firstname','f-lastname','f-jobtitle','f-company'].map(i=>document.getElementById(i).value));
-  ok('reglas: nombre, apellido, cargo y empresa en MAYUSCULAS sin espacios dobles', up[0]==='QA PRUEBA' && up[1]==='PÉREZ PORRAS' && up[2]==='DIRECTOR DE MARKETING' && up[3]==='MARKETON S.A. DE C.V.', up.join(' | '));
+  ok('reglas: nombre, apellido, cargo y empresa en MAYUSCULAS sin espacios dobles', up[0]==='QA PRUEBA' && up[1]==='PÉREZ PORRAS' && up[2]==='DIRECTOR DE MARKETING' && up[3]==='MARKETON SA DE CV', up.join(' | '));
   await p.fill('#f-phone_number','33181455281'); const ph11 = await p.evaluate(()=>document.getElementById('f-phone_number').value);
   ok('telefono: el input recorta a 10 digitos (MX)', ph11.length===10, ph11);
   // 4. envio positivo con Worker simulado
-  await p.fill('#f-email','qa@marketon.mx'); await p.fill('#f-phone_number','3318145528'); await p.check('#f-privacy_consent'); await p.click('#form-submit'); await p.waitForTimeout(1200);
+  await p.fill('#f-email','QA@Marketon.MX'); await p.focus('#f-phone_number'); const emailLow = await p.evaluate(()=>document.getElementById('f-email').value); ok('correo: el campo fuerza minusculas', emailLow==='qa@marketon.mx', emailLow); await p.fill('#f-phone_number','3318145528'); await p.check('#f-privacy_consent'); await p.click('#form-submit'); await p.waitForTimeout(1200);
   const sub = await p.evaluate(()=>{ const ev=window.dataLayer.filter(e=>e.event==='form_submit_success')[0]; return { ev: ev? Object.keys(ev): null, formHidden:document.getElementById('diagnostico-form').hidden, successVisible:!document.getElementById('form-success').hidden, fail: window.dataLayer.some(e=>e.event==='form_submit_fail'), contact: ev&&ev.contact_id, phone: ev&&ev.ph_raw }; });
   const diag = await p.evaluate(()=>({ events: window.dataLayer.slice(-6).map(e=>e.event), msg: document.getElementById('form-message').textContent, errs: [...document.querySelectorAll('.form-field__error')].map(e=>e.textContent).filter(Boolean) }));
   ok('envio: form_submit_success con contrato completo, exito visible, sin fallback', sub.ev && sub.formHidden && sub.successVisible && !sub.fail && sub.contact==='QA-C' && sub.phone==='+523318145528', JSON.stringify({keys:sub.ev&&sub.ev.length, contact:sub.contact, phone:sub.phone, diag}));
   const payloadUpper = await p.evaluate(()=>{ const ev=window.dataLayer.filter(e=>e.event==='form_submit_success')[0]; return ev && { fn: ev.fn_raw, ln: ev.ln_raw, company: ev.company, jobtitle: ev.jobtitle }; });
-  ok('payload al Worker en mayusculas', payloadUpper && payloadUpper.fn==='QA PRUEBA' && payloadUpper.ln==='PÉREZ PORRAS' && payloadUpper.company==='MARKETON S.A. DE C.V.', JSON.stringify(payloadUpper));
+  ok('payload al Worker en mayusculas', payloadUpper && payloadUpper.fn==='QA PRUEBA' && payloadUpper.ln==='PÉREZ PORRAS' && payloadUpper.company==='MARKETON SA DE CV', JSON.stringify(payloadUpper));
+  const msgSent = await p.evaluate(()=>document.getElementById('f-message').value);
+  ok('mensaje enviado en MAYUSCULAS sin caracteres especiales', msgSent==='PRUEBA LOCAL DE QA V2 NO ENVIAR', msgSent);
   const need=['event_id','em_raw','ph_raw','fn_raw','ln_raw','company','jobtitle','industry','company_size','country','message_length','has_problem_desc','gclid','fbclid','contact_id','deal_id','lead_id','value','currency'];
   ok('claves que leen las variables DL-* de GTM', sub.ev && need.every(k=>sub.ev.includes(k)), need.filter(k=>!(sub.ev||[]).includes(k)).join(',')||'todas');
   await p.screenshot({ path:`${Q}/v2-1440-exito-modal.png` }); await p.keyboard.press('Escape'); await p.waitForTimeout(200);
