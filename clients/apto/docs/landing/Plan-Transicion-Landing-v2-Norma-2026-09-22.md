@@ -356,3 +356,18 @@ Pregunta de Chucho: qué conversiones de GA4 importar a Ads y si como principale
 **Conversiones mejoradas en la principal.** GTM versión 75 publicada. La etiqueta 67 ("Hubspot - Form Submission (Lead)", única principal de leads) ahora manda el correo y el teléfono del lead en modo manual. Variable 115 toma el correo de la landing (`em_raw`) o, en apto.mx, de `JS email`. Variable 116 junta correo y teléfono (el teléfono ya llega como +52 y 10 dígitos). La cuenta ya tenía aceptados los términos de datos de clientes. Verificado con un envío por la UI de la landing en Playwright, con el Worker simulado y los envíos a Google, Meta y GA4 capturados y bloqueados (ningún registro ni conversión real): el ping de la conversión principal sale con `em` y `ec_mode=m`. El píxel de Meta no envía eventos en navegadores automatizados, así que no se puede probar ahí; no cambió en esta versión y quedó verificado en Chrome real el 22 y 23 de septiembre.
 
 **Pendiente de Chucho:** validar y borrar los 4 registros del smoke test (contactos 250086969888, 250085377318, 250091470928, 250100716148; tratos 65198952831, 65198653520, 65176899688, 65182011515; D1 48 a 51). Revisar el tCPA de $1,200 contra el CPA real una a dos semanas después de la limpieza de conversiones. PageSpeed sigue pendiente.
+
+---
+
+## Regla de campos del formulario · corrección · 28-sep-2026
+
+Chucho la había fijado el 22-sep y la repitió el 28: **todos los campos de texto solo aceptan MAYÚSCULAS y sin caracteres especiales; el campo limpia mientras el usuario escribe, sin importar lo que quiera escribir. El correo solo acepta minúsculas, con arroba y dominio, cualquiera.** Lo que estaba mal: el mensaje ("Cuéntanos brevemente") no tenía regla, empresa permitía punto, ampersand y guion, y los campos solo rechazaban al salir en lugar de limpiar al escribir.
+
+**Cambio (commit `e4c682b` en `capture.js`, función `cleanValue` en el evento `input`):**
+- Nombre, apellido y cargo: mayúsculas, solo letras y espacios.
+- Empresa y mensaje: mayúsculas, solo letras, números y espacios. El mensaje queda en una sola línea.
+- Correo: minúsculas, solo `a-z 0-9 @ . _ + -`; debe tener arroba y dominio con punto.
+- Teléfono: sin cambio, solo dígitos, 10 para México.
+- Mismo cambio en el generador `build_v2.py` y en `qa_v2.js` (32 de 32 en local). Verificado en producción desde la UI tras publicar.
+
+Los 4 registros del smoke test del 22-sep tienen el mensaje en minúsculas con comas y puntos; se borran cuando Chucho los valide.
