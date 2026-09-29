@@ -212,6 +212,16 @@ try:
     s=re.sub(r'<img[^>]*>',_dim,s)
     print('imgs sin dimensiones tras el ajuste:',len([m for m in re.findall(r'<img[^>]*>',s) if 'width=' not in m or 'height=' not in m]))
 except Exception as e: print('dims: omitido',e)
+
+# CTA y flechas (29-sep-2026, Chucho): copy de la v1 en menu, hero y barra fija; "→" en anclas internas, "↗" solo en enlaces externos
+s=s.replace('data-nav-link="productos">Qué hacemos <span aria-hidden="true">↗</span>','data-nav-link="productos">Qué hacemos <span aria-hidden="true">→</span>')
+s=s.replace('data-nav-link="casos">Casos <span aria-hidden="true">↗</span>','data-nav-link="casos">Casos <span aria-hidden="true">→</span>')
+s=s.replace('data-nav-link="metodo">Método <span aria-hidden="true">↗</span>','data-nav-link="metodo">Método <span aria-hidden="true">→</span>')
+s=s.replace('data-nav-link="faq">Preguntas <span aria-hidden="true">↗</span>','data-nav-link="faq">Preguntas <span aria-hidden="true">→</span>')
+s=s.replace('data-track="nav_cta_click">Hablemos <span aria-hidden="true">↗</span>','data-track="nav_cta_click">Cuéntanos tu reto <span aria-hidden="true">→</span>')
+s=s.replace('data-track="nav_mobile_menu_cta_click" data-mobile-menu-close>Hablemos de tu reto</a>','data-track="nav_mobile_menu_cta_click" data-mobile-menu-close>Cuéntanos tu reto <span aria-hidden="true">→</span></a>')
+s=s.replace('data-track="hero_cta_click">Hablemos de tu reto <span aria-hidden="true">↗</span>','data-track="hero_cta_click">Quiero resolver mi reto <span aria-hidden="true">→</span>')
+s=s.replace('data-track="sticky_cta_click">Hablemos de tu reto <span aria-hidden="true">↗</span>','data-track="sticky_cta_click">Cuéntanos tu reto <span aria-hidden="true">→</span>')
 open(f'{V}/index.html','w',encoding='utf-8').write(s)
 # --- styles.css ---
 css=open(f'{C}/styles.css',encoding='utf-8').read()
