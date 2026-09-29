@@ -4,15 +4,15 @@ const B = JSON.parse(fs.readFileSync(blocksPath,'utf8'));
 const header = `<header class="doc-header">
     <div class="brand-mark">
       <img class="brand-logo-img" src="${B.logo}" alt="Marketon">
-      <div class="brand-txt"><div class="n">Plan de transición</div><div class="tag">landing.apto.mx · uso interno</div></div>
+      <div class="brand-txt"><div class="n">${process.env.DOC_KIND||'Plan de transición'}</div><div class="tag">landing.apto.mx · uso interno</div></div>
     </div>
     <div class="doc-meta">
-      <div class="pill">22 al 29 de septiembre de 2026</div>
-      <div>Para <strong>Chucho Porras</strong> · plan, ejecución y bitácora</div>
-      <div>Fuentes: repo apto-landing · Worker · D1 · GTM-K7J6MQ8 · Google Ads 702-132-4934 · GA4</div>
+      <div class="pill">${process.env.DOC_DATE||'22 al 29 de septiembre de 2026'}</div>
+      <div>Para <strong>Chucho Porras</strong> · ${process.env.DOC_SUB||'plan, ejecución y bitácora'}</div>
+      <div>${process.env.DOC_SRC||'Fuentes: repo apto-landing · Worker · D1 · GTM-K7J6MQ8 · Google Ads 702-132-4934 · GA4'}</div>
     </div>
   </header>`;
-const footer = n => `<footer class="doc-footer"><div>Plan de transición · Landing APTO v2 (Norma) · 22 al 29-sep-2026</div><div>Marketon · uso interno · ${n}</div></footer>`;
+const footer = n => `<footer class="doc-footer"><div>${process.env.DOC_FOOT||'Plan de transición · Landing APTO v2 (Norma) · 22 al 29-sep-2026'}</div><div>Marketon · uso interno · ${n}</div></footer>`;
 const titleBlock = `<div class="title-block"><div class="eyebrow">Marketon · APTO · Landing</div><h1 class="doc-title">${B.title}</h1></div>`;
 (async()=>{
   const b = await chromium.launch(); const p = await b.newPage();
@@ -65,7 +65,7 @@ const titleBlock = `<div class="title-block"><div class="eyebrow">Marketon · AP
     return { N, html: body.innerHTML };
   },{B,header,titleBlock});
   let out = html.html; let i=0; out = out.replace(/<footer class="doc-footer"><div>x<\/div><div>x<\/div><\/footer>/g, ()=>footer(`${++i}/${html.N}`));
-  const doc = `<!DOCTYPE html>\n<html lang="es-MX">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Plan de transición · Landing APTO v2 (Norma) · 22 al 29-sep-2026</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">\n${B.style}\n</head>\n<body>${out}</body>\n</html>\n`;
+  const doc = `<!DOCTYPE html>\n<html lang="es-MX">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${process.env.DOC_TITLE||'Plan de transición · Landing APTO v2 (Norma) · 22 al 29-sep-2026'}</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">\n${B.style}\n</head>\n<body>${out}</body>\n</html>\n`;
   fs.writeFileSync(outHtml, doc);
   const q = await b.newPage(); await q.goto('file://'+outHtml, { waitUntil:'networkidle' }); await q.evaluate(async()=>{ await document.fonts.ready; });
   const qa = await q.evaluate(()=>[...document.querySelectorAll('.sheet')].map((s,i)=>{ const f=s.querySelector('.doc-footer').getBoundingClientRect().bottom; const lim=s.getBoundingClientRect().bottom-parseFloat(getComputedStyle(s).paddingBottom); const over=[...s.querySelectorAll('.content *')].some(e=>e.scrollWidth>e.clientWidth+1 && getComputedStyle(e).overflowX!=='visible'); return {p:i+1, over: Math.round(f-lim), ok: f<=lim+0.5, wide: s.querySelector('.content').scrollWidth>s.querySelector('.content').clientWidth+1}; }));

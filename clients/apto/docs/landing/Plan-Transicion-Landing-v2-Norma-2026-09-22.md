@@ -421,3 +421,39 @@ Entre el 21 y el 22-sep entraron 47 keywords de la campaña legacy, 22 términos
 **Lo que se hizo hoy.** El H1 vuelve a cambiar según el grupo de anuncios (frases de la v1, texto plano, sin cursivas ni cambio de tipografía); el subtítulo del cliente queda intacto y sin utm_content se muestra el H1 del cliente. QA local 33 de 33 y verificado en producción.
 
 **Qué sigue.** 1) Dejar correr dos semanas y comparar registros por sesión separando keywords nuevas contra keywords viejas. 2) Proponer a Álvaro volver a "→" en los tres CTA y, si acepta, probar el copy de la v1 en hero y menú. 3) Revisar la calidad del tráfico nuevo por keyword con la columna de aperturas de formulario.
+
+---
+
+## CTA y flechas · vuelta al copy de la v1 · 29-sep-2026
+
+Con go de Chucho ("haz los cambios de flecha y CTA como funcionaban mejor"), commit `6fda0c9`:
+- Menú: "Hablemos ↗" vuelve a "Cuéntanos tu reto →". Menú móvil: "Cuéntanos tu reto →".
+- Hero: "Hablemos de tu reto ↗" vuelve a "Quiero resolver mi reto →".
+- Barra fija móvil: "Hablemos de tu reto ↗" vuelve a "Cuéntanos tu reto →".
+- Enlaces del menú (Qué hacemos, Casos, Método, Preguntas): "↗" pasa a "→" porque son anclas de la misma página. La "↗" queda solo en el enlace externo a Google Maps.
+- Los nueve CTA que el cliente conservó no cambian. El generador `build_v2.py` aplica los mismos reemplazos. QA local 33 de 33. Verificado en producción desde la UI: textos correctos, el CTA del hero abre el modal y emite `hero_cta_click` y `form_modal_open`, barra fija móvil con el texto nuevo.
+
+**Lectura en dos semanas:** clics por 100 sesiones de Ads en menú, hero y barra fija contra 6.0, 3.0 y 1.0 de la v1 y 4.5, 1.8 y 0.9 de la primera semana de v2.
+
+**Títulos por intención en producción (H1 según `utm_content` = id del grupo de anuncios):**
+
+| Grupo | H1 |
+|---|---|
+| Transformación digital (203507053092) | Transformación digital en tu empresa. Y la dejamos funcionando. |
+| Arquitectura de software (198954015072) | Diseñamos y construimos el software de tu operación. Y lo dejamos funcionando. |
+| Digitalización de operaciones (198954016072) | Digitalizamos la operación de tu empresa. Y la dejamos funcionando. |
+| Experiencia de cliente (199042708752) | Diseñamos la experiencia de tus clientes. Y la dejamos funcionando. |
+| Estrategia de negocio (197062139406) | Estrategia de negocio que parte de tu cliente. Y la dejamos funcionando. |
+| Innovación corporativa (199885822522) | Innovación que sale del papel en tu empresa. Y la dejamos funcionando. |
+| Servicios omnicanales (197070239423) | Diseñamos tu experiencia de servicio omnicanal. Y la dejamos funcionando. |
+| Equipos de innovación (203507055532) | Armamos el equipo de innovación de tu empresa. Y lo dejamos funcionando. |
+| Productos digitales (199879292282) | Diseñamos y desarrollamos tu producto digital. Y lo dejamos funcionando. |
+| MVP y validación (204037436091) | Validamos y construimos tu producto digital. Y lo dejamos funcionando. |
+| Marca, Competidores y sin utm_content | Hagamos realidad el cambio. (H1 del cliente) |
+
+---
+
+## H1 por defecto y auditoría SEO · 29-sep-2026
+
+- **H1 por defecto** (orgánico, directo, marca, competidores): "Hagamos realidad el cambio en tu empresa." (Chucho, 29-sep; commit `41c10d7`). Con `utm_content` de grupo de anuncios sigue el título por intención.
+- **Auditoría SEO on-page y técnica** con correcciones aplicadas: ver `Auditoria-SEO-Landing-2026-09-29.{md,html,pdf}`. Resumen: título a 54 caracteres con la keyword al frente, twitter:description, logo de 7 KB con alt, hero 800w para móvil, H3 en el pie, sitemap 29-sep reenviado. Lighthouse móvil 94→96 rendimiento, 98→100 accesibilidad, LCP 2.5→1.8 s. La landing tiene 11 impresiones orgánicas en 90 días: el valor es de experiencia de página para Ads, no de tráfico orgánico.
