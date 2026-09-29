@@ -3,7 +3,7 @@ C="/Users/JPEREZ/Documents/Marketon/SaaP/Claude Code/Clientes/Apto/03-Estrategia
 R=os.path.expanduser('~/Documents/apto-landing'); PROD=os.environ.get('PROD','0')=='1'
 V=(f'{S0}/prod_build' if PROD else (os.environ.get('OUT') or f'{R}/v2')) if (S0:=os.path.dirname(os.path.abspath(__file__))) else None; S=S0
 REVIEW=os.environ.get('REVIEW','0')=='1'
-VER='20260922a'
+VER='20260929a'
 if os.path.exists(V): shutil.rmtree(V)
 os.makedirs(V); shutil.copytree(f'{C}/assets',f'{V}/assets',ignore=shutil.ignore_patterns('.DS_Store'))
 shutil.copy(f'{R}/assets/og-image-apto-official.png',f'{V}/assets/og-image-apto-official.png')
@@ -36,12 +36,13 @@ head_extra='''
 <meta property="og:image:alt" content="APTO · Estrategia, diseño y tecnología">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="APTO · Hagamos realidad el cambio">
+<meta name="twitter:description" content="Estrategia, diseño y tecnología en un mismo equipo. Convertimos retos de negocio en servicios, productos y herramientas que tu organización puede operar.">
 <meta name="twitter:image" content="https://landing.apto.mx/assets/og-image-apto-official.png">
 <link rel="apple-touch-icon" href="assets/favicon-official.png">
 <link rel="preconnect" href="https://www.googletagmanager.com">
 <link rel="preconnect" href="https://js.hs-scripts.com">
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/ClashGrotesk-Variable.woff2" crossorigin>
-<link rel="preload" as="image" type="image/webp" imagesrcset="assets/hero-elegido-640.webp 640w, assets/hero-elegido-1024.webp 1024w" imagesizes="(max-width: 780px) 100vw, 70vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/webp" imagesrcset="assets/hero-elegido-640.webp 640w, assets/hero-elegido-800.webp 800w, assets/hero-elegido-1024.webp 1024w" imagesizes="(max-width: 780px) 100vw, 70vw" fetchpriority="high">
 <!-- Google Tag Manager · GTM-K7J6MQ8 · la capa de medicion vive en GTM, no tocar -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -224,6 +225,12 @@ s=s.replace('data-track="hero_cta_click">Hablemos de tu reto <span aria-hidden="
 s=s.replace('data-track="sticky_cta_click">Hablemos de tu reto <span aria-hidden="true">↗</span>','data-track="sticky_cta_click">Cuéntanos tu reto <span aria-hidden="true">→</span>')
 # H1 por defecto (29-sep-2026, Chucho): organico/directo/marca ven "Hagamos realidad el cambio en tu empresa."
 s=s.replace('<h1>Hagamos<br/>realidad<br/>el cambio.</h1>','<h1>Hagamos realidad el cambio en tu empresa.</h1>')
+# SEO on-page (29-sep-2026): logo ligero con alt, hero 800w, footer h4->h3 (jerarquia), pie con estilos h3
+for o,n in [('<img class="logo-mark" src="assets/apto-logo.png" alt="" width="81" height="36" decoding="sync"/>','<img class="logo-mark" src="assets/apto-logo-243.png" alt="APTO" width="81" height="36" decoding="sync"/>'),
+            ('<img alt="APTO" decoding="async" src="assets/apto-logo.png" width="80" height="36"/>','<img alt="APTO" decoding="async" src="assets/apto-logo-243.png" width="80" height="36"/>'),
+            ('srcset="assets/hero-elegido-640.webp 640w, assets/hero-elegido-1024.webp 1024w"','srcset="assets/hero-elegido-640.webp 640w, assets/hero-elegido-800.webp 800w, assets/hero-elegido-1024.webp 1024w"'),
+            ('<h4>APTO</h4>','<h3>APTO</h3>'),('<h4>Para leer un rato</h4>','<h3>Para leer un rato</h3>'),('<h4>Esta página</h4>','<h3>Esta página</h3>'),('<h4>Contacto</h4>','<h3>Contacto</h3>')]:
+    s=s.replace(o,n)
 open(f'{V}/index.html','w',encoding='utf-8').write(s)
 # --- styles.css ---
 css=open(f'{C}/styles.css',encoding='utf-8').read()
@@ -269,6 +276,7 @@ body.form-modal-open{overflow:hidden}
 @media(max-width:780px){.sticky-cta-mobile{display:block}body.form-modal-open .sticky-cta-mobile{display:none}.footer{padding-bottom:calc(84px + env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){.form-modal__panel{animation:none}.sticky-cta-mobile{transition:none}}
 '''
+css=css.replace('.footer__col h4','.footer__col h3')  # SEO 29-sep: jerarquia de encabezados del pie
 open(f'{V}/styles.css','w',encoding='utf-8').write(css)
 # --- script.js del cliente: quitar facade y formulario (los toma capture.js) ---
 js=open(f'{C}/script.js',encoding='utf-8').read()
