@@ -222,6 +222,8 @@ s=s.replace('data-track="nav_cta_click">Hablemos <span aria-hidden="true">↗</s
 s=s.replace('data-track="nav_mobile_menu_cta_click" data-mobile-menu-close>Hablemos de tu reto</a>','data-track="nav_mobile_menu_cta_click" data-mobile-menu-close>Cuéntanos tu reto <span aria-hidden="true">→</span></a>')
 s=s.replace('data-track="hero_cta_click">Hablemos de tu reto <span aria-hidden="true">↗</span>','data-track="hero_cta_click">Quiero resolver mi reto <span aria-hidden="true">→</span>')
 s=s.replace('data-track="sticky_cta_click">Hablemos de tu reto <span aria-hidden="true">↗</span>','data-track="sticky_cta_click">Cuéntanos tu reto <span aria-hidden="true">→</span>')
+# H1 por defecto (29-sep-2026, Chucho): organico/directo/marca ven "Hagamos realidad el cambio en tu empresa."
+s=s.replace('<h1>Hagamos<br/>realidad<br/>el cambio.</h1>','<h1>Hagamos realidad el cambio en tu empresa.</h1>')
 open(f'{V}/index.html','w',encoding='utf-8').write(s)
 # --- styles.css ---
 css=open(f'{C}/styles.css',encoding='utf-8').read()

@@ -102,7 +102,7 @@ const R = { widths: {}, checks: [] }; const ok=(name,pass,detail)=>{ R.checks.pu
   ok('hero por intencion: el H1 cambia por grupo (199879292282), subtitulo del cliente intacto, sin cursivas', hv.v==='199879292282' && hv.h1==='Diseñamos y desarrollamos tu producto digital. Y lo dejamos funcionando.' && hv.sub.startsWith('Convertimos retos de negocio') && !hv.italic, JSON.stringify(hv));
   await hp.goto(URL+'?utm_source=google&utm_medium=cpc',{waitUntil:'load'}); await hp.waitForTimeout(300);
   const h0 = await hp.evaluate(()=>document.querySelector('.hero h1, h1').textContent.trim());
-  ok('hero sin utm_content: H1 del cliente', h0.replace(/\s+/g,'')==='Hagamosrealidadelcambio.', h0);
+  ok('hero sin utm_content: H1 por defecto', h0.replace(/\s+/g,' ')==='Hagamos realidad el cambio en tu empresa.', h0);
   await hp.screenshot({ path:`${Q}/v2-1440-hero-variante.png` });
   await hp.goto(URL+'#cta-form',{waitUntil:'load'}); await hp.waitForTimeout(800);
   ok('deep link #cta-form abre el modal', await hp.evaluate(()=>document.getElementById('form-modal').hidden===false));
