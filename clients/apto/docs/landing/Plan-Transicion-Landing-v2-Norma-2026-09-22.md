@@ -371,3 +371,53 @@ Chucho la había fijado el 22-sep y la repitió el 28: **todos los campos de tex
 - Mismo cambio en el generador `build_v2.py` y en `qa_v2.js` (32 de 32 en local). Verificado en producción desde la UI tras publicar.
 
 Los 4 registros del smoke test del 22-sep tienen el mensaje en minúsculas con comas y puntos; se borran cuando Chucho los valide.
+
+---
+
+## Antes y después del cambio de diseño · 29-sep-2026
+
+Pregunta de Chucho: la landing dejó de convertir registros; evaluar retención y lo necesario antes y después del cambio de diseño, y si los CTA de la v1 tenían mejor clic.
+
+**Registros reales (D1, sin pruebas).** Fuente de verdad de los envíos de la landing.
+
+| Semana | Registros | Días |
+|---|---|---|
+| 27-jul al 2-ago | 2 | 30 y 31-jul |
+| 3 al 9-ago | 4 | 3, 4, 5 y 6-ago |
+| 10-ago al 6-sep | 1 | 26-ago |
+| 7 al 13-sep | 3 | 8 y 10-sep |
+| 14 al 20-sep | 1 | 14-sep |
+| 21 al 27-sep (v2 desde el 22) | 2 | 22 y 25-sep |
+| 28-sep | 0 | · |
+
+Antes de la v2 (8 al 21-sep, 14 días): 4 registros. Después (22 al 28-sep, 7 días): 2 registros. El ritmo diario es el mismo, 0.3 al día. El registro del 22-sep es de baja calidad (nombre y mensaje sin sentido). No hay ningún registro desde el 26-sep.
+
+**Tráfico y comportamiento del tráfico de Google Ads en la landing (GA4, `google / cpc`).**
+
+| Métrica | 8 al 21-sep (v1, 14 días) | 22 al 28-sep (v2, 7 días) |
+|---|---|---|
+| Sesiones · usuarios | 100 · 77 | 111 · 89 |
+| Tasa de interacción | 48 % | 66 % |
+| Duración media de sesión | 4 min 53 s | 3 min 27 s |
+| Sesiones por usuario | 1.30 | 1.25 |
+| Usuarios que dan clic a un CTA que abre el formulario | 10 (10 %) | 8 (7 %) |
+| Registros reales por sesión | 4 % | 1.8 % |
+
+**Lo que cambió al mismo tiempo (Google Ads, campaña 24032573932).**
+
+| Semana | Impresiones | Clics | CTR | CPC medio | Costo |
+|---|---|---|---|---|---|
+| 7 al 13-sep | 1,074 | 58 | 5.4 % | $43 | $2,511 |
+| 14 al 20-sep | 900 | 48 | 5.3 % | $54 | $2,584 |
+| 21 al 27-sep | 1,733 | 123 | 7.1 % | $39 | $4,803 |
+| 28-sep (un día) | 381 | 30 | 7.9 % | $53 | $1,600 |
+
+Entre el 21 y el 22-sep entraron 47 keywords de la campaña legacy, 22 términos de búsqueda como keywords y 23 estados nuevos. Los clics semanales pasaron de 48 a 123 y el CPC bajó. La v2 se publicó el 22-sep. Las dos cosas ocurrieron juntas, así que la caída de la tasa de registro por sesión (de 4 % a 1.8 %) no se puede atribuir solo al diseño: la mitad del tráfico nuevo viene de keywords y estados que antes no estaban, con intención más amplia. Con 4 contra 2 registros la diferencia tampoco es estadísticamente significativa; hacen falta dos o tres semanas para separar las dos causas.
+
+**Retención.** En una landing de una sola visita la retención es el regreso del usuario: 1.30 sesiones por usuario antes y 1.25 después. Sin cambio. La tasa de interacción subió (48 % a 66 %) y la duración bajó (4:53 a 3:27): la v2 retiene a más gente los primeros segundos, pero la gente se queda menos tiempo. Con el recorrido por sección (`section_view`, solo existe en v2) se verá en dos semanas dónde se sale.
+
+**CTA: copy de la v1 contra copy del cliente.** El cliente conservó nueve de los doce CTA con el mismo texto. Cambió tres, y son justo los tres más visibles: menú "Cuéntanos tu reto →" pasó a "Hablemos ↗", hero "Quiero resolver mi reto →" pasó a "Hablemos de tu reto ↗", barra fija móvil "Cuéntanos tu reto →" pasó a "Hablemos de tu reto ↗". Usuarios de Ads que dieron clic, por cada 100 sesiones: menú 6.0 a 4.5, hero 3.0 a 1.8, barra fija 1.0 a 0.9. Los tres bajan, pero con 3 contra 2 clics en el hero no es evidencia; es una señal a vigilar. Hay un detalle que sí conviene corregir: la flecha "↗" es la convención de "abre en otra ventana"; para un botón que abre el formulario en la misma página, la flecha correcta es "→", como en la v1.
+
+**Lo que se hizo hoy.** El H1 vuelve a cambiar según el grupo de anuncios (frases de la v1, texto plano, sin cursivas ni cambio de tipografía); el subtítulo del cliente queda intacto y sin utm_content se muestra el H1 del cliente. QA local 33 de 33 y verificado en producción.
+
+**Qué sigue.** 1) Dejar correr dos semanas y comparar registros por sesión separando keywords nuevas contra keywords viejas. 2) Proponer a Álvaro volver a "→" en los tres CTA y, si acepta, probar el copy de la v1 en hero y menú. 3) Revisar la calidad del tráfico nuevo por keyword con la columna de aperturas de formulario.
