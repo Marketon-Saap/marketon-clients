@@ -98,8 +98,11 @@ const R = { widths: {}, checks: [] }; const ok=(name,pass,detail)=>{ R.checks.pu
   await m.close();
   // 9. hero por intencion
   const hp = await newPage(1440,900); await hp.goto(URL+'?utm_content=199879292282&utm_source=google&utm_medium=cpc',{waitUntil:'load'}); await hp.waitForTimeout(300);
-  const hv = await hp.evaluate(()=>({ v:document.documentElement.getAttribute('data-hero-variant'), sub:document.querySelector('.hero-sub').textContent.slice(0,60) }));
-  ok('hero por intencion (grupo base 199879292282)', hv.v==='199879292282' && hv.sub.startsWith('Diseñamos y desarrollamos tu producto digital.'), hv.sub);
+  const hv = await hp.evaluate(()=>({ v:document.documentElement.getAttribute('data-hero-variant'), h1:document.querySelector('.hero h1, h1').textContent.trim(), sub:document.querySelector('.hero-sub').textContent.trim().slice(0,40), italic:!!document.querySelector('.hero h1 em, .hero h1 i, h1 em, h1 i') }));
+  ok('hero por intencion: el H1 cambia por grupo (199879292282), subtitulo del cliente intacto, sin cursivas', hv.v==='199879292282' && hv.h1==='Diseñamos y desarrollamos tu producto digital. Y lo dejamos funcionando.' && hv.sub.startsWith('Convertimos retos de negocio') && !hv.italic, JSON.stringify(hv));
+  await hp.goto(URL+'?utm_source=google&utm_medium=cpc',{waitUntil:'load'}); await hp.waitForTimeout(300);
+  const h0 = await hp.evaluate(()=>document.querySelector('.hero h1, h1').textContent.trim());
+  ok('hero sin utm_content: H1 del cliente', h0.replace(/\s+/g,'')==='Hagamosrealidadelcambio.', h0);
   await hp.screenshot({ path:`${Q}/v2-1440-hero-variante.png` });
   await hp.goto(URL+'#cta-form',{waitUntil:'load'}); await hp.waitForTimeout(800);
   ok('deep link #cta-form abre el modal', await hp.evaluate(()=>document.getElementById('form-modal').hidden===false));
